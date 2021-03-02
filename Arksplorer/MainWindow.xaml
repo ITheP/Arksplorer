@@ -1,0 +1,201 @@
+﻿<Window x:Class="Arksplorer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Arksplorer"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="1000" Width="800" MouseMove="Window_MouseMove">
+    <Window.Resources>
+        <Storyboard x:Key="MarkerShrinker" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="1.0" To="0.0" Duration="0:0:0.75"/>
+            <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="1.0" To="0.0" Duration="0:0:0.75"/>
+        </Storyboard>
+    </Window.Resources>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource MarkerShrinker}"/>
+        </EventTrigger>
+    </Window.Triggers>
+    <Grid>
+        <DockPanel>
+            <Grid>
+                <DockPanel Width="200" Margin="10,0,10,0">
+                    <StackPanel DockPanel.Dock="Bottom">
+                        <Separator Margin="0,8"/>
+                        <Button x:Name="Resources" Content="Resources and Links" Click="Resources_Click"/>
+                        <Button x:Name="About" Content="About" Margin="0,4,0,0" Click="About_Click"/>
+                        <Button x:Name="Exit" Content="Exit" Click="Exit_Click" Margin="0,4,0,8"/>
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Top">
+                        <Grid>
+                            <Image Source="/Images/ark.png" Margin="0,8,0,0" />
+                            <TextBlock x:Name="Version" Text="v0.4 Preview" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                        </Grid>
+                        <Separator Margin="0,8,0,8"/>
+                        <TextBlock Margin="0,0,0,8" FontWeight="Bold" Foreground="CornflowerBlue" HorizontalAlignment="Center">Maps to include...</TextBlock>
+                        <CheckBox x:Name="IncludeTheIsland" Content="The Island"/>
+                        <CheckBox x:Name="IncludeAberration" Content="Aberration"/>
+                        <CheckBox x:Name="IncludeRagnarok" Content="Ragnarok" IsChecked="True"/>
+                        <CheckBox x:Name="IncludeTheCenter" Content="The Center"/>
+                        <CheckBox x:Name="IncludeCrystalIsles" Content="Crystal Isles"/>
+                        <CheckBox x:Name="IncludeValguero" Content="Valguero"/>
+                        <CheckBox x:Name="IncludeScorchedEarth" Content="Scorched Earth"/>
+                        <CheckBox x:Name="IncludeExtinction" Content="Extinction"/>
+                        <CheckBox x:Name="IncludeGenesis" Content="Genesis"/>
+                        <Grid Margin="0,8,0,4">
+                            <Button x:Name="IncludeAll" HorizontalAlignment="Left" Width="40" Click="IncludeAll_Click">All</Button>
+                            <Button x:Name="IncludeNone" HorizontalAlignment="Left" Width="40" Margin="50,0,0,0" Click="IncludeNone_Click">None</Button>
+                        </Grid>
+                        <Separator Margin="0,8"/>
+                        <TextBlock Margin="0,0,0,4" FontWeight="Bold" Foreground="DarkSeaGreen" HorizontalAlignment="Center">Load data...</TextBlock>
+                        <Button x:Name="TameDinos" Content="Tame Dinos" Margin="0,4,0,0" Click="TameDinos_Click" />
+                        <Button x:Name="WildDinos" Content="Wild Dinos" Margin="0,4,0,0" Click="WildDinos_Click" />
+                        <Button x:Name="Survivors" Content="Survivors" Margin="0,4,0,0" Click="Survivors_Click" />
+                        <Separator Margin="0,12,0,8"/>
+                        <DockPanel>
+                            <Viewbox x:Name="LoadingSpinner" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                                <local:Spinner/>
+                            </Viewbox>
+                            <TextBlock x:Name="Status" FontWeight="Bold" Foreground="Red" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                Welcome! Remember, data is only<LineBreak/>
+                                as up to date as the server allows.</TextBlock>
+                        </DockPanel>
+                        <Separator Margin="0,8"/>
+                    </StackPanel>
+                    <Grid>
+                        <TextBlock x:Name="ExtraInfo" TextWrapping="Wrap">
+                            Select what maps to include.
+                            <LineBreak/>
+                            <LineBreak/>
+                            Click what you want to load...
+                            <LineBreak/>
+                            - Tame Dinos
+                            <LineBreak/>
+                            - Wild Dinos
+                            <LineBreak/>
+                            - Suvivors
+                            <LineBreak/>
+                            <LineBreak/>
+                            Click a result to see location
+                            <LineBreak/>
+                            <LineBreak/>
+                            Filter searches on map, dino names, creature types etc. - press <Span FontStyle="Italic" Foreground="Brown">enter</Span> or click <Span FontStyle="Italic" Foreground="Brown">Apply</Span> to apply filter. <Span FontStyle="Italic" Foreground="Brown">Exact</Span> returns exact matches only.
+                            <LineBreak/>
+                            <LineBreak/>
+                            Multiple filters terms available using , separated list
+                            <LineBreak/>
+                            e.g. <Span FontStyle="Italic" Foreground="BlueViolet">ragn, arg</Span>
+                            returns results including <Span FontStyle="Italic" Foreground="BlueViolet">arg</Span>entavis on <Span FontStyle="Italic" Foreground="BlueViolet">ragn</Span>arok.
+                            <LineBreak/>
+                            <LineBreak/>
+                            Server data updates approx. every 40-50 minutes.
+                        </TextBlock>
+                        <TextBlock x:Name="ResourcesAndLinksExtraInfo" Visibility="Collapsed" TextWrapping="Wrap">
+                                Handy resources and links...
+                                <LineBreak/>
+                                <LineBreak/>
+                                Brilliant source of Ark data...
+                                <LineBreak/>
+                                <Hyperlink NavigateUri="https://ark.gamepedia.com/">ark.gamepedia.com</Hyperlink>
+                                <LineBreak/>
+                                <LineBreak/>
+                                Taming calculator...
+                                <LineBreak/>
+                                <Hyperlink NavigateUri="https://www.dododex.com/">www.dodex.com</Hyperlink>
+                                <LineBreak/>
+                                <LineBreak/>
+                                My favorite PVE ark servers...
+                                <LineBreak/>
+                                <Hyperlink NavigateUri="http://wiredcat.hopto.org/">wiredcat.hopto.org</Hyperlink>
+                        </TextBlock>
+                        <TextBlock x:Name="AboutExtra" Visibility="Collapsed" TextWrapping="Wrap">
+                                About...
+                                <LineBreak/>
+                                <LineBreak/>
+                                Arksplorer © 2021 MisterB. Simple front end Ark explorer that takes bits of Ark data including data expose
+                                by an ark server to help you find things in Ark.
+                                <LineBreak/>
+                                <LineBreak/>
+                                Provided under <Hyperlink NavigateUri="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</Hyperlink> License.
+                                <LineBreak/>
+                                <LineBreak/>
+                                Artwork (c) respective artists - used in good faith under Creative Commons CC BY-NC-SA 3.0 License.
+                                Please check <Hyperlink NavigateUri="https://ark.gamepedia.com/">ark.gamepedia.com</Hyperlink> for extra details.
+                                If you believe any content infringes on anything, or would like a credit adding, please contact and we will happily update accordingly!
+                        </TextBlock>
+                    </Grid>
+                </DockPanel>
+            </Grid>
+            <Grid Margin="0,0,8,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" DockPanel.Dock="Top">
+                    <Viewbox Stretch="Uniform" Margin="0,0,0,8">
+                        <Grid x:Name="MapHolder" Width="100" Height="100">
+                            <Image x:Name="MapImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
+                            <TextBlock x:Name="MapMessage" FontSize="8" HorizontalAlignment="Center" Foreground="White" Margin="5" FontWeight="Black" VerticalAlignment="Center" TextAlignment="Center">
+                                wiredcat.hopto.org
+                            </TextBlock>
+                            <Ellipse x:Name="Marker" Width="5" Height="5" Fill="Red" RenderTransformOrigin="0.5,0.5">
+                                <Ellipse.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform x:Name="MarkerScale" ScaleX="1.0" ScaleY="1.0"/>
+                                        <SkewTransform/>
+                                        <RotateTransform/>
+                                        <TranslateTransform x:Name="MarkerOffset" X="25" Y="25"/>
+                                    </TransformGroup>
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+                        </Grid>
+                    </Viewbox>
+                    <Image x:Name="SplashImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
+                    <TextBlock x:Name="OverviewMessage" Background="#9000" Foreground="#FF9" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Right" TextAlignment="Right" Margin="4" Padding="4">
+                        Shout outs to...
+                        <LineBreak/>
+                        Duno, Scully, Ward who first tried this
+                        <LineBreak/>
+                        Shauna, LemonCake, best darn tribe around!
+                        <LineBreak/>
+                        Caulkinator, Kurt, Joanna,
+                        <LineBreak/>
+                        Kokow, Ray, ExStAsY,
+                        <LineBreak/>
+                        and the rest of you!
+                    </TextBlock>
+                </Grid>
+                <DataGrid x:Name="DataVisual" Grid.Row="1" Margin="0,36,0,0"
+                          AutoGenerateColumns="True"
+                          ItemsSource="{Binding}"
+                          IsReadOnly="True"
+                          AlternatingRowBackground="#FFF4F4F4"
+                          SelectionMode="Single"
+                          SelectionUnit="FullRow"
+                          SelectionChanged="DataVisual_SelectionChanged"
+                          />
+                <DockPanel Grid.Row="1" Margin="0,10,0,0" Height="20" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                    <!--<StackPanel Orientation="Horizontal" DockPanel.Dock="Left">-->
+                    <!--<TextBlock VerticalAlignment="Center">Filter column</TextBlock>-->
+                    <!--<TextBox x:Name="FilterColumn" Margin="8,0,0,0" Width="100" IsEnabled="False" TextChanged="FilterColumn_TextChanged"/>-->
+                    <TextBlock VerticalAlignment="Center">Filter</TextBlock>
+                    <!--</StackPanel>-->
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                        <Button x:Name="ApplyFilter" Margin="16,0,0,0" Width="75" VerticalAlignment="Center" Click="ApplyFilter_Click">Apply</Button>
+                        <Button x:Name="ExactFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="ExactFilter_Click">Exact</Button>
+                        <Button x:Name="RemoveFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="RemoveFilter_Click">Clear</Button>
+                    </StackPanel>
+                    <TextBox x:Name="FilterCriteria" Margin="8,0,0,0" HorizontalAlignment="Stretch"
+                             KeyDown="FilterCriteria_KeyDown">
+                        <!--<TextBox.InputBindings>
+                            <KeyBinding Command="{Binding Path=ApplyFilterCriteria}" CommandParameter="{Binding ElementName=FilterCriteria, Path=Text}" Key="Return"/>
+                            <KeyBinding Command="{Binding Path=ApplyFilterCriteria}" Key="Enter"/>
+                        </TextBox.InputBindings>-->
+                    </TextBox>
+                </DockPanel>
+                <GridSplitter Grid.Row="1" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" ShowsPreview="False" Background="Gray"/>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</Window>
