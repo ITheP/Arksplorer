@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Arksplorer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1000" Width="800" MouseMove="Window_MouseMove">
+        Title="MainWindow" Height="1100" Width="800" MouseMove="Window_MouseMove">
     <Window.Resources>
         <Storyboard x:Key="MarkerShrinker" RepeatBehavior="Forever">
             <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="1.0" To="0.0" Duration="0:0:0.75"/>
@@ -28,10 +28,9 @@
                         <Button x:Name="Exit" Content="Exit" Click="Exit_Click" Margin="0,4,0,8"/>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
-                        <Grid>
-                            <Image Source="/Images/ark.png" Margin="0,8,0,0" />
-                            <TextBlock x:Name="Version" Text="v0.4 Preview" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-                        </Grid>
+                        <Image Source="/Images/ark.png" />
+                        <TextBlock x:Name="Title" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>
+                        <TextBlock x:Name="Version" Text="v0.5 Preview" FontSize="10" HorizontalAlignment="Center" Margin="0,2,0,0"/>
                         <Separator Margin="0,8,0,8"/>
                         <TextBlock Margin="0,0,0,8" FontWeight="Bold" Foreground="CornflowerBlue" HorizontalAlignment="Center">Maps to include...</TextBlock>
                         <CheckBox x:Name="IncludeTheIsland" Content="The Island"/>
@@ -59,71 +58,82 @@
                             </Viewbox>
                             <TextBlock x:Name="Status" FontWeight="Bold" Foreground="Red" HorizontalAlignment="Left" VerticalAlignment="Center">
                                 Welcome! Remember, data is only<LineBreak/>
-                                as up to date as the server allows.</TextBlock>
+                                as up-to-date as the server supplies</TextBlock>
                         </DockPanel>
                         <Separator Margin="0,8"/>
                     </StackPanel>
                     <Grid>
-                        <TextBlock x:Name="ExtraInfo" TextWrapping="Wrap">
+                        <ScrollViewer  x:Name="ExtraInfoHolder" VerticalScrollBarVisibility="Auto">
+                            <TextBlock x:Name="ExtraInfo" TextWrapping="Wrap">
                             Select what maps to include.
                             <LineBreak/>
                             <LineBreak/>
-                            Click what you want to load...
-                            <LineBreak/>
-                            - Tame Dinos
-                            <LineBreak/>
-                            - Wild Dinos
-                            <LineBreak/>
-                            - Suvivors
-                            <LineBreak/>
-                            <LineBreak/>
-                            Click a result to see location
+                            Click what you want to load - Tame Dinos, Wild Dinos, Suvivors... then click a result to find them.
                             <LineBreak/>
                             <LineBreak/>
                             Filter searches on map, dino names, creature types etc. - press <Span FontStyle="Italic" Foreground="Brown">enter</Span> or click <Span FontStyle="Italic" Foreground="Brown">Apply</Span> to apply filter. <Span FontStyle="Italic" Foreground="Brown">Exact</Span> returns exact matches only.
                             <LineBreak/>
                             <LineBreak/>
-                            Multiple filters terms available using , separated list
+                            Multiple filters using , separation
                             <LineBreak/>
                             e.g. <Span FontStyle="Italic" Foreground="BlueViolet">ragn, arg</Span>
                             returns results including <Span FontStyle="Italic" Foreground="BlueViolet">arg</Span>entavis on <Span FontStyle="Italic" Foreground="BlueViolet">ragn</Span>arok.
                             <LineBreak/>
                             <LineBreak/>
                             Server data updates approx. every 40-50 minutes.
-                        </TextBlock>
-                        <TextBlock x:Name="ResourcesAndLinksExtraInfo" Visibility="Collapsed" TextWrapping="Wrap">
-                                Handy resources and links...
-                                <LineBreak/>
-                                <LineBreak/>
-                                Brilliant source of Ark data...
-                                <LineBreak/>
-                                <Hyperlink NavigateUri="https://ark.gamepedia.com/">ark.gamepedia.com</Hyperlink>
-                                <LineBreak/>
-                                <LineBreak/>
-                                Taming calculator...
-                                <LineBreak/>
-                                <Hyperlink NavigateUri="https://www.dododex.com/">www.dodex.com</Hyperlink>
-                                <LineBreak/>
-                                <LineBreak/>
-                                My favorite PVE ark servers...
-                                <LineBreak/>
-                                <Hyperlink NavigateUri="http://wiredcat.hopto.org/">wiredcat.hopto.org</Hyperlink>
-                        </TextBlock>
-                        <TextBlock x:Name="AboutExtra" Visibility="Collapsed" TextWrapping="Wrap">
-                                About...
-                                <LineBreak/>
-                                <LineBreak/>
-                                Arksplorer © 2021 MisterB. Simple front end Ark explorer that takes bits of Ark data including data expose
-                                by an ark server to help you find things in Ark.
-                                <LineBreak/>
-                                <LineBreak/>
-                                Provided under <Hyperlink NavigateUri="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</Hyperlink> License.
-                                <LineBreak/>
-                                <LineBreak/>
-                                Artwork (c) respective artists - used in good faith under Creative Commons CC BY-NC-SA 3.0 License.
-                                Please check <Hyperlink NavigateUri="https://ark.gamepedia.com/">ark.gamepedia.com</Hyperlink> for extra details.
-                                If you believe any content infringes on anything, or would like a credit adding, please contact and we will happily update accordingly!
-                        </TextBlock>
+                            <LineBreak/>
+                            <LineBreak/>
+                            Visit our facebook page... <Hyperlink NavigateUri="http://facebook.com/arksplorer" RequestNavigate="HandleLinkClick">facebook.com/arksplorer</Hyperlink>
+                            </TextBlock>
+                        </ScrollViewer>
+                        <ScrollViewer x:Name="ResourcesAndLinksExtraInfo"  VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                            <TextBlock TextWrapping="Wrap">
+                            Handy resources and links...
+                            <LineBreak/>
+                            <LineBreak/>
+                            Brilliant source of Ark data...
+                            <LineBreak/>
+                            <Hyperlink NavigateUri="https://ark.gamepedia.com/" RequestNavigate="HandleLinkClick">ark.gamepedia.com</Hyperlink>
+                            <LineBreak/>
+                            <LineBreak/>
+                            Taming calculator...
+                            <LineBreak/>
+                            <Hyperlink NavigateUri="https://www.dododex.com/" RequestNavigate="HandleLinkClick">www.dodex.com</Hyperlink>
+                            <LineBreak/>
+                            <LineBreak/>
+                            My favorite PVE ark servers...
+                            <LineBreak/>
+                            <Hyperlink NavigateUri="http://wiredcat.hopto.org/" RequestNavigate="HandleLinkClick">wiredcat.hopto.org</Hyperlink>
+                            <LineBreak/>
+                            <LineBreak/>
+                            Visit our facebook page... <Hyperlink NavigateUri="http://facebook.com/arksplorer" RequestNavigate="HandleLinkClick">facebook.com/arksplorer</Hyperlink>
+                            </TextBlock>
+                        </ScrollViewer>
+                        <ScrollViewer x:Name="AboutExtraInfo" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                            <TextBlock ScrollViewer.VerticalScrollBarVisibility="Auto"  TextWrapping="Wrap">
+                            Arksplorer © 2021 MisterB.
+                            <LineBreak/>
+                            <LineBreak/>
+                            Simple front end Ark explorer that takes bits of Ark data including data expose
+                            by an ark server to help you find things in Ark.
+                            <LineBreak/>
+                            <LineBreak/>
+                            Provided under <Hyperlink NavigateUri="https://creativecommons.org/licenses/by-nc-sa/4.0/" RequestNavigate="HandleLinkClick">CC BY-NC-SA 4.0</Hyperlink> License.
+                            <LineBreak/>
+                            <LineBreak/>
+                            Artwork (c) respective artists - used in good faith under Creative Commons CC BY-NC-SA 3.0 License.
+                            Please check <Hyperlink NavigateUri="https://ark.gamepedia.com/" RequestNavigate="HandleLinkClick">ark.gamepedia.com</Hyperlink> for extra details.
+                            If you believe any content infringes on anything, or would like a credit adding, please contact and we will happily update accordingly!
+                            <LineBreak/>
+                            <LineBreak/>
+                            Visit our facebook page... <Hyperlink NavigateUri="http://facebook.com/arksplorer" RequestNavigate="HandleLinkClick">facebook.com/arksplorer</Hyperlink>
+                            <LineBreak/>
+                            <LineBreak/>
+                            Source code on github...
+                            <LineBreak/>
+                            <Hyperlink NavigateUri="https://github.com/ITheP/Arksplorer/" RequestNavigate="HandleLinkClick">github.com/ITheP/Arksplorer</Hyperlink>
+                            </TextBlock>
+                        </ScrollViewer>
                     </Grid>
                 </DockPanel>
             </Grid>
@@ -133,6 +143,7 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" DockPanel.Dock="Top">
+                    <Image x:Name="SplashImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
                     <Viewbox Stretch="Uniform" Margin="0,0,0,8">
                         <Grid x:Name="MapHolder" Width="100" Height="100">
                             <Image x:Name="MapImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
@@ -151,7 +162,6 @@
                             </Ellipse>
                         </Grid>
                     </Viewbox>
-                    <Image x:Name="SplashImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
                     <TextBlock x:Name="OverviewMessage" Background="#9000" Foreground="#FF9" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Right" TextAlignment="Right" Margin="4" Padding="4">
                         Shout outs to...
                         <LineBreak/>

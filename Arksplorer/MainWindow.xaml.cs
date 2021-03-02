@@ -41,6 +41,8 @@ namespace Arksplorer
         public MainWindow()
         {
             InitializeComponent();
+            // These are visible at design time to aid design, but want to hide them when window first opens
+            MapImage.Visibility = Visibility.Collapsed;
             Marker.Visibility = Visibility.Collapsed;
 
             // We drag the loading effect out the page when not visible,
@@ -56,7 +58,7 @@ namespace Arksplorer
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            ShowExtraInfo(AboutExtra);
+            ShowExtraInfo(AboutExtraInfo);
         }
 
         private void ApplyFilter_Click(object sender, RoutedEventArgs e)
@@ -322,13 +324,13 @@ namespace Arksplorer
             {
                 LoadingSpinner.Child = LoadingSpinnerStore;
                 LoadingSpinner.Visibility = Visibility.Visible;
-                ExtraInfo.Visibility = Visibility.Hidden;
+                ExtraInfoHolder.Visibility = Visibility.Hidden;
             }
             else
             {
                 LoadingSpinner.Child = null;
                 LoadingSpinner.Visibility = Visibility.Hidden;
-                ExtraInfo.Visibility = Visibility.Visible;
+                ExtraInfoHolder.Visibility = Visibility.Visible;
             }
         }
 
@@ -620,7 +622,10 @@ namespace Arksplorer
             // Map is always in column 0
             string mapName = (string)entity[0];
             if (mapName != CurrentMapImage)
+            {
                 MapImage.Source = LoadImage(mapName);
+                MapImage.Visibility = Visibility.Visible;
+            }
 
             SetOverviewMessage(overviewMessage);
         }
@@ -695,9 +700,9 @@ namespace Arksplorer
 
         private void ShowExtraInfo(UIElement whatToShow)
         {
-            ExtraInfo.Visibility = Visibility.Collapsed;
+            ExtraInfoHolder.Visibility = Visibility.Collapsed;
             ResourcesAndLinksExtraInfo.Visibility = Visibility.Collapsed;
-            AboutExtra.Visibility = Visibility.Collapsed;
+            AboutExtraInfo.Visibility = Visibility.Collapsed;
 
             whatToShow.Visibility = Visibility.Visible;
         }
@@ -714,12 +719,18 @@ namespace Arksplorer
             var percX = (pos.X / width);
             var percY = (pos.Y / height);
 
-            //Debug.Print($"{percX},{percY}");
+            //Debug.Print($"{percX},{percY}");h
             // X = R
             // Y = G
             var brush = new SolidColorBrush(Colour.RGBFromHSL(percX, 1.0, 1.0 - percY));
             MapMessage.Foreground = brush;
             //OverviewMessage.Foreground = brush;
+        }
+
+        private void HandleLinkClick(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            e.Handled = true;
         }
     }
 }
