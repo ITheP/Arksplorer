@@ -1,0 +1,58 @@
+{
+    "Description": "WiredCat PvE Server",
+    "Website": "http://wiredcat.hopto.org/",
+    "Message": "Hello, from the WiredCat team!",
+    "Status": "Enabled",
+    "Types": [
+        {
+            "Name": "Timestamp",
+            "Filename": "timestamp.json"
+        },
+        {
+            "Name": "WildDinos",
+            "Filename": "Wild.json"
+        },
+        {
+            "Name": "TameDinos",
+            "Filename": "Dinos.json"
+        },
+        {
+            "Name": "Survivors",
+            "Filename": "Survivors.json"
+        }
+    ],
+    "Maps": [
+        {
+            "Name": "The Island",
+            "BaseUrl": "http://wiredcat.hopto.org/WiredcatIsland/"
+        },
+        {
+            "Name": "Aberration",
+            "BaseUrl": "http://wiredcat.hopto.org/WiredcatAberration/"
+        },
+        {
+            "Name": "Ragnarok",
+            "BaseUrl": "http://wiredcat.hopto.org/WiredcatRagnarok/"
+        },
+        {
+            "Name": "The Center",
+            "BaseUrl": "http://wiredcat.hopto.org/WiredcatCenter/"
+        },
+        {
+            "Name": "Valguero",
+            "BaseUrl": "http://wiredcat.hopto.org/WiredcatValguero/"
+        },
+        {
+            "Name": "Scorched Earth",
+            "BaseUrl": "http://wiredcat.hopto.org/WiredcatScorchedEarth/"
+        },
+        {
+            "Name": "Extinction",
+            "BaseUrl": "http://wiredcat.hopto.org/WiredcatExtinction/"
+        },
+        {
+            "Name": "Genesis",
+            "BaseUrl": "http://wiredcat.hopto.org/WiredcatGenesis/"
+        }
+    ]
+}

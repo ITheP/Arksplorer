@@ -38,6 +38,8 @@ namespace Arksplorer
         private static Dictionary<string, BitmapImage> MapImages { get; } = new Dictionary<string, BitmapImage>();
         private static string CurrentMapImage { get; set; } = "";
         private static UIElement LoadingSpinnerStore { get; set; }
+        private static ServerConfig ServerConfig { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -46,14 +48,34 @@ namespace Arksplorer
             Marker.Visibility = Visibility.Collapsed;
 
             // We drag the loading effect out the page when not visible,
-            // so it's not being calculated while hidden/collapsed (have seen that happen before)
+            // so it's not being calculated while hidden/collapsed (have seen that happen before with a bit of needless background ongoing overhead)
             LoadingSpinnerStore = LoadingSpinner.Child;
             LoadingSpinner.Child = null;
+
+            // Grab config from server that feeds into all this
+            // ToDo: Config required for where this comes from!
+            try
+            {
+                LoadingVisualEnabled(true);
+                Status.Text = "Contacting server...";
+                // Initial set up can happen in the background - it will enable relevant bits of interface when it completes
+                Task.Run(() => LoadServerConfig("http://wiredcat.hopto.org/ArksplorerData.json"));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"There was a problem during start up...{Environment.NewLine}{ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}{Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ExitApplication();
+            }
+        }
+
+        private void ExitApplication()
+        {
+            Application.Current.Shutdown();
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            ExitApplication();
         }
 
         private void About_Click(object sender, RoutedEventArgs e)
@@ -73,35 +95,35 @@ namespace Arksplorer
 
         private async void TameDinos_Click(object sender, RoutedEventArgs e)
         {
-            LoadableControlEnabled(false);
+            LoadableControlsEnabled(false);
             LoadingVisualEnabled(true);
 
             if (IncludeTheIsland.IsChecked ?? false)
-                QueUpData("The Island", TameMetadata, "http://wiredcat.hopto.org/WiredcatIsland/", "Dinos.json", "timestamp.json", false);
+                QueUpData("The Island", Types.TameMetadata, false);
 
             if (IncludeAberration.IsChecked ?? false)
-                QueUpData("Aberration", TameMetadata, "http://wiredcat.hopto.org/WiredcatAberration/", "Dinos.json", "timestamp.json", false);
+                QueUpData("Aberration", Types.TameMetadata, false);
 
             if (IncludeRagnarok.IsChecked ?? false)
-                QueUpData("Ragnarok", TameMetadata, "http://wiredcat.hopto.org/WiredcatRagnarok/", "Dinos.json", "timestamp.json", false);
+                QueUpData("Ragnarok", Types.TameMetadata, false);
 
             if (IncludeTheCenter.IsChecked ?? false)
-                QueUpData("The Center", TameMetadata, "http://wiredcat.hopto.org/WiredcatCenter/", "Dinos.json", "timestamp.json", false);
+                QueUpData("The Center", Types.TameMetadata, false);
 
             if (IncludeCrystalIsles.IsChecked ?? false)
-                QueUpData("Crystal Isles", TameMetadata, "http://wiredcat.hopto.org/WiredcatCrystal/", "Dinos.json", "timestamp.json", false);
+                QueUpData("Crystal Isles", Types.TameMetadata, false);
 
             if (IncludeValguero.IsChecked ?? false)
-                QueUpData("Valguero", TameMetadata, "http://wiredcat.hopto.org/WiredcatValguero/", "Dinos.json", "timestamp.json", false);
+                QueUpData("Valguero", Types.TameMetadata, false);
 
             if (IncludeScorchedEarth.IsChecked ?? false)
-                QueUpData("Scorched Earth", TameMetadata, "http://wiredcat.hopto.org/WiredcatScorchedEarth/", "Dinos.json", "timestamp.json", false);
+                QueUpData("Scorched Earth", Types.TameMetadata, false);
 
             if (IncludeExtinction.IsChecked ?? false)
-                QueUpData("Extinction", TameMetadata, "http://wiredcat.hopto.org/WiredcatExtinction/", "Dinos.json", "timestamp.json", false);
+                QueUpData("Extinction", Types.TameMetadata, false);
 
             if (IncludeGenesis.IsChecked ?? false)
-                QueUpData("Genesis", TameMetadata, "http://wiredcat.hopto.org/WiredcatGenesis/", "Dinos.json", "timestamp.json", false);
+                QueUpData("Genesis", Types.TameMetadata, false);
 
             LoadQueue<TameDino>();
         }
@@ -109,70 +131,70 @@ namespace Arksplorer
 
         private async void WildDinos_Click(object sender, RoutedEventArgs e)
         {
-            LoadableControlEnabled(false);
+            LoadableControlsEnabled(false);
             LoadingVisualEnabled(true);
 
             if (IncludeTheIsland.IsChecked ?? false)
-                QueUpData("The Island", WildMetadata, "http://wiredcat.hopto.org/WiredcatIsland/", "Wild.json", "timestamp.json", false);
+                QueUpData("The Island", Types.WildMetadata, false);
 
             if (IncludeAberration.IsChecked ?? false)
-                QueUpData("Aberration", WildMetadata, "http://wiredcat.hopto.org/WiredcatAberration", "/Wild.json", "timestamp.json", false);
+                QueUpData("Aberration", Types.WildMetadata, false);
 
             if (IncludeRagnarok.IsChecked ?? false)
-                QueUpData("Ragnarok", WildMetadata, "http://wiredcat.hopto.org/WiredcatRagnarok/", "Wild.json", "timestamp.json", false);
+                QueUpData("Ragnarok", Types.WildMetadata, false);
 
             if (IncludeTheCenter.IsChecked ?? false)
-                QueUpData("The Center", WildMetadata, "http://wiredcat.hopto.org/WiredcatCenter/", "Wild.json", "timestamp.json", false);
+                QueUpData("The Center", Types.WildMetadata, false);
 
             if (IncludeCrystalIsles.IsChecked ?? false)
-                QueUpData("Crystal Isles", WildMetadata, "http://wiredcat.hopto.org/WiredcatCrystal/", "Wild.json", "timestamp.json", false);
+                QueUpData("Crystal Isles", Types.WildMetadata, false);
 
             if (IncludeValguero.IsChecked ?? false)
-                QueUpData("Valguero", WildMetadata, "http://wiredcat.hopto.org/WiredcatValguero/", "Wild.json", "timestamp.json", false);
+                QueUpData("Valguero", Types.WildMetadata, false);
 
             if (IncludeScorchedEarth.IsChecked ?? false)
-                QueUpData("Scorched Earth", WildMetadata, "http://wiredcat.hopto.org/WiredcatScorchedEarth/", "Wild.json", "timestamp.json", false);
+                QueUpData("Scorched Earth", Types.WildMetadata, false);
 
             if (IncludeExtinction.IsChecked ?? false)
-                QueUpData("Extinction", WildMetadata, "http://wiredcat.hopto.org/WiredcatExtinction/", "Wild.json", "timestamp.json", false);
+                QueUpData("Extinction", Types.WildMetadata, false);
 
             if (IncludeGenesis.IsChecked ?? false)
-                QueUpData("Genesis", WildMetadata, "http://wiredcat.hopto.org/WiredcatGenesis/", "Wild.json", "timestamp.json", false);
+                QueUpData("Genesis", Types.WildMetadata, false);
 
             LoadQueue<WildDino>();
         }
 
         private void Survivors_Click(object sender, RoutedEventArgs e)
         {
-            LoadableControlEnabled(false);
+            LoadableControlsEnabled(false);
             LoadingVisualEnabled(true);
 
             if (IncludeTheIsland.IsChecked ?? false)
-                QueUpData("The Island", SurvivorMetadata, "http://wiredcat.hopto.org/WiredcatIsland/", "Survivors.json", "timestamp.json", false);
+                QueUpData("The Island", Types.SurvivorMetadata, false);
 
             if (IncludeAberration.IsChecked ?? false)
-                QueUpData("Aberration", SurvivorMetadata, "http://wiredcat.hopto.org/WiredcatAberration/", "Survivors.json", "timestamp.json", false);
+                QueUpData("Aberration", Types.SurvivorMetadata, false);
 
             if (IncludeRagnarok.IsChecked ?? false)
-                QueUpData("Ragnarok", SurvivorMetadata, "http://wiredcat.hopto.org/WiredcatRagnarok/", "Survivors.json", "timestamp.json", false);
+                QueUpData("Ragnarok", Types.SurvivorMetadata, false);
 
             if (IncludeTheCenter.IsChecked ?? false)
-                QueUpData("The Center", SurvivorMetadata, "http://wiredcat.hopto.org/WiredcatCenter/", "Survivors.json", "timestamp.json", false);
+                QueUpData("The Center", Types.SurvivorMetadata, false);
 
             if (IncludeCrystalIsles.IsChecked ?? false)
-                QueUpData("Crystal Isles", SurvivorMetadata, "http://wiredcat.hopto.org/WiredcatCrystal/", "Survivors.json", "timestamp.json", false);
+                QueUpData("Crystal Isles", Types.SurvivorMetadata, false);
 
             if (IncludeValguero.IsChecked ?? false)
-                QueUpData("Valguero", SurvivorMetadata, "http://wiredcat.hopto.org/WiredcatValguero/", "Survivors.json", "timestamp.json", false);
+                QueUpData("Valguero", Types.SurvivorMetadata, false);
 
             if (IncludeScorchedEarth.IsChecked ?? false)
-                QueUpData("Scorched Earth", SurvivorMetadata, "http://wiredcat.hopto.org/WiredcatScorchedEarth/", "Survivors.json", "timestamp.json", false);
+                QueUpData("Scorched Earth", Types.SurvivorMetadata, false);
 
             if (IncludeExtinction.IsChecked ?? false)
-                QueUpData("Extinction", SurvivorMetadata, "http://wiredcat.hopto.org/WiredcatExtinction/", "Survivors.json", "timestamp.json", false);
+                QueUpData("Extinction", Types.SurvivorMetadata, false);
 
             if (IncludeGenesis.IsChecked ?? false)
-                QueUpData("Genesis", SurvivorMetadata, "http://wiredcat.hopto.org/WiredcatGenesis/", "Survivors.json", "timestamp.json", false);
+                QueUpData("Genesis", Types.SurvivorMetadata, false);
 
             LoadQueue<Survivor>();
         }
@@ -225,7 +247,7 @@ namespace Arksplorer
             if (dataPackage == null || string.IsNullOrWhiteSpace(criteria))
                 return;
 
-            string filter = exactOnly ? dataPackage.Metadata.NormalSearch : dataPackage.Metadata.WildcardSearch;  //criteria.Contains("*") ? dataPackage.SearchType.WildcardSearch : dataPackage.SearchType.NormalSearch;
+            string filter = exactOnly ? dataPackage.Metadata.NormalSearch : dataPackage.Metadata.WildcardSearch;
 
             if (string.IsNullOrWhiteSpace(filter))
                 return;
@@ -274,9 +296,6 @@ namespace Arksplorer
 
         private void ClearFilter()
         {
-            // FilterColumn.Text = null;
-            // FilterCriteria.Text = null;
-
             if (CurrentDataPackage.Data != null)
                 DataVisual.DataContext = CurrentDataPackage.Data;
         }
@@ -287,31 +306,30 @@ namespace Arksplorer
 
         private static List<QueueDataItem> QueuedItems { get; set; } = new List<QueueDataItem>();
 
-        // Highest level - show data if already loaded, or load if not (which will then show later in time)
-        private static async void QueUpData(string map, MetaData metaData, string baseUri, string dataFilename, string timestampFilename, bool forceRefresh)
+        private static async void QueUpData(string map, MetaData metaData, bool forceRefresh)
         {
             QueuedItems.Add(new QueueDataItem()
             {
                 MapName = map,
                 MetaData = metaData,
-                DataUri = baseUri + dataFilename,
-                TimestampUri = baseUri + timestampFilename,
+                DataUri = ServerConfig.GetUri($"{map}.{metaData.Type}"),
+                TimestampUri = ServerConfig.GetUri($"{map}.timestamp"),
                 ForceRefresh = forceRefresh
             });
         }
 
         Cursor PrevCursor { get; set; }
 
+        // When a queue is loading, no others should load as controls that could trigger another load are disabled.
         private async void LoadQueue<T>()
         {
-            // ToDo: STOP LOADING A QUE IF ONES ALREADY LOADING
             PrevCursor = Mouse.OverrideCursor;
             Mouse.OverrideCursor = Cursors.Wait;
 
             int mapsLoaded = await Task.Run(() => ProcessQueue<T>(QueuedItems));
         }
 
-        public void LoadableControlEnabled(bool isEnabled)
+        public void LoadableControlsEnabled(bool isEnabled)
         {
             TameDinos.IsEnabled = isEnabled;
             WildDinos.IsEnabled = isEnabled;
@@ -353,7 +371,45 @@ namespace Arksplorer
 
         static readonly HttpClient httpClient = new();
 
-        // ToDo: We may repeatidly re-read timestamps when not required. We should be able to cache these for speed!
+        private async void LoadServerConfig(string url)
+        {
+            string error = "";
+
+            try
+            {
+                RawServerData rawServerData = await httpClient.GetFromJsonAsync<RawServerData>(new Uri(url));
+                ServerConfig = new ServerConfig(rawServerData);
+
+                Dispatcher.Invoke(() =>
+                {
+                    LoadableControlsEnabled(true);
+                    Status.Text = $"Welcome! Remember, data is only{Environment.NewLine}as up - to - date as the server supplies";
+                    LoadingVisualEnabled(false);
+                });
+
+                return;
+            }
+            catch (HttpRequestException ex)
+            {
+                error = $"Error: {ex.StatusCode}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
+            }
+            catch (NotSupportedException ex)
+            {
+                error = $"Invalid content type: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
+            }
+            catch (JsonException ex)
+            {
+                error = $"Invalid JSON: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
+            }
+            catch (Exception ex)
+            {
+                error = $"Problem loading data: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
+            }
+
+            MessageBox.Show($"There was a problem during start up...{Environment.NewLine}{error}){Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
+            ExitApplication();
+        }
+
 
         private async Task<int> ProcessQueue<T>(List<QueueDataItem> queue)
         {
@@ -400,7 +456,6 @@ namespace Arksplorer
                 {
                     // ToDo: Put loading marker
                     this.Dispatcher.Invoke(() => Status.Text = $"Loading {++doneCount}/{totalCount}{Environment.NewLine}{mapName} {type} data...");
-                    //Debug.Print($"{doneCount}/{totalCount} Loading data for {type}.{mapName} [{rawServerTimestamp}]");
                     // We re-use the timestamp from earlier, if its available. Saves a server trip.
                     newRecords += await Task.Run(() => GetDataAsync<T>(item, rawServerTimestamp, serverTimestamp));
                 }
@@ -418,7 +473,7 @@ namespace Arksplorer
             {
                 Status.Text = $"Loaded {newRecords} {description}s!";
                 ShowData(type);
-                LoadableControlEnabled(true);
+                LoadableControlsEnabled(true);
                 LoadingVisualEnabled(false);
                 Mouse.OverrideCursor = PrevCursor;
             });
@@ -556,9 +611,9 @@ namespace Arksplorer
             {
                 name = (string)entity[columns["Name"].Ordinal];
                 if (string.IsNullOrWhiteSpace(name))
-                overviewMessage += $"Name not set{Environment.NewLine}";
+                    overviewMessage += $"Name not set{Environment.NewLine}";
                 else
-                overviewMessage += $"Name: {name}{Environment.NewLine}";
+                    overviewMessage += $"Name: {name}{Environment.NewLine}";
             }
 
             string sex;
@@ -596,6 +651,7 @@ namespace Arksplorer
                 if (Marker.Visibility != Visibility.Visible)
                     Marker.Visibility = Visibility.Visible;
 
+                // We move the OverviewMessage to a different point over the map if there is a chance it might cover up the Marker
                 if (xPos > 0)
                 {
                     OverviewMessage.HorizontalAlignment = HorizontalAlignment.Left;
@@ -619,7 +675,7 @@ namespace Arksplorer
                 SplashImage.Source = null;
             }
 
-            // Map is always in column 0
+            // Map name is always in column 0
             string mapName = (string)entity[0];
             if (mapName != CurrentMapImage)
             {
@@ -634,31 +690,6 @@ namespace Arksplorer
         {
             OverviewMessage.Text = message;
         }
-
-        // Really want to tag static variants of these into the class definitions for ArkEntities, but, no luck so far (without them becoming duplicating strings)
-        public static MetaData TameMetadata = new()
-        {
-            Type = "Tame",
-            Description = "Tamed Dino",
-            NormalSearch = "Map='#' OR Tribe='#' OR Tamer='#' OR Imprinter='#' OR Creature='#' OR Name='#'",
-            WildcardSearch = "Map LIKE '*#*' OR Tribe LIKE '*#*' OR Tamer LIKE '*#*' OR Imprinter LIKE '*#*' OR Creature LIKE '*#*' OR Name LIKE '*#*'"
-        };
-
-        public static MetaData WildMetadata = new()
-        {
-            Type = "Wild",
-            Description = "Wild Dino",
-            NormalSearch = "Map='#' OR Creature='#'",
-            WildcardSearch = "Map LIKE '*#*' AND Creature LIKE '*#*'"
-        };
-
-        public static MetaData SurvivorMetadata = new()
-        {
-            Type = "Survivor",
-            Description = "Survivor",
-            NormalSearch = "Map='#' OR Steam='#' OR Name='#' OR Tribe='#'",
-            WildcardSearch = "Map LIKE '*#*' Steam LIKE '*#*' OR Name LIKE '*#*' OR Tribe LIKE '*#*'",
-        };
 
         private void ExactFilter_Click(object sender, RoutedEventArgs e)
         {
@@ -719,12 +750,9 @@ namespace Arksplorer
             var percX = (pos.X / width);
             var percY = (pos.Y / height);
 
-            //Debug.Print($"{percX},{percY}");h
-            // X = R
-            // Y = G
+
             var brush = new SolidColorBrush(Colour.RGBFromHSL(percX, 1.0, 1.0 - percY));
             MapMessage.Foreground = brush;
-            //OverviewMessage.Foreground = brush;
         }
 
         private void HandleLinkClick(object sender, RequestNavigateEventArgs e)
