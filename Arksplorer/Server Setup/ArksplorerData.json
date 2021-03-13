@@ -3,6 +3,7 @@
     "Website": "http://wiredcat.hopto.org/",
     "Message": "Hello, from the WiredCat team!",
     "Status": "Enabled",
+    "RefreshRate": 50,
     "Types": [
         {
             "Name": "Timestamp",
@@ -37,6 +38,10 @@
         {
             "Name": "The Center",
             "BaseUrl": "http://wiredcat.hopto.org/WiredcatCenter/"
+        },
+        {
+            "Name": "Crystal Isles",
+            "BaseUrl": "http://wiredcat.hopto.org/WiredcatCrystal/"
         },
         {
             "Name": "Valguero",

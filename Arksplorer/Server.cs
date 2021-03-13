@@ -4,6 +4,16 @@ using System.IO;
 
 namespace Arksplorer
 {
+    /// <summary>
+    /// Server read in from local Servers.json
+    /// </summary>
+    public class Server
+    {
+        public string Name { get; set; }
+        public string Website { get; set; }
+        public string Url { get; set; }
+    }
+
     public class ServerConfig
     {
         public string Description { get; set; }
@@ -59,9 +69,7 @@ namespace Arksplorer
         /// <returns></returns>
         public Uri GetUri(string description)
         {
-            Uri result;
-
-            if (Uris.TryGetValue(description.ToLower(), out result))
+            if (Uris.TryGetValue(description.ToLower(), out Uri result))
                 return result;
 
             return null;

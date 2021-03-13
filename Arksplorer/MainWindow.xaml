@@ -4,9 +4,21 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Arksplorer"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1100" Width="800" MouseMove="Window_MouseMove">
+        Title="Arksplorer" Height="1100" Width="800" MouseMove="Window_MouseMove">
     <Window.Resources>
+        <Style TargetType="Button" x:Key="BrowserButton">
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="Width" Value="75" />
+            <!--<Setter Property="Background" Value="Transparent" />-->
+        </Style>
+        <Style TargetType="Button" x:Key="BrowserIconButton">
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="Width" Value="25" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+        </Style>
         <Storyboard x:Key="MarkerShrinker" RepeatBehavior="Forever">
             <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="1.0" To="0.0" Duration="0:0:0.75"/>
             <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="1.0" To="0.0" Duration="0:0:0.75"/>
@@ -30,22 +42,84 @@
                     <StackPanel DockPanel.Dock="Top">
                         <Image Source="/Images/ark.png" />
                         <TextBlock x:Name="Title" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>
-                        <TextBlock x:Name="Version" Text="v0.5 Preview" FontSize="10" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                        <TextBlock x:Name="Version" Text="v0.6 Preview" FontSize="10" HorizontalAlignment="Center" Margin="0,2,0,0"/>
                         <Separator Margin="0,8,0,8"/>
-                        <TextBlock Margin="0,0,0,8" FontWeight="Bold" Foreground="CornflowerBlue" HorizontalAlignment="Center">Maps to include...</TextBlock>
-                        <CheckBox x:Name="IncludeTheIsland" Content="The Island"/>
-                        <CheckBox x:Name="IncludeAberration" Content="Aberration"/>
-                        <CheckBox x:Name="IncludeRagnarok" Content="Ragnarok" IsChecked="True"/>
-                        <CheckBox x:Name="IncludeTheCenter" Content="The Center"/>
-                        <CheckBox x:Name="IncludeCrystalIsles" Content="Crystal Isles"/>
-                        <CheckBox x:Name="IncludeValguero" Content="Valguero"/>
-                        <CheckBox x:Name="IncludeScorchedEarth" Content="Scorched Earth"/>
-                        <CheckBox x:Name="IncludeExtinction" Content="Extinction"/>
-                        <CheckBox x:Name="IncludeGenesis" Content="Genesis"/>
+                        <ComboBox x:Name="ServerList" IsEditable="False" SelectedValuePath="Name" SelectionChanged="ServerList_SelectionChanged">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}" Width="{Binding ElementName=ServerList, Path=ActualWidth}"/>
+                                        <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" Foreground="DarkGoldenrod" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                        <TextBlock Text="{Binding Website}" Margin="4,0,0,0"/>
+                                        <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" Foreground="DarkOrange" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                        <TextBlock Text="{Binding Url}" Margin="4,0,0,0"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                            <!--<ComboBoxItem IsSelected="True">
+                                <local:Server Name="Test Name" Website="testname.website.com/subpage" Url="http://testname.website.com/ArksplorerData.json"/>
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <local:Server Name="Test Name" Website="testname.website.com/subpage" Url="http://testname.website.com/ArksplorerData.json"/>
+                            </ComboBoxItem>-->
+                        </ComboBox>
+                        <TextBlock Margin="0,8,0,8" FontWeight="Bold" Foreground="CornflowerBlue" HorizontalAlignment="Center">Maps to include...</TextBlock>
+                        <ListView ItemsSource="{Binding MapList}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid HorizontalAlignment="Stretch">
+                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding Load}"/>
+                                        <TextBlock Text="{Binding CacheState}" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                        <!--<Grid>
+                            <CheckBox x:Name="IncludeTheIsland" Content="The Island" Click="SaveMapPreference" />
+                            <TextBlock x:Name="CacheTheIsland" Text="Not loaded" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid>
+                            <CheckBox x:Name="IncludeAberration" Content="Aberration" Click="SaveMapPreference"/>
+                            <TextBlock x:Name="CacheAberration" Text="Not loaded" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid>
+                            <CheckBox x:Name="IncludeRagnarok" Content="Ragnarok" IsChecked="True" Click="SaveMapPreference" />
+                            <TextBlock x:Name="CacheRagnarok" Text="Not loaded" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid>
+                            <CheckBox x:Name="IncludeTheCenter" Content="The Center" Click="SaveMapPreference" />
+                            <TextBlock x:Name="CacheTheCenter" Text="Not loaded" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid>
+                            <CheckBox x:Name="IncludeCrystalIsles" Content="Crystal Isles" Click="SaveMapPreference" />
+                            <TextBlock x:Name="CacheCrystalIsles" Text="Not loaded" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid>
+                            <CheckBox x:Name="IncludeValguero" Content="Valguero" Click="SaveMapPreference" />
+                            <TextBlock x:Name="CacheValguero" Text="Not loaded" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid>
+                            <CheckBox x:Name="IncludeScorchedEarth" Content="Scorched Earth" Click="SaveMapPreference" />
+                            <TextBlock x:Name="CacheScorchedEarth" Text="Not loaded" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid>
+                            <CheckBox x:Name="IncludeExtinction" Content="Extinction" Click="SaveMapPreference" />
+                            <TextBlock x:Name="CacheExtinction" Text="Not loaded" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Grid>
+                            <CheckBox x:Name="IncludeGenesis" Content="Genesis" Click="SaveMapPreference" />
+                            <TextBlock x:Name="CacheGenesis" Text="Not loaded" HorizontalAlignment="Right"/>
+                        </Grid>-->
                         <Grid Margin="0,8,0,4">
                             <Button x:Name="IncludeAll" HorizontalAlignment="Left" Width="40" Click="IncludeAll_Click">All</Button>
                             <Button x:Name="IncludeNone" HorizontalAlignment="Left" Width="40" Margin="50,0,0,0" Click="IncludeNone_Click">None</Button>
                         </Grid>
+                        <CheckBox x:Name="AutoRefresh" Content="Auto Refresh when possible" IsChecked="True"/>
                         <Separator Margin="0,8"/>
                         <TextBlock Margin="0,0,0,4" FontWeight="Bold" Foreground="DarkSeaGreen" HorizontalAlignment="Center">Load data...</TextBlock>
                         <Button x:Name="TameDinos" Content="Tame Dinos" Margin="0,4,0,0" Click="TameDinos_Click" />
@@ -57,8 +131,8 @@
                                 <local:Spinner/>
                             </Viewbox>
                             <TextBlock x:Name="Status" FontWeight="Bold" Foreground="Red" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                Welcome! Remember, data is only<LineBreak/>
-                                as up-to-date as the server supplies</TextBlock>
+                                Status
+                            </TextBlock>
                         </DockPanel>
                         <Separator Margin="0,8"/>
                     </StackPanel>
@@ -137,32 +211,31 @@
                     </Grid>
                 </DockPanel>
             </Grid>
-            <Grid Margin="0,0,8,8">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0" DockPanel.Dock="Top">
-                    <Image x:Name="SplashImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
-                    <Viewbox Stretch="Uniform" Margin="0,0,0,8">
-                        <Grid x:Name="MapHolder" Width="100" Height="100">
-                            <Image x:Name="MapImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
-                            <TextBlock x:Name="MapMessage" FontSize="8" HorizontalAlignment="Center" Foreground="White" Margin="5" FontWeight="Black" VerticalAlignment="Center" TextAlignment="Center">
-                                wiredcat.hopto.org
-                            </TextBlock>
-                            <Ellipse x:Name="Marker" Width="5" Height="5" Fill="Red" RenderTransformOrigin="0.5,0.5">
-                                <Ellipse.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform x:Name="MarkerScale" ScaleX="1.0" ScaleY="1.0"/>
-                                        <SkewTransform/>
-                                        <RotateTransform/>
-                                        <TranslateTransform x:Name="MarkerOffset" X="25" Y="25"/>
-                                    </TransformGroup>
-                                </Ellipse.RenderTransform>
-                            </Ellipse>
-                        </Grid>
-                    </Viewbox>
-                    <TextBlock x:Name="OverviewMessage" Background="#9000" Foreground="#FF9" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Right" TextAlignment="Right" Margin="4" Padding="4">
+            <TabControl>
+                <TabItem Header="Main" IsSelected="True">
+                    <Grid Margin="0,0,8,8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" DockPanel.Dock="Top" Margin="0,0,0,8">
+                            <Image x:Name="SplashImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
+                            <Viewbox Stretch="Uniform" Margin="0,0,0,8">
+                                <Grid x:Name="MapHolder" Width="100" Height="100">
+                                    <Image x:Name="MapImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
+                                    <Ellipse x:Name="Marker" Width="5" Height="5" Fill="Red" RenderTransformOrigin="0.5,0.5">
+                                        <Ellipse.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform x:Name="MarkerScale" ScaleX="1.0" ScaleY="1.0"/>
+                                                <SkewTransform/>
+                                                <RotateTransform/>
+                                                <TranslateTransform x:Name="MarkerOffset" X="25" Y="25"/>
+                                            </TransformGroup>
+                                        </Ellipse.RenderTransform>
+                                    </Ellipse>
+                                </Grid>
+                            </Viewbox>
+                            <TextBlock x:Name="OverviewMessage" Background="#9000" Foreground="#FF9" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Right" TextAlignment="Right" Margin="4" Padding="4">
                         Shout outs to...
                         <LineBreak/>
                         Duno, Scully, Ward who first tried this
@@ -174,38 +247,67 @@
                         Kokow, Ray, ExStAsY,
                         <LineBreak/>
                         and the rest of you!
-                    </TextBlock>
-                </Grid>
-                <DataGrid x:Name="DataVisual" Grid.Row="1" Margin="0,36,0,0"
-                          AutoGenerateColumns="True"
-                          ItemsSource="{Binding}"
-                          IsReadOnly="True"
-                          AlternatingRowBackground="#FFF4F4F4"
-                          SelectionMode="Single"
-                          SelectionUnit="FullRow"
-                          SelectionChanged="DataVisual_SelectionChanged"
-                          />
-                <DockPanel Grid.Row="1" Margin="0,10,0,0" Height="20" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                    <!--<StackPanel Orientation="Horizontal" DockPanel.Dock="Left">-->
-                    <!--<TextBlock VerticalAlignment="Center">Filter column</TextBlock>-->
-                    <!--<TextBox x:Name="FilterColumn" Margin="8,0,0,0" Width="100" IsEnabled="False" TextChanged="FilterColumn_TextChanged"/>-->
-                    <TextBlock VerticalAlignment="Center">Filter</TextBlock>
-                    <!--</StackPanel>-->
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                        <Button x:Name="ApplyFilter" Margin="16,0,0,0" Width="75" VerticalAlignment="Center" Click="ApplyFilter_Click">Apply</Button>
-                        <Button x:Name="ExactFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="ExactFilter_Click">Exact</Button>
-                        <Button x:Name="RemoveFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="RemoveFilter_Click">Clear</Button>
-                    </StackPanel>
-                    <TextBox x:Name="FilterCriteria" Margin="8,0,0,0" HorizontalAlignment="Stretch"
+                            </TextBlock>
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <DataGrid x:Name="DataVisual"  Margin="0,38,0,0"
+                                AutoGenerateColumns="True"
+                                ItemsSource="{Binding}"
+                                IsReadOnly="True"
+                                AlternatingRowBackground="#FFF4F4F4"
+                                SelectionMode="Single"
+                                SelectionUnit="FullRow"
+                                SelectionChanged="DataVisual_SelectionChanged"
+                            />
+                            <Viewbox>
+                                <TextBlock x:Name="FlashMessage" FontSize="8" HorizontalAlignment="Center" Foreground="White" Margin="5" FontWeight="Black" VerticalAlignment="Center" TextAlignment="Center">
+                                wiredcat.hopto.org
+                                </TextBlock>
+                            </Viewbox>
+                        </Grid>
+                        <DockPanel Grid.Row="1" Margin="0,12,0,0" Height="20" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                            <TextBlock VerticalAlignment="Center">Filter</TextBlock>
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                <Button x:Name="ApplyFilter" Margin="16,0,0,0" Width="75" VerticalAlignment="Center" Click="ApplyFilter_Click">Apply</Button>
+                                <Button x:Name="ExactFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="ExactFilter_Click">Exact</Button>
+                                <Button x:Name="RemoveFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="RemoveFilter_Click">Clear</Button>
+                            </StackPanel>
+                            <TextBox x:Name="FilterCriteria" Margin="8,0,0,0" HorizontalAlignment="Stretch"
                              KeyDown="FilterCriteria_KeyDown">
-                        <!--<TextBox.InputBindings>
-                            <KeyBinding Command="{Binding Path=ApplyFilterCriteria}" CommandParameter="{Binding ElementName=FilterCriteria, Path=Text}" Key="Return"/>
-                            <KeyBinding Command="{Binding Path=ApplyFilterCriteria}" Key="Enter"/>
-                        </TextBox.InputBindings>-->
-                    </TextBox>
-                </DockPanel>
-                <GridSplitter Grid.Row="1" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" ShowsPreview="False" Background="Gray"/>
-            </Grid>
+                            </TextBox>
+                        </DockPanel>
+                        <GridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Top" ShowsPreview="False" Background="Black"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Ark-pedia">
+                    <DockPanel>
+                        <Grid DockPanel.Dock="Top">
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="ArkpediaBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Click="ArkpediaBack_Click"/>
+                                <Button x:Name="ArkpediaHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki" Click="ArkpediaNavigate_Click"/>
+                                <Button x:Name="ArkpediaResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/Data_Maps" Click="ArkpediaNavigate_Click"/>
+                                <Button x:Name="ArkpediaMaps" Content="Maps" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/ARKs" Click="ArkpediaNavigate_Click"/>
+                                <Button x:Name="ArkpediaLoot" Content="Loot" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/Loot_Tables" Click="ArkpediaNavigate_Click"/>
+                            </StackPanel>
+                        </Grid>
+                        <wv2:WebView2 x:Name="ArkpediaWeb" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki" />
+                    </DockPanel>
+                </TabItem>
+                <TabItem Header="Dodex">
+                    <DockPanel>
+                        <Grid DockPanel.Dock="Top">
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="DodexBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Click="DodexBack_Click"/>
+                                <Button x:Name="DodexHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="https://www.dododex.com/" Click="DodexNavigate_Click"/>
+                                <Button x:Name="DodexCreatures" Content="Creatures" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/dinosaurs" Click="DodexNavigate_Click"/>
+                                <Button x:Name="DodexResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/resources" Click="DodexNavigate_Click"/>
+                                <Button x:Name="DodexKibble" Content="Kibble" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/kibble" Click="DodexNavigate_Click"/>
+                            </StackPanel>
+                        </Grid>
+                        <wv2:WebView2 x:Name="DodexWeb" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="https://www.dododex.com/" />
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
         </DockPanel>
     </Grid>
 </Window>

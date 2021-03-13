@@ -1,6 +1,9 @@
 ﻿using Arksplorer;
+using Arksplorer.Properties;
+using Microsoft.Web.WebView2.WinForms;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
@@ -12,9 +15,11 @@ using System.Net.Http.Json;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Resources;
+using System.Runtime.InteropServices.ComTypes;
 using System.Security.Policy;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation.Peers;
@@ -25,6 +30,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Threading;
 //using System.Windows.Shapes;
 using System.Xaml;
 
@@ -35,22 +41,111 @@ namespace Arksplorer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static Dictionary<string, BitmapImage> MapImages { get; } = new Dictionary<string, BitmapImage>();
+        private static Dictionary<string, BitmapImage> MapImages { get; } = new();
         private static string CurrentMapImage { get; set; } = "";
         private static UIElement LoadingSpinnerStore { get; set; }
         private static ServerConfig ServerConfig { get; set; }
 
+        private static List<Server> KnownServers { get; set; }
+
+        private static DispatcherTimer RefreshTimer { get; set; }
+
+        public static ObservableCollection<MapSelection> MapList { get; set; } = new();
+
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
+            //Lookup.CodeGenerator();
+
             // These are visible at design time to aid design, but want to hide them when window first opens
             MapImage.Visibility = Visibility.Collapsed;
             Marker.Visibility = Visibility.Collapsed;
 
+            // Disable all controls that are reliant on working server connection...
+            LoadableControlsEnabled(false);
+            // ...except we re-enable the one control that will let us specify a server location :)
+            ServerList.IsEnabled = true;
+
             // We drag the loading effect out the page when not visible,
-            // so it's not being calculated while hidden/collapsed (have seen that happen before with a bit of needless background ongoing overhead)
+            // so it's not being calculated while hidden/collapsed (have seen overhead happen even when not visible if its linked into the page)
             LoadingSpinnerStore = LoadingSpinner.Child;
             LoadingSpinner.Child = null;
+
+            // Grab config from server that feeds into all this
+            // ToDo: Config required for where this comes from!
+            try
+            {
+                //LoadingVisualEnabled(true);
+                //Status.Text = "Contacting server...";
+                //// Initial set up can happen in the background - it will enable relevant bits of interface when it completes
+                //Task.Run(() => LoadServerConfig("http://wiredcat.hopto.org/ArksplorerData.json"));
+
+                // Load local server details
+
+                // Toggle the maps to the last required ones
+                string lastMaps = Properties.Settings.Default.LastMaps;
+
+                string lastServer = Properties.Settings.Default.LastServer;
+
+                KnownServers = JsonSerializer.Deserialize<List<Server>>(File.ReadAllText("./Servers.json"));
+                ServerList.ItemsSource = KnownServers;
+
+                // If we have a previous server, then setting the ServerList will trigger loading of the server on its SelectionChanged event
+                ServerList.SelectedValue = lastServer;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"There was a problem during start up...{Environment.NewLine}{ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}{Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ExitApplication();
+            }
+
+            RefreshTimer = new();
+            RefreshTimer.Interval = new TimeSpan(0, 0, 2); // Recheck if the cache can be refreshed every 10 seconds
+            RefreshTimer.Tick += CacheRefresh;
+            RefreshTimer.Start();
+        }
+
+        public void SaveMapPreference(object sender, RoutedEventArgs e)
+        {
+            // Save currently flagged maps to settings
+            string flaggedMaps = "";
+
+            foreach (var selection in MapList)
+            {
+                if (selection.Load)
+                    flaggedMaps += selection.Name;
+            }
+
+            if (Settings.Default.LastMaps != flaggedMaps)
+                Settings.Default.LastMaps = flaggedMaps;
+        }
+
+        private void CacheRefresh(object sender, EventArgs e)
+        {
+            SetFlashMessage($"Timer {DateTime.Now:mm:ss}");
+            //    RefreshTimer.Start();
+            DateTime now = DateTime.Now;
+
+            foreach (KeyValuePair<string, DataPackage> package in DataPackages)
+            {
+                foreach (KeyValuePair<string, MapPackage> map in package.Value.IndividualMaps)
+                {
+                    if (map.Value.Timestamp < now)
+                        Debug.Print($"{package.Value.Metadata.Description}.{map.Key}.{map.Value.Timestamp}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Highest level contact of a server - kick off attempting to get ArksplorerData.json data file we use to configure all our data fetching
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        private bool LoadServer(Server server)
+        {
+            if (string.IsNullOrWhiteSpace(server.Url))
+                return false;
 
             // Grab config from server that feeds into all this
             // ToDo: Config required for where this comes from!
@@ -59,16 +154,23 @@ namespace Arksplorer
                 LoadingVisualEnabled(true);
                 Status.Text = "Contacting server...";
                 // Initial set up can happen in the background - it will enable relevant bits of interface when it completes
-                Task.Run(() => LoadServerConfig("http://wiredcat.hopto.org/ArksplorerData.json"));
+                Task.Run(() => LoadServerConfig(server));
+                return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"There was a problem during start up...{Environment.NewLine}{ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}{Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
-                ExitApplication();
+                MessageBox.Show($"There was a problem loading server information from {server.Url}{Environment.NewLine}{ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}{Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
+                LoadableControlsEnabled(false);
+                return false;
             }
         }
 
-        private void ExitApplication()
+        private static bool IsServerConfigLoaded()
+        {
+            return (ServerConfig != null);
+        }
+
+        private static void ExitApplication()
         {
             Application.Current.Shutdown();
         }
@@ -95,35 +197,22 @@ namespace Arksplorer
 
         private async void TameDinos_Click(object sender, RoutedEventArgs e)
         {
+            SetUpQue(Types.TameMetadata);
+        }
+
+        private async void SetUpQue(MetaData type)
+        {
+            if (!IsServerConfigLoaded())
+                return;
+
             LoadableControlsEnabled(false);
             LoadingVisualEnabled(true);
 
-            if (IncludeTheIsland.IsChecked ?? false)
-                QueUpData("The Island", Types.TameMetadata, false);
-
-            if (IncludeAberration.IsChecked ?? false)
-                QueUpData("Aberration", Types.TameMetadata, false);
-
-            if (IncludeRagnarok.IsChecked ?? false)
-                QueUpData("Ragnarok", Types.TameMetadata, false);
-
-            if (IncludeTheCenter.IsChecked ?? false)
-                QueUpData("The Center", Types.TameMetadata, false);
-
-            if (IncludeCrystalIsles.IsChecked ?? false)
-                QueUpData("Crystal Isles", Types.TameMetadata, false);
-
-            if (IncludeValguero.IsChecked ?? false)
-                QueUpData("Valguero", Types.TameMetadata, false);
-
-            if (IncludeScorchedEarth.IsChecked ?? false)
-                QueUpData("Scorched Earth", Types.TameMetadata, false);
-
-            if (IncludeExtinction.IsChecked ?? false)
-                QueUpData("Extinction", Types.TameMetadata, false);
-
-            if (IncludeGenesis.IsChecked ?? false)
-                QueUpData("Genesis", Types.TameMetadata, false);
+            foreach (var selection in MapList)
+            {
+                if (selection.Load)
+                    QueUpData(selection.Name, type, false);
+            }
 
             LoadQueue<TameDino>();
         }
@@ -131,75 +220,15 @@ namespace Arksplorer
 
         private async void WildDinos_Click(object sender, RoutedEventArgs e)
         {
-            LoadableControlsEnabled(false);
-            LoadingVisualEnabled(true);
-
-            if (IncludeTheIsland.IsChecked ?? false)
-                QueUpData("The Island", Types.WildMetadata, false);
-
-            if (IncludeAberration.IsChecked ?? false)
-                QueUpData("Aberration", Types.WildMetadata, false);
-
-            if (IncludeRagnarok.IsChecked ?? false)
-                QueUpData("Ragnarok", Types.WildMetadata, false);
-
-            if (IncludeTheCenter.IsChecked ?? false)
-                QueUpData("The Center", Types.WildMetadata, false);
-
-            if (IncludeCrystalIsles.IsChecked ?? false)
-                QueUpData("Crystal Isles", Types.WildMetadata, false);
-
-            if (IncludeValguero.IsChecked ?? false)
-                QueUpData("Valguero", Types.WildMetadata, false);
-
-            if (IncludeScorchedEarth.IsChecked ?? false)
-                QueUpData("Scorched Earth", Types.WildMetadata, false);
-
-            if (IncludeExtinction.IsChecked ?? false)
-                QueUpData("Extinction", Types.WildMetadata, false);
-
-            if (IncludeGenesis.IsChecked ?? false)
-                QueUpData("Genesis", Types.WildMetadata, false);
-
-            LoadQueue<WildDino>();
+            SetUpQue(Types.WildMetadata);
         }
 
         private void Survivors_Click(object sender, RoutedEventArgs e)
         {
-            LoadableControlsEnabled(false);
-            LoadingVisualEnabled(true);
-
-            if (IncludeTheIsland.IsChecked ?? false)
-                QueUpData("The Island", Types.SurvivorMetadata, false);
-
-            if (IncludeAberration.IsChecked ?? false)
-                QueUpData("Aberration", Types.SurvivorMetadata, false);
-
-            if (IncludeRagnarok.IsChecked ?? false)
-                QueUpData("Ragnarok", Types.SurvivorMetadata, false);
-
-            if (IncludeTheCenter.IsChecked ?? false)
-                QueUpData("The Center", Types.SurvivorMetadata, false);
-
-            if (IncludeCrystalIsles.IsChecked ?? false)
-                QueUpData("Crystal Isles", Types.SurvivorMetadata, false);
-
-            if (IncludeValguero.IsChecked ?? false)
-                QueUpData("Valguero", Types.SurvivorMetadata, false);
-
-            if (IncludeScorchedEarth.IsChecked ?? false)
-                QueUpData("Scorched Earth", Types.SurvivorMetadata, false);
-
-            if (IncludeExtinction.IsChecked ?? false)
-                QueUpData("Extinction", Types.SurvivorMetadata, false);
-
-            if (IncludeGenesis.IsChecked ?? false)
-                QueUpData("Genesis", Types.SurvivorMetadata, false);
-
-            LoadQueue<Survivor>();
+            SetUpQue(Types.SurvivorMetadata);
         }
 
-        public BitmapImage LoadImage(string mapName, string message = "")
+        public static BitmapImage LoadImage(string mapName)
         {
             if (MapImages.ContainsKey(mapName))
                 return MapImages[mapName];
@@ -217,35 +246,34 @@ namespace Arksplorer
 
             MapImages.Add(mapName, bitmap);
 
-            if (string.IsNullOrWhiteSpace(message))
-            {
-                MapMessage.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                MapMessage.Text = message;
-                MapMessage.Visibility = Visibility.Visible;
-            }
-
             return bitmap;
+        }
+
+        private void SetFlashMessage(string message)
+        {
+            FlashMessage.Text = message;
+            FlashMessage.Visibility = Visibility.Visible;
+        }
+
+        private void HideFlashMessage()
+        {
+            FlashMessage.Visibility = Visibility.Collapsed;
         }
 
         private void ApplyFilterCriteria(bool exactOnly = false)
         {
-            PrevCursor = Mouse.OverrideCursor;
-            Mouse.OverrideCursor = Cursors.Wait;
-
             string criteria = FilterCriteria.Text;
 
             FilterDataTable(CurrentDataPackage, criteria, exactOnly);
-
-            Mouse.OverrideCursor = PrevCursor;
         }
 
         private void FilterDataTable(DataPackage dataPackage, string criteria, bool exactOnly)
         {
             if (dataPackage == null || string.IsNullOrWhiteSpace(criteria))
                 return;
+
+            PrevCursor = Mouse.OverrideCursor;
+            Mouse.OverrideCursor = Cursors.Wait;
 
             string filter = exactOnly ? dataPackage.Metadata.NormalSearch : dataPackage.Metadata.WildcardSearch;
 
@@ -256,6 +284,8 @@ namespace Arksplorer
             // If we have multiple components e.g. `rag, twog" then we do 2 searches!"
             string[] parts = criteria.Split(",");
             string finalFilter;
+
+            SetFlashMessage("Searching...");
 
             if (parts.Length == 1)
             {
@@ -284,14 +314,22 @@ namespace Arksplorer
                 DataRow[] filteredRows = CurrentDataPackage.Data.Select(finalFilter);
 
                 if (filteredRows.Length == 0)
+                {
                     DataVisual.DataContext = null;
+                    SetFlashMessage("No rows found");
+                }
                 else
+                {
                     DataVisual.DataContext = filteredRows.CopyToDataTable();
+                    HideFlashMessage();
+                }
             }
             catch (Exception ex)
             {
                 Debug.Print($"Error: {ex.Message}");
             }
+
+            Mouse.OverrideCursor = PrevCursor;
         }
 
         private void ClearFilter()
@@ -331,6 +369,7 @@ namespace Arksplorer
 
         public void LoadableControlsEnabled(bool isEnabled)
         {
+            ServerList.IsEnabled = isEnabled;
             TameDinos.IsEnabled = isEnabled;
             WildDinos.IsEnabled = isEnabled;
             Survivors.IsEnabled = isEnabled;
@@ -360,8 +399,13 @@ namespace Arksplorer
                 CurrentDataPackage.MakeSureDataIsUpToDate();
                 DataVisual.DataContext = CurrentDataPackage.Data;
 
-                Status.Text = $"Loaded {CurrentDataPackage.Data.Rows.Count} {CurrentDataPackage.Metadata.Description}s!";
+                Status.Text = $"Loaded {CurrentDataPackage.Data.Rows.Count}{CurrentDataPackage.Metadata.Description}s!";
                 ExtraInfo.Text = CurrentDataPackage.MapsDescription;
+
+                if (CurrentDataPackage.Data.Rows.Count == 0)
+                    SetFlashMessage("No data found!");
+                else
+                    HideFlashMessage();
             }
             else
             {
@@ -371,19 +415,32 @@ namespace Arksplorer
 
         static readonly HttpClient httpClient = new();
 
-        private async void LoadServerConfig(string url)
+        private async void LoadServerConfig(Server server)
         {
             string error = "";
 
             try
             {
-                RawServerData rawServerData = await httpClient.GetFromJsonAsync<RawServerData>(new Uri(url));
+                RawServerData rawServerData = await httpClient.GetFromJsonAsync<RawServerData>(new Uri(server.Url));
                 ServerConfig = new ServerConfig(rawServerData);
+
+                // Save this as the last selected server - that we know has worked!
+                Properties.Settings.Default.LastServer = server.Name;
+
+                // If we were successfull, we also want to clear down any displayed data, caches, etc. which could be from an older server
+                CurrentDataPackage = null;
+                DataPackages.Clear();
 
                 Dispatcher.Invoke(() =>
                 {
-                    LoadableControlsEnabled(true);
+                    MapList.Clear();
+                    string lastMaps = Properties.Settings.Default.LastMaps;
+                    foreach (var mapName in ServerConfig.Maps)
+                        MapList.Add(new() { Name = mapName, CacheState = "Not loaded", Load = lastMaps.Contains(mapName) });
+
+                    DataVisual.DataContext = null; // Clear any current results list
                     Status.Text = $"Welcome! Remember, data is only{Environment.NewLine}as up - to - date as the server supplies";
+                    LoadableControlsEnabled(true);
                     LoadingVisualEnabled(false);
                 });
 
@@ -609,7 +666,7 @@ namespace Arksplorer
             string name;
             if (columns["Name"] != null)
             {
-                name = (string)entity[columns["Name"].Ordinal];
+                name = entity[columns["Name"].Ordinal].ToString();      // Can be DBNull
                 if (string.IsNullOrWhiteSpace(name))
                     overviewMessage += $"Name not set{Environment.NewLine}";
                 else
@@ -706,18 +763,12 @@ namespace Arksplorer
             SetIncludeList(false);
         }
 
-        private void SetIncludeList(bool isChecked)
+        private static void SetIncludeList(bool isChecked)
         {
-            IncludeTheIsland.IsChecked = isChecked;
-            IncludeAberration.IsChecked = isChecked;
-            IncludeRagnarok.IsChecked = isChecked;
-            IncludeTheCenter.IsChecked = isChecked;
-            IncludeCrystalIsles.IsChecked = isChecked;
-            IncludeValguero.IsChecked = isChecked;
-            IncludeScorchedEarth.IsChecked = isChecked;
-            IncludeExtinction.IsChecked = isChecked;
-            IncludeGenesis.IsChecked = isChecked;
+            foreach (var selected in MapList)
+                selected.Load = isChecked;
         }
+
         private void FilterCriteria_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return || e.Key == Key.Enter || e.Key == Key.Tab)
@@ -740,7 +791,7 @@ namespace Arksplorer
 
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
-            if (MapMessage.Visibility != Visibility.Visible)
+            if (FlashMessage.Visibility != Visibility.Visible)
                 return;
 
             var pos = e.GetPosition(this);
@@ -752,13 +803,57 @@ namespace Arksplorer
 
 
             var brush = new SolidColorBrush(Colour.RGBFromHSL(percX, 1.0, 1.0 - percY));
-            MapMessage.Foreground = brush;
+            FlashMessage.Foreground = brush;
         }
 
         private void HandleLinkClick(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
+        }
+
+        private void ServerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Server server = (Server)(ServerList.SelectedItem);
+            LoadServer(server);
+        }
+
+        private static void  GoBack(Microsoft.Web.WebView2.Wpf.WebView2 browser)
+        {
+            if (browser.CanGoBack)
+                browser.GoBack();
+        }
+
+        private static void Navigate(Microsoft.Web.WebView2.Wpf.WebView2 browser, string url)
+        {
+            try
+            {
+                browser.CoreWebView2.Navigate(url);
+            }
+            catch (Exception ex)
+            {
+                Debug.Print($"Error navigating to '{url}': {ex.Message}");
+            }
+        }
+
+        private void DodexNavigate_Click(object sender, RoutedEventArgs e)
+        {
+            Navigate(DodexWeb, (string)(((Button)sender).Tag));
+        }
+
+        private void DodexBack_Click(object sender, RoutedEventArgs e)
+        {
+            GoBack(DodexWeb);
+        }
+
+        private void ArkpediaNavigate_Click(object sender, RoutedEventArgs e)
+        {
+            Navigate(ArkpediaWeb, (string)(((Button)sender).Tag));
+        }
+
+        private void ArkpediaBack_Click(object sender, RoutedEventArgs e)
+        {
+            GoBack(ArkpediaWeb);
         }
     }
 }

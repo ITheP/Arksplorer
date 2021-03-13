@@ -13,7 +13,13 @@ If you believe any content infringes on anything, or would like a credit adding,
 
 This version is considered a preview version. Information, supporting files, etc. may currently be incomplete.
 
+The `ServerSetup` folder contains details on what needs to be set up on an Ark server for it to work with Arksplorer.
+
 Change History...
 
-v0.3 Preview
+v0.5 Preview - 02/03/2021
 - First public version
+
+v0.6 Preview - 04/03/2021
+- Config now read from Ark server rather than local hardcoded
+- Other UI changes
