@@ -38,11 +38,11 @@ namespace Arksplorer
             {
                 MapPackage mapPackage = map.Value;
                 MapsDescription += $"{map.Key} ({mapPackage.Data.Rows.Count}) [{mapPackage.Timestamp:HH:mm}]{Environment.NewLine}";
-                Debug.Print($"   {Metadata.Type}.{map.Key} - {mapPackage.Data.Rows.Count}");
+                Debug.Print($"   {Metadata.ArkEntityType}.{map.Key} - {mapPackage.Data.Rows.Count}");
                 Data.Merge(mapPackage.Data);
             }
 
-            MapsDescription = $"{Metadata.Description}s ({Data.Rows.Count} total){Environment.NewLine}{MapsDescription}";
+            MapsDescription = $"Showing {Metadata.Description}s ({Data.Rows.Count} total){Environment.NewLine}{MapsDescription}";
             Debug.Print($"...{Data.Rows.Count} total");
             DataIsStale = false;
         }

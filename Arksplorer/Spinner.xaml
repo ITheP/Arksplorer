@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="500">
     <Grid>
-        <Ellipse x:Name="E1" Width="500" Height="500" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="50" Stroke="#FFFFFFFF" Visibility="Hidden">
+        <Ellipse x:Name="E1" Width="500" Height="500" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="50" Stroke="#FFEEEEEE">
             <Ellipse.RenderTransform>
                 <TransformGroup>
                     <TranslateTransform X="0" Y="0" />

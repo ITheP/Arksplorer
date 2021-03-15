@@ -21,6 +21,11 @@ namespace Arksplorer
         public string Message { get; set; }
         public string Status { get; set; }
         /// <summary>
+        /// How often the server refreshes data, in minutes. Used to help e.g. not try and refresh data during periods we know it won't have changed.
+        /// </summary>
+        public int RefreshRate { get; set; } = 50;
+
+        /// <summary>
         /// Basically we want a dumping ground for URL's to web site data sources. These may differ per server etc.
         /// Also include URL's to timestamp information.
         /// </summary>

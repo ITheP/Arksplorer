@@ -1,7 +1,10 @@
 ﻿using Arksplorer;
 using Arksplorer.Properties;
+using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
+using Microsoft.Web.WebView2.Wpf;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -9,9 +12,11 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Net.Cache;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Numerics;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Resources;
@@ -27,8 +32,10 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 //using System.Windows.Shapes;
@@ -43,12 +50,12 @@ namespace Arksplorer
     {
         private static Dictionary<string, BitmapImage> MapImages { get; } = new();
         private static string CurrentMapImage { get; set; } = "";
-        private static UIElement LoadingSpinnerStore { get; set; }
+        private static UIElement LoadingSpinner { get; set; }
         private static ServerConfig ServerConfig { get; set; }
 
         private static List<Server> KnownServers { get; set; }
 
-        private static DispatcherTimer RefreshTimer { get; set; }
+        private static DispatcherTimer Timer { get; set; }
 
         public static ObservableCollection<MapSelection> MapList { get; set; } = new();
 
@@ -56,11 +63,11 @@ namespace Arksplorer
         {
             InitializeComponent();
             DataContext = this;
-            //Lookup.CodeGenerator();
-
             // These are visible at design time to aid design, but want to hide them when window first opens
             MapImage.Visibility = Visibility.Collapsed;
             Marker.Visibility = Visibility.Collapsed;
+            ServerLoadedControls.Visibility = Visibility.Collapsed;
+            ShowExtraInfo(null);
 
             // Disable all controls that are reliant on working server connection...
             LoadableControlsEnabled(false);
@@ -69,24 +76,19 @@ namespace Arksplorer
 
             // We drag the loading effect out the page when not visible,
             // so it's not being calculated while hidden/collapsed (have seen overhead happen even when not visible if its linked into the page)
-            LoadingSpinnerStore = LoadingSpinner.Child;
-            LoadingSpinner.Child = null;
+            LoadingSpinner = GeneralLoadingSpinner.Child;
+            //GeneralLoadingSpinner.Child = null;
+
+            InitWebTabs();
 
             // Grab config from server that feeds into all this
             // ToDo: Config required for where this comes from!
             try
             {
-                //LoadingVisualEnabled(true);
-                //Status.Text = "Contacting server...";
-                //// Initial set up can happen in the background - it will enable relevant bits of interface when it completes
-                //Task.Run(() => LoadServerConfig("http://wiredcat.hopto.org/ArksplorerData.json"));
-
-                // Load local server details
-
                 // Toggle the maps to the last required ones
-                string lastMaps = Properties.Settings.Default.LastMaps;
+                string lastMaps = Settings.Default.LastMaps;
 
-                string lastServer = Properties.Settings.Default.LastServer;
+                string lastServer = Settings.Default.LastServer;
 
                 KnownServers = JsonSerializer.Deserialize<List<Server>>(File.ReadAllText("./Servers.json"));
                 ServerList.ItemsSource = KnownServers;
@@ -100,10 +102,20 @@ namespace Arksplorer
                 ExitApplication();
             }
 
-            RefreshTimer = new();
-            RefreshTimer.Interval = new TimeSpan(0, 0, 2); // Recheck if the cache can be refreshed every 10 seconds
-            RefreshTimer.Tick += CacheRefresh;
-            RefreshTimer.Start();
+            Timer = new();
+            Timer.Interval = new TimeSpan(0, 0, 1); // Recheck if the cache can be refreshed every 10 seconds
+            Timer.Tick += TimerTrigger;
+            Timer.Start();
+        }
+
+        //private List<WebTab> WebTabs { get; set; }
+        private WebTab ArkpediaWebTab { get; set; }
+        private WebTab DodexWebTab { get; set; }
+
+        private void InitWebTabs()
+        {
+            ArkpediaWebTab = new(ArkpediaBrowser) { LoadingControl = ArkpediaLoadingSpinner };
+            DodexWebTab = new(DodexBrowser) { LoadingControl = DodexLoadingSpinner };
         }
 
         public void SaveMapPreference(object sender, RoutedEventArgs e)
@@ -121,20 +133,97 @@ namespace Arksplorer
                 Settings.Default.LastMaps = flaggedMaps;
         }
 
-        private void CacheRefresh(object sender, EventArgs e)
+        private bool AlarmEnabled { get; set; }
+        private DateTime AlarmTimestamp { get; set; }
+        private bool AlarmTriggered { get; set; }
+
+        private void TimerTrigger(object sender, EventArgs e)
         {
-            SetFlashMessage($"Timer {DateTime.Now:mm:ss}");
-            //    RefreshTimer.Start();
             DateTime now = DateTime.Now;
+            int seconds = now.Second;
+
+            if (AlarmEnabled)
+            {
+                TimeSpan timeLeft = AlarmTimestamp - now;
+                AlarmTimeLeft.Text = $"{(timeLeft.Ticks < 0 ? "-" : "")}{Math.Abs(timeLeft.Minutes):00}:{Math.Abs(timeLeft.Seconds):00}";
+
+                SolidColorBrush brush;
+                FontWeight weight;
+
+                int secondsLeft = timeLeft.Seconds;
+                if (secondsLeft > 30)
+                    brush = Brushes.ForestGreen;
+                else if (secondsLeft > 5)
+                    brush = Brushes.MediumVioletRed;
+                else
+                    brush = Brushes.Red;
+
+                if (secondsLeft > 0)
+                    weight = FontWeights.Normal;
+                else
+                {
+                    weight = FontWeights.Bold;
+                    if (!AlarmTriggered)
+                        TriggerAlarm();
+                }
+
+                if (AlarmTimeLeft.Foreground != brush)
+                    AlarmTimeLeft.Foreground = brush;
+
+                if (AlarmTimeLeft.FontWeight != weight)
+                    AlarmTimeLeft.FontWeight = weight;
+            }
+
+            // Auto check for a cache refresh every 20 - too often and its a waste of time, too little and will annoy the user. This seems like a reasonable balance.
+            if (seconds%20 == 0)
+                CheckAndRefreshCache("CacheRefresh");
+        }
+
+        // Different types of dino may be loaded with different maps. There may be no consistence across packages of data!
+
+        private bool CheckingQueue { get; set; }
+
+        private void CheckAndRefreshCache(string from)
+        {
+            // Not propper locking, but a basic check to make sure we arent re-triggering the setting up of a queue while its mid-process
+            if (CheckingQueue)
+                return;
+
+            DateTime now = DateTime.Now;
+            StringBuilder details = new();
+
+            details.AppendLine($"{now:hh:mm:ss} {from}");
+
+            List<QueueDataItem> queue = new();
 
             foreach (KeyValuePair<string, DataPackage> package in DataPackages)
             {
                 foreach (KeyValuePair<string, MapPackage> map in package.Value.IndividualMaps)
                 {
-                    if (map.Value.Timestamp < now)
-                        Debug.Print($"{package.Value.Metadata.Description}.{map.Key}.{map.Value.Timestamp}");
+                    var mapPackage = map.Value;
+                    bool expired = now > mapPackage.CacheExpires;
+
+                    if (expired)
+                    {
+                        // We are reloading what we already have
+                        // Load process will flush old data if it exists first
+                        AddToQueue(queue, map.Key, package.Value.Metadata, false);
+                    }
+
+                    string difference = $"{(mapPackage.CacheExpires - now):mm\\:ss}";
+                    details.AppendLine($"{package.Value.Metadata.Description}.{map.Key}.{mapPackage.Timestamp} {difference} {(expired ? "Expired" : "")}");
                 }
             }
+
+            if (queue.Count > 0)
+            {
+                details.AppendLine($"Refreshing cache...");
+                LoadQueue(queue);
+            }
+
+            DebugInfo.Text = details.ToString();
+
+            CheckingQueue = false;
         }
 
         /// <summary>
@@ -175,6 +264,47 @@ namespace Arksplorer
             Application.Current.Shutdown();
         }
 
+        private void SetAlarm(object sender, RoutedEventArgs e)
+        {
+            string duration = (string)((Button)sender).Tag;
+            AlarmTimestamp = DateTime.Now.AddMinutes(double.Parse(duration));
+            AlarmTriggered = false;
+            AlarmEnabled = true;
+        }
+
+        private void TriggerAlarm()
+        {
+            AlarmTriggered = true;
+            PlaySample("FeedMe");
+        }
+
+        private void RemoveAlarm()
+        {
+            AlarmEnabled = false;
+            Player.Stop();
+            AlarmTimeLeft.Foreground = Brushes.Black;
+            AlarmTimeLeft.FontWeight = FontWeights.Normal;
+            AlarmTimeLeft.Text = "Off";
+        }
+
+        // Problems with MediaPlayer not playing. Not sure why! To retry with a different mp3?
+        //private MediaPlayer Player { get; set; } = new();
+        SoundPlayer Player { get; set; } = new();
+
+        private void PlaySample(string type)
+        {            
+            try
+            {
+                Player.SoundLocation = $"Audio/{type}.wav";
+                Player.Play();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.Print($"Something went wrong playing sample {type}.mp3: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}");
+            }
+        }
+
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             ExitApplication();
@@ -205,16 +335,20 @@ namespace Arksplorer
             if (!IsServerConfigLoaded())
                 return;
 
+            ProcessingQueue = true;
+
             LoadableControlsEnabled(false);
             LoadingVisualEnabled(true);
+
+            List<QueueDataItem> queue = new();
 
             foreach (var selection in MapList)
             {
                 if (selection.Load)
-                    QueUpData(selection.Name, type, false);
+                    AddToQueue(queue, selection.Name, type, false);
             }
 
-            LoadQueue<TameDino>();
+            LoadQueue(queue);
         }
 
 
@@ -337,34 +471,31 @@ namespace Arksplorer
             if (CurrentDataPackage.Data != null)
                 DataVisual.DataContext = CurrentDataPackage.Data;
         }
-
         private static Dictionary<string, DataPackage> DataPackages { get; set; } = new Dictionary<string, DataPackage>();
 
         private static DataPackage CurrentDataPackage { get; set; }
-
-        private static List<QueueDataItem> QueuedItems { get; set; } = new List<QueueDataItem>();
-
-        private static async void QueUpData(string map, MetaData metaData, bool forceRefresh)
+        private static async void AddToQueue(List<QueueDataItem> queue, string map, MetaData metaData, bool forceRefresh)
         {
-            QueuedItems.Add(new QueueDataItem()
+            queue.Add(new QueueDataItem()
             {
                 MapName = map,
                 MetaData = metaData,
-                DataUri = ServerConfig.GetUri($"{map}.{metaData.Type}"),
+                DataUri = ServerConfig.GetUri($"{map}.{metaData.ArkEntityType}"),
                 TimestampUri = ServerConfig.GetUri($"{map}.timestamp"),
                 ForceRefresh = forceRefresh
             });
         }
 
-        Cursor PrevCursor { get; set; }
+        private Cursor PrevCursor { get; set; }
+        private bool ProcessingQueue { get; set; }
 
         // When a queue is loading, no others should load as controls that could trigger another load are disabled.
-        private async void LoadQueue<T>()
+        private async void LoadQueue(List<QueueDataItem> queue)
         {
             PrevCursor = Mouse.OverrideCursor;
             Mouse.OverrideCursor = Cursors.Wait;
 
-            int mapsLoaded = await Task.Run(() => ProcessQueue<T>(QueuedItems));
+            int mapsLoaded = await Task.Run(() => ProcessQueue(queue));
         }
 
         public void LoadableControlsEnabled(bool isEnabled)
@@ -379,14 +510,14 @@ namespace Arksplorer
         {
             if (isEnabled)
             {
-                LoadingSpinner.Child = LoadingSpinnerStore;
-                LoadingSpinner.Visibility = Visibility.Visible;
+                GeneralLoadingSpinner.Child = LoadingSpinner;
+                GeneralLoadingSpinner.Visibility = Visibility.Visible;
                 ExtraInfoHolder.Visibility = Visibility.Hidden;
             }
             else
             {
-                LoadingSpinner.Child = null;
-                LoadingSpinner.Visibility = Visibility.Hidden;
+                GeneralLoadingSpinner.Child = null;
+                GeneralLoadingSpinner.Visibility = Visibility.Hidden;
                 ExtraInfoHolder.Visibility = Visibility.Visible;
             }
         }
@@ -399,13 +530,27 @@ namespace Arksplorer
                 CurrentDataPackage.MakeSureDataIsUpToDate();
                 DataVisual.DataContext = CurrentDataPackage.Data;
 
-                Status.Text = $"Loaded {CurrentDataPackage.Data.Rows.Count}{CurrentDataPackage.Metadata.Description}s!";
                 ExtraInfo.Text = CurrentDataPackage.MapsDescription;
-
-                if (CurrentDataPackage.Data.Rows.Count == 0)
+                if (CurrentDataPackage.Data == null)
+                {
+                    Status.Text = $"No data found!";
                     SetFlashMessage("No data found!");
+                }
                 else
-                    HideFlashMessage();
+                {
+                    if (CurrentDataPackage.Data.Rows.Count == 0)
+                    {
+                        Status.Text = $"No data loaded yet";
+
+                        SetFlashMessage("No data found!");
+                    }
+                    else
+                    {
+                        Status.Text = $"Loaded {CurrentDataPackage.Data.Rows.Count} {CurrentDataPackage.Metadata.Description}s!";
+
+                        HideFlashMessage();
+                    }
+                }
             }
             else
             {
@@ -439,9 +584,11 @@ namespace Arksplorer
                         MapList.Add(new() { Name = mapName, CacheState = "Not loaded", Load = lastMaps.Contains(mapName) });
 
                     DataVisual.DataContext = null; // Clear any current results list
-                    Status.Text = $"Welcome! Remember, data is only{Environment.NewLine}as up - to - date as the server supplies";
+                    Status.Text = $"Welcome! Remember, data is only{Environment.NewLine}as up-to-date as the server supplies";
                     LoadableControlsEnabled(true);
                     LoadingVisualEnabled(false);
+                    ServerLoadedControls.Visibility = Visibility.Visible;
+                    GeneralLoadingSpinner.Child = null;
                 });
 
                 return;
@@ -467,8 +614,7 @@ namespace Arksplorer
             ExitApplication();
         }
 
-
-        private async Task<int> ProcessQueue<T>(List<QueueDataItem> queue)
+        private async Task<int> ProcessQueue(List<QueueDataItem> queue)
         {
             int count = 0;
             string type = "";   // Should always be the same in a que
@@ -479,7 +625,7 @@ namespace Arksplorer
 
             foreach (QueueDataItem item in queue)
             {
-                type = item.MetaData.Type;
+                type = item.MetaData.ArkEntityType;
                 string mapName = item.MapName;
                 description = item.MetaData.Description;
                 bool grabData = false;
@@ -514,7 +660,7 @@ namespace Arksplorer
                     // ToDo: Put loading marker
                     this.Dispatcher.Invoke(() => Status.Text = $"Loading {++doneCount}/{totalCount}{Environment.NewLine}{mapName} {type} data...");
                     // We re-use the timestamp from earlier, if its available. Saves a server trip.
-                    newRecords += await Task.Run(() => GetDataAsync<T>(item, rawServerTimestamp, serverTimestamp));
+                    newRecords += await Task.Run(() => GetDataAsync(item, rawServerTimestamp, serverTimestamp));
                 }
                 else
                 {
@@ -524,8 +670,6 @@ namespace Arksplorer
                 count++;
             }
 
-            queue.Clear();
-
             this.Dispatcher.Invoke(() =>
             {
                 Status.Text = $"Loaded {newRecords} {description}s!";
@@ -534,6 +678,8 @@ namespace Arksplorer
                 LoadingVisualEnabled(false);
                 Mouse.OverrideCursor = PrevCursor;
             });
+
+            ProcessingQueue = false;
 
             return count;
         }
@@ -552,16 +698,16 @@ namespace Arksplorer
         /// <param name="uri"></param>
         /// <param name="metaData"></param>
         /// <returns></returns>
-        private static async Task<int> GetDataAsync<T>(QueueDataItem item, string rawServerTimestamp, DateTime serverTimestamp) // string map, string uri, MetaData metaData)
+        private async Task<int> GetDataAsync(QueueDataItem item, string rawServerTimestamp, DateTime serverTimestamp)
         {
             try
             {
-                string type = item.MetaData.Type;
+                string metaDataType = item.MetaData.ArkEntityType;
                 DataPackage dataPackage;
 
-                if (DataPackages.ContainsKey(type))
+                if (DataPackages.ContainsKey(metaDataType))
                 {
-                    dataPackage = DataPackages[type];
+                    dataPackage = DataPackages[metaDataType];
                 }
                 else
                 {
@@ -570,14 +716,15 @@ namespace Arksplorer
                         Metadata = item.MetaData,
                         IndividualMaps = new Dictionary<string, MapPackage>()
                     };
-                    DataPackages.Add(type, dataPackage);
+                    DataPackages.Add(metaDataType, dataPackage);
                 }
 
                 string mapName = item.MapName;
 
-                List<T> result = await httpClient.GetFromJsonAsync<List<T>>(item.DataUri);
+                var result = (IEnumerable<IArkEntity>)await httpClient.GetFromJsonAsync(item.DataUri, typeof(List<>).MakeGenericType(item.MetaData.JsonClassType));
 
-                DataTable newData = result.ToNewDataTable(mapName);
+                //DataTable newData = result.AddToDataTable(mapName, item.MetaData, null);
+                DataTable newData = DataTableExtensions.AddToDataTable(result, item.MetaData.JsonClassType, mapName, item.MetaData, null);
                 MapPackage newMapPackage = new();
                 newMapPackage.Data = newData;
 
@@ -589,19 +736,22 @@ namespace Arksplorer
                     if (DateTime.TryParseExact(rawServerTimestamp, "yyyyMMdd_HHmm", CultureInfo.InvariantCulture, DateTimeStyles.None, out serverTimestamp))
                         newMapPackage.Timestamp = serverTimestamp;
                     else
-                        MessageBox.Show($"Error reading timestamp for {mapName}.{type}, value returned: '{rawServerTimestamp}'", "Date error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Error reading timestamp for {mapName}.{metaDataType}, value returned: '{rawServerTimestamp}'", "Date error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
                     newMapPackage.Timestamp = serverTimestamp;
                 }
                 newMapPackage.RawTimestamp = rawServerTimestamp;
+                newMapPackage.CacheExpires = newMapPackage.Timestamp.AddMinutes(ServerConfig.RefreshRate);
 
                 var maps = dataPackage.IndividualMaps;
                 if (maps.ContainsKey(mapName))
                     maps[mapName] = newMapPackage;
                 else
                     maps.Add(mapName, newMapPackage);
+
+                this.Dispatcher.Invoke(() => CheckAndRefreshCache("GetDataAsync"));
 
                 dataPackage.DataIsStale = true;
 
@@ -613,15 +763,15 @@ namespace Arksplorer
             }
             catch (NotSupportedException ex)
             {
-                Debug.Print($"Invalid content type: {ex.Message}");
+                Debug.Print($"Invalid content type: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}");
             }
             catch (JsonException ex)
             {
-                Debug.Print($"Invalid JSON: {ex.Message}");
+                Debug.Print($"Invalid JSON: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}");
             }
             catch (Exception ex)
             {
-                Debug.Print($"Problem loading data: {ex.Message}");
+                Debug.Print($"Problem loading data: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}");
             }
 
             return -1;
@@ -659,7 +809,7 @@ namespace Arksplorer
             string creature;
             if (columns["Creature"] != null)
             {
-                creature = (string)entity[columns["Creature"].Ordinal];
+                creature = entity[columns["Creature"].Ordinal].ToString();
                 overviewMessage += $"Creature: {creature}{Environment.NewLine}";
             }
 
@@ -676,7 +826,7 @@ namespace Arksplorer
             string sex;
             if (columns["Sex"] != null)
             {
-                sex = ((int)entity[columns["Sex"].Ordinal]) == 0 ? "M" : "F";
+                sex = (string)entity[columns["Sex"].Ordinal];
                 overviewMessage += $"Sex: {sex}{Environment.NewLine}";
             }
 
@@ -763,10 +913,12 @@ namespace Arksplorer
             SetIncludeList(false);
         }
 
-        private static void SetIncludeList(bool isChecked)
+        private void SetIncludeList(bool isChecked)
         {
             foreach (var selected in MapList)
                 selected.Load = isChecked;
+
+            MapsToInclude.Items.Refresh();
         }
 
         private void FilterCriteria_KeyDown(object sender, KeyEventArgs e)
@@ -786,7 +938,8 @@ namespace Arksplorer
             ResourcesAndLinksExtraInfo.Visibility = Visibility.Collapsed;
             AboutExtraInfo.Visibility = Visibility.Collapsed;
 
-            whatToShow.Visibility = Visibility.Visible;
+            if (whatToShow != null)
+                whatToShow.Visibility = Visibility.Visible;
         }
 
         private void Window_MouseMove(object sender, MouseEventArgs e)
@@ -795,8 +948,8 @@ namespace Arksplorer
                 return;
 
             var pos = e.GetPosition(this);
-            var width = this.Width;
-            var height = this.Height;
+            var width = Width;
+            var height = Height;
 
             var percX = (pos.X / width);
             var percY = (pos.Y / height);
@@ -808,8 +961,16 @@ namespace Arksplorer
 
         private void HandleLinkClick(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            OpenUrlInExternalBrowser(e.Uri.AbsoluteUri);
             e.Handled = true;
+        }
+
+        private void OpenUrlInExternalBrowser(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+                return;
+
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
         }
 
         private void ServerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -818,7 +979,7 @@ namespace Arksplorer
             LoadServer(server);
         }
 
-        private static void  GoBack(Microsoft.Web.WebView2.Wpf.WebView2 browser)
+        private static void GoBack(Microsoft.Web.WebView2.Wpf.WebView2 browser)
         {
             if (browser.CanGoBack)
                 browser.GoBack();
@@ -838,22 +999,46 @@ namespace Arksplorer
 
         private void DodexNavigate_Click(object sender, RoutedEventArgs e)
         {
-            Navigate(DodexWeb, (string)(((Button)sender).Tag));
+            Navigate(DodexBrowser, (string)((Button)sender).Tag);
         }
 
         private void DodexBack_Click(object sender, RoutedEventArgs e)
         {
-            GoBack(DodexWeb);
+            GoBack(DodexBrowser);
         }
 
         private void ArkpediaNavigate_Click(object sender, RoutedEventArgs e)
         {
-            Navigate(ArkpediaWeb, (string)(((Button)sender).Tag));
+            Navigate(ArkpediaBrowser, (string)((Button)sender).Tag);
         }
 
         private void ArkpediaBack_Click(object sender, RoutedEventArgs e)
         {
-            GoBack(ArkpediaWeb);
+            GoBack(ArkpediaBrowser);
+        }
+
+        private void ArkpediaOpenExternal_Click(object sender, RoutedEventArgs e)
+        {
+            OpenUrlInExternalBrowser(ArkpediaWebTab.CurrentUrl);
+        }
+
+        private void DodexOpenExternal_Click(object sender, RoutedEventArgs e)
+        {
+            OpenUrlInExternalBrowser(DodexWebTab.CurrentUrl);
+        }
+
+        private void DataVisual_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            DataGridTextColumn column = e.Column as DataGridTextColumn;
+            if (column != null && e.PropertyType == typeof(Single))
+            {
+                column.Binding = new Binding(e.PropertyName) { StringFormat = "N2" };
+            }
+        }
+
+        private void AlarmOff_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveAlarm();
         }
     }
 }

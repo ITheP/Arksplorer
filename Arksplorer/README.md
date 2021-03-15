@@ -1,7 +1,9 @@
 ﻿Arksplorer - The Ark Explorer App!
-© 2021 MisterB
+© 2021 MisterB@ITheP
 
 Simple front end that takes bits of Ark data including data exposed by an ark server to help you find things in Ark.
+
+Loads data - as required - we don't load all data available as often as we can to make sure server load is minimised.
 
 Made avaiable under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License.
 
@@ -23,3 +25,12 @@ v0.5 Preview - 02/03/2021
 v0.6 Preview - 04/03/2021
 - Config now read from Ark server rather than local hardcoded
 - Other UI changes
+
+v0.7 Preview - 15/03/2021
+- Map availability now comes from Ark server config
+- Various UI changes
+- Code improvements
+- Initial code for auto-refresh of cache
+- Ark.Gamepedia embedding
+- Dodex embedding
+- Taming countdown timer

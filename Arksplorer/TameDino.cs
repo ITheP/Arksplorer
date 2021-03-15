@@ -1,14 +1,22 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 //using System.Windows.Shapes;
 
 namespace Arksplorer
 {
-    public class TameDino : IArkEntity
+    public class TameDino : IArkEntityWithCreature
     {
+        [JsonIgnore]
+        public string Map { get; set; }
+        [JsonIgnore]
         public string Creature { get; set; }
+        [JsonPropertyName("creature")]
+        public string CreatureId { get; set; }
         public string Name { get; set; }
         public string Tribe { get; set; }
-        public int Sex { get; set; }
+        [JsonConverter(typeof(SexConverter))]
+        public string Sex { get; set; }
         public int Base { get; set; }
         public int Lvl { get; set; }
         public float Lat { get; set; }
@@ -44,8 +52,8 @@ namespace Arksplorer
         [JsonPropertyName("mut-m")]
         public int MutM { get; set; }
         public bool Viv { get; set; }
-        public string Ccc { get; set; }
-        public long Id { get; set; }
-        public long TribeId { get; set; }
+        //public string Ccc { get; set; } <-- not bothered about seeing this
+        //public long Id { get; set; } <-- not bothered about seeing this
+        // long TribeId { get; set; } <-- not bothered about seeing this
     }
 }

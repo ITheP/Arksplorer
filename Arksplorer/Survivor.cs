@@ -1,15 +1,20 @@
 ﻿//using System.Windows.Shapes;
 
+using System.Text.Json.Serialization;
+
 namespace Arksplorer
 {
     public class Survivor : IArkEntity
     {
+        [JsonIgnore]
+        public string Map { get; set; }
         public long PlayerId { get; set; }
         public string Steam { get; set; }
         public string Name { get; set; }
         public object TribeId { get; set; }
         public string Tribe { get; set; }
-        public int Sex { get; set; }
+        [JsonConverter(typeof(SexConverter))]
+        public string Sex { get; set; }
         public int Lvl { get; set; }
         public float Lat { get; set; }
         public float Lon { get; set; }
@@ -24,6 +29,6 @@ namespace Arksplorer
         public int Craft { get; set; }
         public int Fort { get; set; }
         public string Active { get; set; }
-        public string Ccc { get; set; }
+        //public string Ccc { get; set; } <-- not bothered about seeing this
     }
 }

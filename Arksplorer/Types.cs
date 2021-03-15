@@ -14,26 +14,32 @@ namespace Arksplorer
         // Really want to tag static variants of these into the class definitions for ArkEntities, but, no luck so far (without them becoming duplicating strings)
         public static MetaData TameMetadata = new()
         {
-            Type = "TameDinos",
+            JsonClassType = typeof(TameDino),
+            ArkEntityType = "TameDinos",
             Description = "Tamed Dino",
-            NormalSearch = "Map='#' OR Tribe='#' OR Tamer='#' OR Imprinter='#' OR Creature='#' OR Name='#'",
-            WildcardSearch = "Map LIKE '*#*' OR Tribe LIKE '*#*' OR Tamer LIKE '*#*' OR Imprinter LIKE '*#*' OR Creature LIKE '*#*' OR Name LIKE '*#*'"
+            IncludesCreatures = true,
+            NormalSearch = "Map='#' OR Tribe='#' OR Tamer='#' OR Imprinter='#' OR Creature='#' OR Name='#' OR CreatureId='#'",
+            WildcardSearch = "Map LIKE '*#*' OR Tribe LIKE '*#*' OR Tamer LIKE '*#*' OR Imprinter LIKE '*#*' OR Creature LIKE '*#*' OR Name LIKE '*#*' OR CreatureId LIKE '*#*'"
         };
 
         public static MetaData WildMetadata = new()
         {
-            Type = "WildDinos",
+            JsonClassType = typeof(WildDino),
+            ArkEntityType = "WildDinos",
             Description = "Wild Dino",
-            NormalSearch = "Map='#' OR Creature='#'",
-            WildcardSearch = "Map LIKE '*#*' OR Creature LIKE '*#*'"
+            IncludesCreatures = true,
+            NormalSearch = "Map='#' OR Creature='#' OR CreatureId='#'",
+            WildcardSearch = "Map LIKE '*#*' OR Creature LIKE '*#*' OR CreatureId LIKE '*#*'"
         };
 
         public static MetaData SurvivorMetadata = new()
         {
-            Type = "Survivors",
+            JsonClassType = typeof(Survivor),
+            ArkEntityType = "Survivors",
             Description = "Survivor",
+            IncludesCreatures = false,
             NormalSearch = "Map='#' OR Steam='#' OR Name='#' OR Tribe='#'",
-            WildcardSearch = "Map LIKE '*#*' OR Steam LIKE '*#*' OR Name LIKE '*#*' OR Tribe LIKE '*#*'",
+            WildcardSearch = "Map LIKE '*#*' OR Steam LIKE '*#*' OR Name LIKE '*#*' OR Tribe LIKE '*#*'"
         };
     }
 }

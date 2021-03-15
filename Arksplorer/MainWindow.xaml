@@ -35,6 +35,28 @@
                 <DockPanel Width="200" Margin="10,0,10,0">
                     <StackPanel DockPanel.Dock="Bottom">
                         <Separator Margin="0,8"/>
+                        <Grid>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xEA8F;" FontFamily="Segoe MDL2 Assets" FontSize="18" Width="32" TextAlignment="Center" VerticalAlignment="Center"/>
+                                        <Button Content="½" Width="20" Margin="6,0,0,0" Click="SetAlarm" Tag="0.5"/>
+                                        <Button Content="1" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="1"/>
+                                        <Button Content="2" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="2"/>
+                                        <Button Content="3" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="3"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                        <Button x:Name="AlarmOff" Content="Off" Width="32" Click="AlarmOff_Click"  Tag="0.5"/>
+                                        <Button Content="5" Width="20" Margin="6,0,0,0" Click="SetAlarm" Tag="5"/>
+                                        <Button Content="10" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="10"/>
+                                        <Button Content="11" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="11"/>
+                                        <Button Content="15" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="15"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <TextBlock x:Name="AlarmTimeLeft" Text="Off" FontSize="20" Width="70" VerticalAlignment="Center" TextAlignment="Center" />
+                            </StackPanel>
+                        </Grid>
+                        <Separator Margin="0,8"/>
                         <Button x:Name="Resources" Content="Resources and Links" Click="Resources_Click"/>
                         <Button x:Name="About" Content="About" Margin="0,4,0,0" Click="About_Click"/>
                         <Button x:Name="Exit" Content="Exit" Click="Exit_Click" Margin="0,4,0,8"/>
@@ -56,96 +78,61 @@
                                     </StackPanel>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
-                            <!--<ComboBoxItem IsSelected="True">
-                                <local:Server Name="Test Name" Website="testname.website.com/subpage" Url="http://testname.website.com/ArksplorerData.json"/>
-                            </ComboBoxItem>
-                            <ComboBoxItem>
-                                <local:Server Name="Test Name" Website="testname.website.com/subpage" Url="http://testname.website.com/ArksplorerData.json"/>
-                            </ComboBoxItem>-->
                         </ComboBox>
-                        <TextBlock Margin="0,8,0,8" FontWeight="Bold" Foreground="CornflowerBlue" HorizontalAlignment="Center">Maps to include...</TextBlock>
-                        <ListView ItemsSource="{Binding MapList}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid HorizontalAlignment="Stretch">
-                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding Load}"/>
-                                        <TextBlock Text="{Binding CacheState}" HorizontalAlignment="Right"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                        </ListView>
-                        <!--<Grid>
-                            <CheckBox x:Name="IncludeTheIsland" Content="The Island" Click="SaveMapPreference" />
-                            <TextBlock x:Name="CacheTheIsland" Text="Not loaded" HorizontalAlignment="Right"/>
-                        </Grid>
-                        <Grid>
-                            <CheckBox x:Name="IncludeAberration" Content="Aberration" Click="SaveMapPreference"/>
-                            <TextBlock x:Name="CacheAberration" Text="Not loaded" HorizontalAlignment="Right"/>
-                        </Grid>
-                        <Grid>
-                            <CheckBox x:Name="IncludeRagnarok" Content="Ragnarok" IsChecked="True" Click="SaveMapPreference" />
-                            <TextBlock x:Name="CacheRagnarok" Text="Not loaded" HorizontalAlignment="Right"/>
-                        </Grid>
-                        <Grid>
-                            <CheckBox x:Name="IncludeTheCenter" Content="The Center" Click="SaveMapPreference" />
-                            <TextBlock x:Name="CacheTheCenter" Text="Not loaded" HorizontalAlignment="Right"/>
-                        </Grid>
-                        <Grid>
-                            <CheckBox x:Name="IncludeCrystalIsles" Content="Crystal Isles" Click="SaveMapPreference" />
-                            <TextBlock x:Name="CacheCrystalIsles" Text="Not loaded" HorizontalAlignment="Right"/>
-                        </Grid>
-                        <Grid>
-                            <CheckBox x:Name="IncludeValguero" Content="Valguero" Click="SaveMapPreference" />
-                            <TextBlock x:Name="CacheValguero" Text="Not loaded" HorizontalAlignment="Right"/>
-                        </Grid>
-                        <Grid>
-                            <CheckBox x:Name="IncludeScorchedEarth" Content="Scorched Earth" Click="SaveMapPreference" />
-                            <TextBlock x:Name="CacheScorchedEarth" Text="Not loaded" HorizontalAlignment="Right"/>
-                        </Grid>
-                        <Grid>
-                            <CheckBox x:Name="IncludeExtinction" Content="Extinction" Click="SaveMapPreference" />
-                            <TextBlock x:Name="CacheExtinction" Text="Not loaded" HorizontalAlignment="Right"/>
-                        </Grid>
-                        <Grid>
-                            <CheckBox x:Name="IncludeGenesis" Content="Genesis" Click="SaveMapPreference" />
-                            <TextBlock x:Name="CacheGenesis" Text="Not loaded" HorizontalAlignment="Right"/>
-                        </Grid>-->
-                        <Grid Margin="0,8,0,4">
-                            <Button x:Name="IncludeAll" HorizontalAlignment="Left" Width="40" Click="IncludeAll_Click">All</Button>
-                            <Button x:Name="IncludeNone" HorizontalAlignment="Left" Width="40" Margin="50,0,0,0" Click="IncludeNone_Click">None</Button>
-                        </Grid>
-                        <CheckBox x:Name="AutoRefresh" Content="Auto Refresh when possible" IsChecked="True"/>
-                        <Separator Margin="0,8"/>
-                        <TextBlock Margin="0,0,0,4" FontWeight="Bold" Foreground="DarkSeaGreen" HorizontalAlignment="Center">Load data...</TextBlock>
-                        <Button x:Name="TameDinos" Content="Tame Dinos" Margin="0,4,0,0" Click="TameDinos_Click" />
-                        <Button x:Name="WildDinos" Content="Wild Dinos" Margin="0,4,0,0" Click="WildDinos_Click" />
-                        <Button x:Name="Survivors" Content="Survivors" Margin="0,4,0,0" Click="Survivors_Click" />
-                        <Separator Margin="0,12,0,8"/>
-                        <DockPanel>
-                            <Viewbox x:Name="LoadingSpinner" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                        <DockPanel Margin="0,4,0,0">
+                            <Viewbox x:Name="GeneralLoadingSpinner" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" DockPanel.Dock="Right">
                                 <local:Spinner/>
                             </Viewbox>
                             <TextBlock x:Name="Status" FontWeight="Bold" Foreground="Red" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                Status
+                                Please select a server from<LineBreak/>
+                                the drop down list above
                             </TextBlock>
                         </DockPanel>
-                        <Separator Margin="0,8"/>
+                        <Grid x:Name="ServerLoadedControls">
+                            <StackPanel>
+                                <Separator Margin="0,6"/>
+                                <TextBlock FontWeight="Bold" Foreground="CornflowerBlue" HorizontalAlignment="Center">Maps to include...</TextBlock>
+                                <ListView Margin="0,4,0,0" x:Name="MapsToInclude" ItemsSource="{Binding MapList}" BorderThickness="0">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid HorizontalAlignment="Stretch">
+                                                <CheckBox Content="{Binding Name}" IsChecked="{Binding Load}"/>
+                                                <TextBlock Text="{Binding CacheState}" HorizontalAlignment="Right" Visibility="Hidden"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                </ListView>
+                                <Grid Margin="0,8,0,6">
+                                    <Button x:Name="IncludeAll" HorizontalAlignment="Left" Width="40" Click="IncludeAll_Click">All</Button>
+                                    <Button x:Name="IncludeNone" HorizontalAlignment="Left" Width="40" Margin="50,0,0,0" Click="IncludeNone_Click">None</Button>
+                                </Grid>
+                                <!--<CheckBox x:Name="AutoRefresh" Content="Auto Refresh when possible" IsChecked="True"/>-->
+                                <Separator Margin="0,8"/>
+
+                                <TextBlock Margin="0,0,0,4" FontWeight="Bold" Foreground="DarkSeaGreen" HorizontalAlignment="Center">Load data...</TextBlock>
+                                <Button x:Name="TameDinos" Content="Tame Dinos" Margin="0,4,0,0" Click="TameDinos_Click" />
+                                <Button x:Name="WildDinos" Content="Wild Dinos" Margin="0,4,0,0" Click="WildDinos_Click" />
+                                <Button x:Name="Survivors" Content="Survivors" Margin="0,4,0,0" Click="Survivors_Click" />
+                            </StackPanel>
+                        </Grid>
+                        <Separator Margin="0,12,0,8"/>
                     </StackPanel>
                     <Grid>
-                        <ScrollViewer  x:Name="ExtraInfoHolder" VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer x:Name="ExtraInfoHolder" VerticalScrollBarVisibility="Auto">
                             <TextBlock x:Name="ExtraInfo" TextWrapping="Wrap">
-                            Select what maps to include.
+                            Select what maps to include, then click what you want to load -
+                            <LineBreak/>
+                            Dinos, Wild Dinos, Suvivors... then click a result to find them.
                             <LineBreak/>
                             <LineBreak/>
-                            Click what you want to load - Tame Dinos, Wild Dinos, Suvivors... then click a result to find them.
+                            <Span FontStyle="Italic">Filter</Span> searches by map, dino names, creature types etc.
                             <LineBreak/>
-                            <LineBreak/>
-                            Filter searches on map, dino names, creature types etc. - press <Span FontStyle="Italic" Foreground="Brown">enter</Span> or click <Span FontStyle="Italic" Foreground="Brown">Apply</Span> to apply filter. <Span FontStyle="Italic" Foreground="Brown">Exact</Span> returns exact matches only.
+                            Press <Span FontStyle="Italic" Foreground="Brown">enter</Span> or click <Span FontStyle="Italic" Foreground="Brown">Apply</Span> to apply filter. <Span FontStyle="Italic" Foreground="Brown">Exact</Span> returns exact matches.
                             <LineBreak/>
                             <LineBreak/>
                             Multiple filters using , separation
@@ -211,9 +198,9 @@
                     </Grid>
                 </DockPanel>
             </Grid>
-            <TabControl>
+            <TabControl Margin="0,0,8,8">
                 <TabItem Header="Main" IsSelected="True">
-                    <Grid Margin="0,0,8,8">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
@@ -258,6 +245,7 @@
                                 SelectionMode="Single"
                                 SelectionUnit="FullRow"
                                 SelectionChanged="DataVisual_SelectionChanged"
+                                AutoGeneratingColumn="DataVisual_AutoGeneratingColumn"
                             />
                             <Viewbox>
                                 <TextBlock x:Name="FlashMessage" FontSize="8" HorizontalAlignment="Center" Foreground="White" Margin="5" FontWeight="Black" VerticalAlignment="Center" TextAlignment="Center">
@@ -289,8 +277,16 @@
                                 <Button x:Name="ArkpediaMaps" Content="Maps" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/ARKs" Click="ArkpediaNavigate_Click"/>
                                 <Button x:Name="ArkpediaLoot" Content="Loot" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/Loot_Tables" Click="ArkpediaNavigate_Click"/>
                             </StackPanel>
+                            <Grid HorizontalAlignment="Right">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox x:Name="ArkpediaLoadingSpinner" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right">
+                                        <local:Spinner/>
+                                    </Viewbox>
+                                    <Button x:Name="ArkpediaOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Click="ArkpediaOpenExternal_Click"/>
+                                </StackPanel>
+                            </Grid>
                         </Grid>
-                        <wv2:WebView2 x:Name="ArkpediaWeb" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki" />
+                        <wv2:WebView2 x:Name="ArkpediaBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki" />
                     </DockPanel>
                 </TabItem>
                 <TabItem Header="Dodex">
@@ -303,9 +299,20 @@
                                 <Button x:Name="DodexResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/resources" Click="DodexNavigate_Click"/>
                                 <Button x:Name="DodexKibble" Content="Kibble" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/kibble" Click="DodexNavigate_Click"/>
                             </StackPanel>
+                            <Grid HorizontalAlignment="Right">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox x:Name="DodexLoadingSpinner" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right">
+                                        <local:Spinner/>
+                                    </Viewbox>
+                                    <Button x:Name="DodexOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Click="DodexOpenExternal_Click"/>
+                                </StackPanel>
+                            </Grid>
                         </Grid>
-                        <wv2:WebView2 x:Name="DodexWeb" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="https://www.dododex.com/" />
+                        <wv2:WebView2 x:Name="DodexBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="https://www.dododex.com/" />
                     </DockPanel>
+                </TabItem>
+                <TabItem Header="Debug">
+                    <TextBlock x:Name="DebugInfo"/>
                 </TabItem>
             </TabControl>
         </DockPanel>
