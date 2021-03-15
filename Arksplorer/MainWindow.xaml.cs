@@ -139,33 +139,40 @@ namespace Arksplorer
 
         private void TimerTrigger(object sender, EventArgs e)
         {
+            TimerTrigger();
+        }
+
+        private void TimerTrigger()
+        { 
             DateTime now = DateTime.Now;
             int seconds = now.Second;
 
             if (AlarmEnabled)
             {
                 TimeSpan timeLeft = AlarmTimestamp - now;
-                AlarmTimeLeft.Text = $"{(timeLeft.Ticks < 0 ? "-" : "")}{Math.Abs(timeLeft.Minutes):00}:{Math.Abs(timeLeft.Seconds):00}";
 
                 SolidColorBrush brush;
                 FontWeight weight;
 
                 int secondsLeft = timeLeft.Seconds;
-                if (secondsLeft > 30)
+                int minutesLeft = timeLeft.Minutes;
+                AlarmTimeLeft.Text = $"{(timeLeft.Ticks < 0 ? "-" : "")}{Math.Abs(timeLeft.Minutes):00}:{Math.Abs(secondsLeft):00}";
+
+                if (minutesLeft > 0 || secondsLeft > 30)
                     brush = Brushes.ForestGreen;
                 else if (secondsLeft > 5)
-                    brush = Brushes.MediumVioletRed;
+                    brush = Brushes.DarkOrange;
                 else
                     brush = Brushes.Red;
 
-                if (secondsLeft > 0)
-                    weight = FontWeights.Normal;
-                else
+                if (minutesLeft < 0 || secondsLeft < 0)
                 {
                     weight = FontWeights.Bold;
                     if (!AlarmTriggered)
                         TriggerAlarm();
                 }
+                else
+                    weight = FontWeights.Normal;
 
                 if (AlarmTimeLeft.Foreground != brush)
                     AlarmTimeLeft.Foreground = brush;
@@ -270,6 +277,7 @@ namespace Arksplorer
             AlarmTimestamp = DateTime.Now.AddMinutes(double.Parse(duration));
             AlarmTriggered = false;
             AlarmEnabled = true;
+            TimerTrigger();
         }
 
         private void TriggerAlarm()
@@ -492,8 +500,8 @@ namespace Arksplorer
         // When a queue is loading, no others should load as controls that could trigger another load are disabled.
         private async void LoadQueue(List<QueueDataItem> queue)
         {
-            PrevCursor = Mouse.OverrideCursor;
-            Mouse.OverrideCursor = Cursors.Wait;
+           // PrevCursor = Mouse.OverrideCursor;
+          //  Mouse.OverrideCursor = Cursors.Wait;
 
             int mapsLoaded = await Task.Run(() => ProcessQueue(queue));
         }
@@ -676,7 +684,7 @@ namespace Arksplorer
                 ShowData(type);
                 LoadableControlsEnabled(true);
                 LoadingVisualEnabled(false);
-                Mouse.OverrideCursor = PrevCursor;
+             //   Mouse.OverrideCursor = PrevCursor;
             });
 
             ProcessingQueue = false;
