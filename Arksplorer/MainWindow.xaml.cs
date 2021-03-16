@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -67,6 +68,7 @@ namespace Arksplorer
             MapImage.Visibility = Visibility.Collapsed;
             Marker.Visibility = Visibility.Collapsed;
             ServerLoadedControls.Visibility = Visibility.Collapsed;
+            DataVisual.Visibility = Visibility.Collapsed;
             ShowExtraInfo(null);
 
             // Disable all controls that are reliant on working server connection...
@@ -143,7 +145,7 @@ namespace Arksplorer
         }
 
         private void TimerTrigger()
-        { 
+        {
             DateTime now = DateTime.Now;
             int seconds = now.Second;
 
@@ -182,7 +184,7 @@ namespace Arksplorer
             }
 
             // Auto check for a cache refresh every 20 - too often and its a waste of time, too little and will annoy the user. This seems like a reasonable balance.
-            if (seconds%20 == 0)
+            if (seconds % 20 == 0)
                 CheckAndRefreshCache("CacheRefresh");
         }
 
@@ -208,7 +210,7 @@ namespace Arksplorer
                 foreach (KeyValuePair<string, MapPackage> map in package.Value.IndividualMaps)
                 {
                     var mapPackage = map.Value;
-                    bool expired = now > mapPackage.CacheExpires;
+                    bool expired = now > mapPackage.ApproxNextServerUpdateTimestamp;
 
                     if (expired)
                     {
@@ -217,7 +219,7 @@ namespace Arksplorer
                         AddToQueue(queue, map.Key, package.Value.Metadata, false);
                     }
 
-                    string difference = $"{(mapPackage.CacheExpires - now):mm\\:ss}";
+                    string difference = $"{(mapPackage.ApproxNextServerUpdateTimestamp - now):mm\\:ss}";
                     details.AppendLine($"{package.Value.Metadata.Description}.{map.Key}.{mapPackage.Timestamp} {difference} {(expired ? "Expired" : "")}");
                 }
             }
@@ -225,7 +227,7 @@ namespace Arksplorer
             if (queue.Count > 0)
             {
                 details.AppendLine($"Refreshing cache...");
-                LoadQueue(queue);
+                LoadQueue(queue, false);
             }
 
             DebugInfo.Text = details.ToString();
@@ -300,7 +302,7 @@ namespace Arksplorer
         SoundPlayer Player { get; set; } = new();
 
         private void PlaySample(string type)
-        {            
+        {
             try
             {
                 Player.SoundLocation = $"Audio/{type}.wav";
@@ -356,7 +358,7 @@ namespace Arksplorer
                     AddToQueue(queue, selection.Name, type, false);
             }
 
-            LoadQueue(queue);
+            LoadQueue(queue, true);
         }
 
 
@@ -411,7 +413,9 @@ namespace Arksplorer
 
         private void FilterDataTable(DataPackage dataPackage, string criteria, bool exactOnly)
         {
-            if (dataPackage == null || string.IsNullOrWhiteSpace(criteria))
+            string levelFilter = FilterLevelType.SelectedValue.ToString();
+
+            if (dataPackage == null || (string.IsNullOrWhiteSpace(criteria) && levelFilter == "All"))
                 return;
 
             PrevCursor = Mouse.OverrideCursor;
@@ -429,41 +433,52 @@ namespace Arksplorer
 
             SetFlashMessage("Searching...");
 
-            if (parts.Length == 1)
-            {
-                string trimmed = parts[0].Trim();
-                finalFilter = filter.Replace("#", trimmed);
-            }
-            else
-            {
-                finalFilter = "";
-                string separator = "";
+            finalFilter = "";
+            string separator = "";
 
-                foreach (string p in parts)
+            foreach (string p in parts)
+            {
+                string trimmed = p.Trim();
+
+                if (!string.IsNullOrWhiteSpace(trimmed))
                 {
-                    string trimmed = p.Trim();
-
-                    if (!string.IsNullOrWhiteSpace(trimmed))
-                    {
-                        finalFilter += $"{separator}({filter.Replace("#", trimmed)})";
-                        separator = " AND ";
-                    }
+                    finalFilter += $"{separator}({filter.Replace("#", trimmed)})";
+                    separator = " AND ";
                 }
             }
+
+            if (dataPackage.Metadata.IncludesLevel)
+            {
+                string extra = $"{(string.IsNullOrEmpty(finalFilter) ? "" : $" AND ({finalFilter})") }";
+
+                if (levelFilter == "Above")
+                    finalFilter = $"(Lvl < {FilterLevelNumber.Text}){extra}";
+                else if (levelFilter == "Below")
+                    finalFilter = $"(Lvl > {FilterLevelNumber.Text}){extra}";
+            }
+
+            Debug.Print($"Filter: {finalFilter}");
 
             try
             {
                 DataRow[] filteredRows = CurrentDataPackage.Data.Select(finalFilter);
 
+
+
                 if (filteredRows.Length == 0)
                 {
-                    DataVisual.DataContext = null;
-                    SetFlashMessage("No rows found");
+                    SetDataVisualData(null);
+
+                    //DataVisual.DataContext = null;
+                    //SetFlashMessage("No entries found");
+                    //DataVisualCount.Text = "No entries found";
                 }
                 else
                 {
-                    DataVisual.DataContext = filteredRows.CopyToDataTable();
-                    HideFlashMessage();
+                    //DataVisual.DataContext = filteredRows.CopyToDataTable();
+                    SetDataVisualData(filteredRows.CopyToDataTable());
+                    //DataVisualCount.Text = $"{filteredRows.Length} entries";
+                    //HideFlashMessage();
                 }
             }
             catch (Exception ex)
@@ -498,12 +513,12 @@ namespace Arksplorer
         private bool ProcessingQueue { get; set; }
 
         // When a queue is loading, no others should load as controls that could trigger another load are disabled.
-        private async void LoadQueue(List<QueueDataItem> queue)
+        private async void LoadQueue(List<QueueDataItem> queue, bool autoUpdateDataGrid)
         {
-           // PrevCursor = Mouse.OverrideCursor;
-          //  Mouse.OverrideCursor = Cursors.Wait;
+            // PrevCursor = Mouse.OverrideCursor;
+            //  Mouse.OverrideCursor = Cursors.Wait;
 
-            int mapsLoaded = await Task.Run(() => ProcessQueue(queue));
+            int mapsLoaded = await Task.Run(() => ProcessQueue(queue, autoUpdateDataGrid));
         }
 
         public void LoadableControlsEnabled(bool isEnabled)
@@ -536,33 +551,49 @@ namespace Arksplorer
             {
                 CurrentDataPackage = DataPackages[type];
                 CurrentDataPackage.MakeSureDataIsUpToDate();
-                DataVisual.DataContext = CurrentDataPackage.Data;
+                //DataVisual.DataContext = CurrentDataPackage.Data;
+                //DataVisualCount.Text = $"{filteredRows.Length} entries";
+                SetDataVisualData(CurrentDataPackage.Data);
 
-                ExtraInfo.Text = CurrentDataPackage.MapsDescription;
+                ExtraInfoTitle.Text = CurrentDataPackage.MapsDescription;
+                ExtraInfo.Text = $"Total loaded: {CurrentDataPackage.Data.Rows.Count}";
+                ExtraInfoMapData.ItemsSource = CurrentDataPackage.IndividualMaps;
+                ShowExtraInfo(ExtraInfo, ExtraInfoMapDataHolder);
+
+                ExtraInfoMapDataHolder.Visibility = Visibility.Visible;
+                DataVisual.Visibility = Visibility.Visible;
+
                 if (CurrentDataPackage.Data == null)
-                {
                     Status.Text = $"No data found!";
-                    SetFlashMessage("No data found!");
-                }
                 else
                 {
                     if (CurrentDataPackage.Data.Rows.Count == 0)
-                    {
                         Status.Text = $"No data loaded yet";
-
-                        SetFlashMessage("No data found!");
-                    }
                     else
-                    {
                         Status.Text = $"Loaded {CurrentDataPackage.Data.Rows.Count} {CurrentDataPackage.Metadata.Description}s!";
-
-                        HideFlashMessage();
-                    }
                 }
             }
             else
             {
                 // ToDo: Error
+            }
+        }
+
+        private void SetDataVisualData(DataTable data)
+        {
+            int rowCount = data.Rows.Count;
+
+            if (data == null || rowCount == 0)
+            {
+                DataVisual.DataContext = null;
+                DataVisualCount.Text = "No entries found";
+                SetFlashMessage("No entries found");
+            }
+            else
+            {
+                DataVisual.DataContext = data;
+                DataVisualCount.Text = $"{rowCount} entries";
+                HideFlashMessage();
             }
         }
 
@@ -592,7 +623,7 @@ namespace Arksplorer
                         MapList.Add(new() { Name = mapName, CacheState = "Not loaded", Load = lastMaps.Contains(mapName) });
 
                     DataVisual.DataContext = null; // Clear any current results list
-                    Status.Text = $"Welcome! Remember, data is only{Environment.NewLine}as up-to-date as the server supplies";
+                    Status.Text = $"Welcome! This server updates data approx. every {ServerConfig.RefreshRate} minutes.";
                     LoadableControlsEnabled(true);
                     LoadingVisualEnabled(false);
                     ServerLoadedControls.Visibility = Visibility.Visible;
@@ -622,7 +653,7 @@ namespace Arksplorer
             ExitApplication();
         }
 
-        private async Task<int> ProcessQueue(List<QueueDataItem> queue)
+        private async Task<int> ProcessQueue(List<QueueDataItem> queue, bool autoUpdateDataGrid)
         {
             int count = 0;
             string type = "";   // Should always be the same in a que
@@ -678,14 +709,23 @@ namespace Arksplorer
                 count++;
             }
 
-            this.Dispatcher.Invoke(() =>
+            if (doneCount > 0)
             {
-                Status.Text = $"Loaded {newRecords} {description}s!";
-                ShowData(type);
-                LoadableControlsEnabled(true);
-                LoadingVisualEnabled(false);
-             //   Mouse.OverrideCursor = PrevCursor;
-            });
+                Dispatcher.Invoke(() =>
+                {
+                    if (newRecords > 0)
+                        Status.Text = $"Loaded {newRecords} {description}s!";
+                    else
+                        Status.Text = "Select maps to load first";
+
+                    if (autoUpdateDataGrid)
+                        ShowData(type);
+
+                    LoadableControlsEnabled(true);
+                    LoadingVisualEnabled(false);
+                    //   Mouse.OverrideCursor = PrevCursor;
+                });
+            }
 
             ProcessingQueue = false;
 
@@ -751,7 +791,7 @@ namespace Arksplorer
                     newMapPackage.Timestamp = serverTimestamp;
                 }
                 newMapPackage.RawTimestamp = rawServerTimestamp;
-                newMapPackage.CacheExpires = newMapPackage.Timestamp.AddMinutes(ServerConfig.RefreshRate);
+                newMapPackage.ApproxNextServerUpdateTimestamp = newMapPackage.Timestamp.AddMinutes(ServerConfig.RefreshRate);
 
                 var maps = dataPackage.IndividualMaps;
                 if (maps.ContainsKey(mapName))
@@ -940,14 +980,18 @@ namespace Arksplorer
             ShowExtraInfo(ResourcesAndLinksExtraInfo);
         }
 
-        private void ShowExtraInfo(UIElement whatToShow)
+        private void ShowExtraInfo(UIElement whatToShow, UIElement whatToShow2 = null)
         {
             ExtraInfoHolder.Visibility = Visibility.Collapsed;
+            ExtraInfoMapDataHolder.Visibility = Visibility.Collapsed;
             ResourcesAndLinksExtraInfo.Visibility = Visibility.Collapsed;
             AboutExtraInfo.Visibility = Visibility.Collapsed;
 
             if (whatToShow != null)
                 whatToShow.Visibility = Visibility.Visible;
+
+            if (whatToShow2 != null)
+                whatToShow2.Visibility = Visibility.Visible;
         }
 
         private void Window_MouseMove(object sender, MouseEventArgs e)
@@ -1047,6 +1091,28 @@ namespace Arksplorer
         private void AlarmOff_Click(object sender, RoutedEventArgs e)
         {
             RemoveAlarm();
+        }
+
+        private void FilterLevelNumber_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsInteger(e.Text);
+        }
+
+        private void FilterLevelNumber_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (e.DataObject.GetDataPresent(typeof(string)))
+            {
+                string text = (string)e.DataObject.GetData(typeof(string));
+                if (IsInteger(text))
+                    return;
+            }
+
+            e.CancelCommand();
+        }
+
+        private bool IsInteger(string text)
+        {
+            return int.TryParse(text, out _);
         }
     }
 }

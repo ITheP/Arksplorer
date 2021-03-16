@@ -11,13 +11,19 @@
         <Style TargetType="Button" x:Key="BrowserButton">
             <Setter Property="Margin" Value="3" />
             <Setter Property="Width" Value="75" />
+            <Setter Property="Height" Value="25" />
             <!--<Setter Property="Background" Value="Transparent" />-->
         </Style>
         <Style TargetType="Button" x:Key="BrowserIconButton">
             <Setter Property="Margin" Value="3" />
             <Setter Property="Width" Value="25" />
+            <Setter Property="Height" Value="25" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+        </Style>
+        <Style TargetType="TextBlock" x:Key="TitleText">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="16"/>
         </Style>
         <Storyboard x:Key="MarkerShrinker" RepeatBehavior="Forever">
             <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="1.0" To="0.0" Duration="0:0:0.75"/>
@@ -64,8 +70,8 @@
                     <StackPanel DockPanel.Dock="Top">
                         <Image Source="/Images/ark.png" />
                         <TextBlock x:Name="Title" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>
-                        <TextBlock x:Name="Version" Text="v0.6 Preview" FontSize="10" HorizontalAlignment="Center" Margin="0,2,0,0"/>
-                        <Separator Margin="0,8,0,8"/>
+                        <TextBlock x:Name="Version" Text="v0.7 Preview" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
+                        <Separator Margin="0,7,0,8"/>
                         <ComboBox x:Name="ServerList" IsEditable="False" SelectedValuePath="Name" SelectionChanged="ServerList_SelectionChanged">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
@@ -80,18 +86,20 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
                         <DockPanel Margin="0,4,0,0">
-                            <Viewbox x:Name="GeneralLoadingSpinner" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                                <local:Spinner/>
-                            </Viewbox>
-                            <TextBlock x:Name="Status" FontWeight="Bold" Foreground="Red" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                Please select a server from<LineBreak/>
-                                the drop down list above
-                            </TextBlock>
+                            <Grid Height="32">
+                                <Viewbox x:Name="GeneralLoadingSpinner" Height="32" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                                    <local:Spinner/>
+                                </Viewbox>
+                                <TextBlock x:Name="Status" FontWeight="Bold" Foreground="Red" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    Please select a server from<LineBreak/>
+                                    the drop down list above
+                                </TextBlock>
+                            </Grid>
                         </DockPanel>
+                        <Separator Margin="0,6"/>
                         <Grid x:Name="ServerLoadedControls">
                             <StackPanel>
-                                <Separator Margin="0,6"/>
-                                <TextBlock FontWeight="Bold" Foreground="CornflowerBlue" HorizontalAlignment="Center">Maps to include...</TextBlock>
+                                <TextBlock FontWeight="Bold" Foreground="CornflowerBlue" Style="{StaticResource TitleText}" HorizontalAlignment="Center">Maps to include...</TextBlock>
                                 <ListView Margin="0,4,0,0" x:Name="MapsToInclude" ItemsSource="{Binding MapList}" BorderThickness="0">
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
@@ -114,38 +122,69 @@
                                 <!--<CheckBox x:Name="AutoRefresh" Content="Auto Refresh when possible" IsChecked="True"/>-->
                                 <Separator Margin="0,8"/>
 
-                                <TextBlock Margin="0,0,0,4" FontWeight="Bold" Foreground="DarkSeaGreen" HorizontalAlignment="Center">Load data...</TextBlock>
+                                <TextBlock Margin="0,0,0,4" FontWeight="Bold" Foreground="DarkSeaGreen" Style="{StaticResource TitleText}" HorizontalAlignment="Center">Show data for...</TextBlock>
                                 <Button x:Name="TameDinos" Content="Tame Dinos" Margin="0,4,0,0" Click="TameDinos_Click" />
                                 <Button x:Name="WildDinos" Content="Wild Dinos" Margin="0,4,0,0" Click="WildDinos_Click" />
                                 <Button x:Name="Survivors" Content="Survivors" Margin="0,4,0,0" Click="Survivors_Click" />
+                                <Separator Margin="0,12,0,8"/>
                             </StackPanel>
                         </Grid>
-                        <Separator Margin="0,12,0,8"/>
                     </StackPanel>
                     <Grid>
                         <ScrollViewer x:Name="ExtraInfoHolder" VerticalScrollBarVisibility="Auto">
-                            <TextBlock x:Name="ExtraInfo" TextWrapping="Wrap">
-                            Select what maps to include, then click what you want to load -
-                            <LineBreak/>
-                            Dinos, Wild Dinos, Suvivors... then click a result to find them.
-                            <LineBreak/>
-                            <LineBreak/>
-                            <Span FontStyle="Italic">Filter</Span> searches by map, dino names, creature types etc.
-                            <LineBreak/>
-                            Press <Span FontStyle="Italic" Foreground="Brown">enter</Span> or click <Span FontStyle="Italic" Foreground="Brown">Apply</Span> to apply filter. <Span FontStyle="Italic" Foreground="Brown">Exact</Span> returns exact matches.
-                            <LineBreak/>
-                            <LineBreak/>
-                            Multiple filters using , separation
-                            <LineBreak/>
-                            e.g. <Span FontStyle="Italic" Foreground="BlueViolet">ragn, arg</Span>
-                            returns results including <Span FontStyle="Italic" Foreground="BlueViolet">arg</Span>entavis on <Span FontStyle="Italic" Foreground="BlueViolet">ragn</Span>arok.
-                            <LineBreak/>
-                            <LineBreak/>
-                            Server data updates approx. every 40-50 minutes.
-                            <LineBreak/>
-                            <LineBreak/>
-                            Visit our facebook page... <Hyperlink NavigateUri="http://facebook.com/arksplorer" RequestNavigate="HandleLinkClick">facebook.com/arksplorer</Hyperlink>
-                            </TextBlock>
+                            <StackPanel>
+                                <TextBlock x:Name="ExtraInfoTitle" Style="{StaticResource TitleText}" Text="Instructions" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+                                <TextBlock x:Name="ExtraInfo" Margin="0,2,0,0" TextWrapping="Wrap">
+                                    Select what maps to include, then click what you want to load/show. Click a result to find individuals.
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    <Span FontStyle="Italic">Filter</Span> searches by map, dino names, creature types etc.
+                                    <LineBreak/>
+                                    Press <Span FontStyle="Italic" Foreground="Brown">enter</Span> or click <Span FontStyle="Italic" Foreground="Brown">Apply</Span> to apply filter. <Span FontStyle="Italic" Foreground="Brown">Exact</Span> returns exact matches.
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    Multiple filters using , separation
+                                    <LineBreak/>
+                                    e.g. <Span FontStyle="Italic" Foreground="BlueViolet">ragn, arg</Span>
+                                    returns results including <Span FontStyle="Italic" Foreground="BlueViolet">arg</Span>entavis on <Span FontStyle="Italic" Foreground="BlueViolet">ragn</Span>arok.
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    Visit our facebook page... <Hyperlink NavigateUri="http://facebook.com/arksplorer" RequestNavigate="HandleLinkClick">facebook.com/arksplorer</Hyperlink>
+                                </TextBlock>
+                                <Grid x:Name="ExtraInfoMapDataHolder">
+                                    <StackPanel>
+                                        <TextBlock TextAlignment="Right" Margin="0,0,1,0">When updated</TextBlock>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                            <TextBlock Text="Map name" Width="88" />
+                                            <TextBlock Text="Count"/>
+                                            <TextBlock Margin="14,0,0,0" Text="Last"/>
+                                            <TextBlock Margin="14,0,0,0" Text="Next"/>
+                                        </StackPanel>
+                                        <Separator/>
+                                        <ListView x:Name="ExtraInfoMapData" Margin="-1,-2,0,0" BorderThickness="0">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid HorizontalAlignment="Stretch" Margin="0">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Key}" Width="80"/>
+                                                            <TextBlock Text="{Binding Path=Value.Data.Rows.Count}" TextAlignment="Right" Width="41"/>
+                                                            <TextBlock Text="{Binding Path=Value.Timestamp, StringFormat='HH:mm'}" Width="31" Margin="10,0,5,0" />
+                                                            <TextBlock Text="{Binding Path=Value.ApproxNextServerUpdateTimestamp, StringFormat='HH:mm'}"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                            <ListView.ItemContainerStyle>
+                                                <Style TargetType="ListViewItem">
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                    <Setter Property="Margin" Value="0"/>
+                                                    <Setter Property="Padding" Value="0,2,0,0"/>
+                                                </Style>
+                                            </ListView.ItemContainerStyle>
+                                        </ListView>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
                         </ScrollViewer>
                         <ScrollViewer x:Name="ResourcesAndLinksExtraInfo"  VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
                             <TextBlock TextWrapping="Wrap">
@@ -157,7 +196,7 @@
                             <Hyperlink NavigateUri="https://ark.gamepedia.com/" RequestNavigate="HandleLinkClick">ark.gamepedia.com</Hyperlink>
                             <LineBreak/>
                             <LineBreak/>
-                            Taming calculator...
+                            Awesome taming calculator...
                             <LineBreak/>
                             <Hyperlink NavigateUri="https://www.dododex.com/" RequestNavigate="HandleLinkClick">www.dodex.com</Hyperlink>
                             <LineBreak/>
@@ -171,12 +210,17 @@
                             </TextBlock>
                         </ScrollViewer>
                         <ScrollViewer x:Name="AboutExtraInfo" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
-                            <TextBlock ScrollViewer.VerticalScrollBarVisibility="Auto"  TextWrapping="Wrap">
-                            Arksplorer © 2021 MisterB.
+                            <TextBlock ScrollViewer.VerticalScrollBarVisibility="Auto" TextAlignment="Center"  TextWrapping="Wrap">
+                            <Span FontSize="16" FontWeight="Bold">Arksplorer</Span>
+                            <LineBreak/>
+                            <Span FontStyle="Italic">© 2021 MisterB@ITheP.Rocks</Span>
                             <LineBreak/>
                             <LineBreak/>
-                            Simple front end Ark explorer that takes bits of Ark data including data expose
+                            Simple front end Ark data visualiser that takes bits of Ark data expose
                             by an ark server to help you find things in Ark.
+                            <LineBreak/>
+                            <LineBreak/>
+                            Also does a few other things because, why not!
                             <LineBreak/>
                             <LineBreak/>
                             Provided under <Hyperlink NavigateUri="https://creativecommons.org/licenses/by-nc-sa/4.0/" RequestNavigate="HandleLinkClick">CC BY-NC-SA 4.0</Hyperlink> License.
@@ -198,7 +242,7 @@
                     </Grid>
                 </DockPanel>
             </Grid>
-            <TabControl Margin="0,0,8,8">
+            <TabControl Margin="0,0,8,8" Padding="8">
                 <TabItem Header="Main" IsSelected="True">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -207,7 +251,7 @@
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0" DockPanel.Dock="Top" Margin="0,0,0,8">
                             <Image x:Name="SplashImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
-                            <Viewbox Stretch="Uniform" Margin="0,0,0,8">
+                            <Viewbox Stretch="Uniform">
                                 <Grid x:Name="MapHolder" Width="100" Height="100">
                                     <Image x:Name="MapImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
                                     <Ellipse x:Name="Marker" Width="5" Height="5" Fill="Red" RenderTransformOrigin="0.5,0.5">
@@ -236,34 +280,54 @@
                         and the rest of you!
                             </TextBlock>
                         </Grid>
-                        <Grid Grid.Row="1">
-                            <DataGrid x:Name="DataVisual"  Margin="0,38,0,0"
-                                AutoGenerateColumns="True"
-                                ItemsSource="{Binding}"
-                                IsReadOnly="True"
-                                AlternatingRowBackground="#FFF4F4F4"
-                                SelectionMode="Single"
-                                SelectionUnit="FullRow"
-                                SelectionChanged="DataVisual_SelectionChanged"
-                                AutoGeneratingColumn="DataVisual_AutoGeneratingColumn"
-                            />
+                        <Grid Grid.Row="1" VerticalAlignment="Stretch">
+                            <DockPanel VerticalAlignment="Stretch">
+                                <StackPanel DockPanel.Dock="Top">
+                                    <DockPanel Margin="0,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Top">
+                                            <Button x:Name="ApplyFilter" Margin="16,0,0,0" Width="75" VerticalAlignment="Center" Click="ApplyFilter_Click">Apply</Button>
+                                            <Button x:Name="ExactFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="ExactFilter_Click">Exact</Button>
+                                            <Button x:Name="RemoveFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="RemoveFilter_Click">Show all</Button>
+                                        </StackPanel>
+
+                                        <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" Width="35">Filter</TextBlock>
+                                        <TextBox x:Name="FilterCriteria" HorizontalAlignment="Stretch" KeyDown="FilterCriteria_KeyDown"/>
+                                    </DockPanel>
+                                    <Grid>
+                                        <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                                            <ComboBox x:Name="FilterLevelType" Margin="35,0,4,0" Width="130" SelectedValuePath="Tag">
+                                                <ComboBoxItem Content="Include all levels" IsSelected="True" Tag="All"/>
+                                                <ComboBoxItem Content="Ignore below level" Tag="Below"/>
+                                                <ComboBoxItem Content="Ignore above level" Tag="Above"/>
+                                            </ComboBox>
+                                                <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                            <TextBlock x:Name="DataVisualCount" Text=""/>
+                                        </StackPanel>
+                                    </Grid>
+                        </StackPanel>
+
+                                <DataGrid x:Name="DataVisual"
+                                    Margin="0,8,0,0"
+                                    AutoGenerateColumns="True"
+                                    ItemsSource="{Binding}"
+                                    IsReadOnly="True"
+                                    AlternatingRowBackground="#FFF4F4F4"
+                                    SelectionMode="Single"
+                                    SelectionUnit="FullRow"
+                                    SelectionChanged="DataVisual_SelectionChanged"
+                                    AutoGeneratingColumn="DataVisual_AutoGeneratingColumn"
+                                    VerticalAlignment="Stretch"
+                                />
+                            </DockPanel>
                             <Viewbox>
                                 <TextBlock x:Name="FlashMessage" FontSize="8" HorizontalAlignment="Center" Foreground="White" Margin="5" FontWeight="Black" VerticalAlignment="Center" TextAlignment="Center">
                                 wiredcat.hopto.org
                                 </TextBlock>
                             </Viewbox>
                         </Grid>
-                        <DockPanel Grid.Row="1" Margin="0,12,0,0" Height="20" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                            <TextBlock VerticalAlignment="Center">Filter</TextBlock>
-                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                <Button x:Name="ApplyFilter" Margin="16,0,0,0" Width="75" VerticalAlignment="Center" Click="ApplyFilter_Click">Apply</Button>
-                                <Button x:Name="ExactFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="ExactFilter_Click">Exact</Button>
-                                <Button x:Name="RemoveFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="RemoveFilter_Click">Clear</Button>
-                            </StackPanel>
-                            <TextBox x:Name="FilterCriteria" Margin="8,0,0,0" HorizontalAlignment="Stretch"
-                             KeyDown="FilterCriteria_KeyDown">
-                            </TextBox>
-                        </DockPanel>
+
                         <GridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Top" ShowsPreview="False" Background="Black"/>
                     </Grid>
                 </TabItem>
@@ -271,7 +335,7 @@
                     <DockPanel>
                         <Grid DockPanel.Dock="Top">
                             <StackPanel Orientation="Horizontal">
-                                <Button x:Name="ArkpediaBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Click="ArkpediaBack_Click"/>
+                                <Button x:Name="ArkpediaBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="ArkpediaBack_Click"/>
                                 <Button x:Name="ArkpediaHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki" Click="ArkpediaNavigate_Click"/>
                                 <Button x:Name="ArkpediaResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/Data_Maps" Click="ArkpediaNavigate_Click"/>
                                 <Button x:Name="ArkpediaMaps" Content="Maps" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/ARKs" Click="ArkpediaNavigate_Click"/>
@@ -279,10 +343,10 @@
                             </StackPanel>
                             <Grid HorizontalAlignment="Right">
                                 <StackPanel Orientation="Horizontal">
-                                    <Viewbox x:Name="ArkpediaLoadingSpinner" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right">
+                                    <Viewbox x:Name="ArkpediaLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
                                         <local:Spinner/>
                                     </Viewbox>
-                                    <Button x:Name="ArkpediaOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Click="ArkpediaOpenExternal_Click"/>
+                                    <Button x:Name="ArkpediaOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="ArkpediaOpenExternal_Click"/>
                                 </StackPanel>
                             </Grid>
                         </Grid>
@@ -293,7 +357,7 @@
                     <DockPanel>
                         <Grid DockPanel.Dock="Top">
                             <StackPanel Orientation="Horizontal">
-                                <Button x:Name="DodexBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Click="DodexBack_Click"/>
+                                <Button x:Name="DodexBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="DodexBack_Click"/>
                                 <Button x:Name="DodexHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="https://www.dododex.com/" Click="DodexNavigate_Click"/>
                                 <Button x:Name="DodexCreatures" Content="Creatures" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/dinosaurs" Click="DodexNavigate_Click"/>
                                 <Button x:Name="DodexResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/resources" Click="DodexNavigate_Click"/>
@@ -301,10 +365,10 @@
                             </StackPanel>
                             <Grid HorizontalAlignment="Right">
                                 <StackPanel Orientation="Horizontal">
-                                    <Viewbox x:Name="DodexLoadingSpinner" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right">
+                                    <Viewbox x:Name="DodexLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
                                         <local:Spinner/>
                                     </Viewbox>
-                                    <Button x:Name="DodexOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Click="DodexOpenExternal_Click"/>
+                                    <Button x:Name="DodexOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="DodexOpenExternal_Click"/>
                                 </StackPanel>
                             </Grid>
                         </Grid>

@@ -15,6 +15,7 @@ namespace Arksplorer
         public string NormalSearch { get; set; }
         public string WildcardSearch { get; set; }
         public bool IncludesCreatures { get; set; }
+        public bool IncludesLevel { get; set; }
         public DateTime LastUpdate { get; set; }
     }
 }

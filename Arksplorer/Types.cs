@@ -18,6 +18,7 @@ namespace Arksplorer
             ArkEntityType = "TameDinos",
             Description = "Tamed Dino",
             IncludesCreatures = true,
+            IncludesLevel = true,
             NormalSearch = "Map='#' OR Tribe='#' OR Tamer='#' OR Imprinter='#' OR Creature='#' OR Name='#' OR CreatureId='#'",
             WildcardSearch = "Map LIKE '*#*' OR Tribe LIKE '*#*' OR Tamer LIKE '*#*' OR Imprinter LIKE '*#*' OR Creature LIKE '*#*' OR Name LIKE '*#*' OR CreatureId LIKE '*#*'"
         };
@@ -28,6 +29,7 @@ namespace Arksplorer
             ArkEntityType = "WildDinos",
             Description = "Wild Dino",
             IncludesCreatures = true,
+            IncludesLevel = true,
             NormalSearch = "Map='#' OR Creature='#' OR CreatureId='#'",
             WildcardSearch = "Map LIKE '*#*' OR Creature LIKE '*#*' OR CreatureId LIKE '*#*'"
         };
@@ -38,6 +40,7 @@ namespace Arksplorer
             ArkEntityType = "Survivors",
             Description = "Survivor",
             IncludesCreatures = false,
+            IncludesLevel = true,
             NormalSearch = "Map='#' OR Steam='#' OR Name='#' OR Tribe='#'",
             WildcardSearch = "Map LIKE '*#*' OR Steam LIKE '*#*' OR Name LIKE '*#*' OR Tribe LIKE '*#*'"
         };
