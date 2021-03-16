@@ -1,5 +1,6 @@
 ﻿using Arksplorer;
 using Arksplorer.Properties;
+using Microsoft.VisualBasic;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using Microsoft.Web.WebView2.Wpf;
@@ -63,6 +64,7 @@ namespace Arksplorer
         public MainWindow()
         {
             InitializeComponent();
+
             DataContext = this;
             // These are visible at design time to aid design, but want to hide them when window first opens
             MapImage.Visibility = Visibility.Collapsed;
@@ -87,9 +89,6 @@ namespace Arksplorer
             // ToDo: Config required for where this comes from!
             try
             {
-                // Toggle the maps to the last required ones
-                string lastMaps = Settings.Default.LastMaps;
-
                 string lastServer = Settings.Default.LastServer;
 
                 KnownServers = JsonSerializer.Deserialize<List<Server>>(File.ReadAllText("./Servers.json"));
@@ -558,6 +557,7 @@ namespace Arksplorer
                 ExtraInfoTitle.Text = CurrentDataPackage.MapsDescription;
                 ExtraInfo.Text = $"Total loaded: {CurrentDataPackage.Data.Rows.Count}";
                 ExtraInfoMapData.ItemsSource = CurrentDataPackage.IndividualMaps;
+                ExtraInfoMapData.Items.Refresh();
                 ShowExtraInfo(ExtraInfo, ExtraInfoMapDataHolder);
 
                 ExtraInfoMapDataHolder.Visibility = Visibility.Visible;
@@ -581,20 +581,18 @@ namespace Arksplorer
 
         private void SetDataVisualData(DataTable data)
         {
-            int rowCount = data.Rows.Count;
-
-            if (data == null || rowCount == 0)
+            if (data == null || data.Rows.Count == 0)
             {
                 DataVisual.DataContext = null;
                 DataVisualCount.Text = "No entries found";
                 SetFlashMessage("No entries found");
+
+                return;
             }
-            else
-            {
-                DataVisual.DataContext = data;
-                DataVisualCount.Text = $"{rowCount} entries";
-                HideFlashMessage();
-            }
+
+            DataVisual.DataContext = data;
+            DataVisualCount.Text = $"{data.Rows.Count} entries";
+            HideFlashMessage();
         }
 
         static readonly HttpClient httpClient = new();
@@ -709,9 +707,10 @@ namespace Arksplorer
                 count++;
             }
 
-            if (doneCount > 0)
+
+            Dispatcher.Invoke(() =>
             {
-                Dispatcher.Invoke(() =>
+                if (doneCount > 0)
                 {
                     if (newRecords > 0)
                         Status.Text = $"Loaded {newRecords} {description}s!";
@@ -720,12 +719,14 @@ namespace Arksplorer
 
                     if (autoUpdateDataGrid)
                         ShowData(type);
+                }
+                else
+                    Status.Text = "Nothing new to load";
 
-                    LoadableControlsEnabled(true);
-                    LoadingVisualEnabled(false);
-                    //   Mouse.OverrideCursor = PrevCursor;
-                });
-            }
+                LoadableControlsEnabled(true);
+                LoadingVisualEnabled(false);
+                //   Mouse.OverrideCursor = PrevCursor;
+            });
 
             ProcessingQueue = false;
 
@@ -1113,6 +1114,23 @@ namespace Arksplorer
         private bool IsInteger(string text)
         {
             return int.TryParse(text, out _);
+        }
+
+        private void MapsToIncludeCheckbox_Click(object sender, RoutedEventArgs e)
+        {
+            string lastMaps = Properties.Settings.Default.LastMaps;
+            string selectedMaps = "";
+            string separator = "";
+            foreach (var map in MapList)
+            {
+                if (map.Load)
+                {
+                    selectedMaps += separator + map.Name;
+                    separator = ",";
+                }
+            }
+
+            Settings.Default.LastMaps = selectedMaps;
         }
     }
 }

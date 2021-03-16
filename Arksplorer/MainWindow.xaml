@@ -104,7 +104,7 @@
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
                                             <Grid HorizontalAlignment="Stretch">
-                                                <CheckBox Content="{Binding Name}" IsChecked="{Binding Load}"/>
+                                                <CheckBox x:Name="MapsToIncludeCheckbox" Content="{Binding Name}" IsChecked="{Binding Load}" Click="MapsToIncludeCheckbox_Click"/>
                                                 <TextBlock Text="{Binding CacheState}" HorizontalAlignment="Right" Visibility="Hidden"/>
                                             </Grid>
                                         </DataTemplate>
