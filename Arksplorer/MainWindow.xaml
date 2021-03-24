@@ -70,7 +70,7 @@
                     <StackPanel DockPanel.Dock="Top">
                         <Image Source="/Images/ark.png" />
                         <TextBlock x:Name="Title" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>
-                        <TextBlock x:Name="Version" Text="v0.7 Preview" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
+                        <TextBlock x:Name="Version" Text="v0.8 Preview" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
                         <Separator Margin="0,7,0,8"/>
                         <ComboBox x:Name="ServerList" IsEditable="False" SelectedValuePath="Name" SelectionChanged="ServerList_SelectionChanged">
                             <ComboBox.ItemTemplate>
@@ -145,7 +145,7 @@
                                     <LineBreak/>
                                     Multiple filters using , separation
                                     <LineBreak/>
-                                    e.g. <Span FontStyle="Italic" Foreground="BlueViolet">ragn, arg</Span>
+                                    e.g. <Span FontStyle="Italic" Foreground="BlueViolet">ragn, arg</Span>ver
                                     returns results including <Span FontStyle="Italic" Foreground="BlueViolet">arg</Span>entavis on <Span FontStyle="Italic" Foreground="BlueViolet">ragn</Span>arok.
                                     <LineBreak/>
                                     <LineBreak/>
@@ -153,7 +153,7 @@
                                 </TextBlock>
                                 <Grid x:Name="ExtraInfoMapDataHolder">
                                     <StackPanel>
-                                        <TextBlock TextAlignment="Right" Margin="0,0,1,0">When updated</TextBlock>
+                                        <TextBlock TextAlignment="Right" Margin="0,0,1,0">Data updates</TextBlock>
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
                                             <TextBlock Text="Map name" Width="88" />
                                             <TextBlock Text="Count"/>
@@ -254,7 +254,9 @@
                             <Viewbox Stretch="Uniform">
                                 <Grid x:Name="MapHolder" Width="100" Height="100">
                                     <Image x:Name="MapImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
-                                    <Ellipse x:Name="Marker" Width="5" Height="5" Fill="Red" RenderTransformOrigin="0.5,0.5">
+                                    <Grid x:Name="MassMarkerHolder">
+                                    </Grid>
+                                    <Ellipse x:Name="Marker" Width="5" Height="5" Fill="CornflowerBlue" Stroke="White" StrokeThickness="0.55" RenderTransformOrigin="0.5,0.5">
                                         <Ellipse.RenderTransform>
                                             <TransformGroup>
                                                 <ScaleTransform x:Name="MarkerScale" ScaleX="1.0" ScaleY="1.0"/>
@@ -269,7 +271,7 @@
                             <TextBlock x:Name="OverviewMessage" Background="#9000" Foreground="#FF9" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Right" TextAlignment="Right" Margin="4" Padding="4">
                         Shout outs to...
                         <LineBreak/>
-                        Duno, Scully, Ward who first tried this
+                        DuoMog, Scully, Ward who first tried this
                         <LineBreak/>
                         Shauna, LemonCake, best darn tribe around!
                         <LineBreak/>
@@ -300,13 +302,14 @@
                                                 <ComboBoxItem Content="Ignore below level" Tag="Below"/>
                                                 <ComboBoxItem Content="Ignore above level" Tag="Above"/>
                                             </ComboBox>
-                                                <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
+                                            <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
+                                            <CheckBox x:Name="ShowSameType" Content="Show same type" Margin="8,0,0,0" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" />
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                                             <TextBlock x:Name="DataVisualCount" Text=""/>
                                         </StackPanel>
                                     </Grid>
-                        </StackPanel>
+                                </StackPanel>
 
                                 <DataGrid x:Name="DataVisual"
                                     Margin="0,8,0,0"
@@ -375,9 +378,15 @@
                         <wv2:WebView2 x:Name="DodexBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="https://www.dododex.com/" />
                     </DockPanel>
                 </TabItem>
-                <TabItem Header="Debug">
+                <!--<TabItem Header="Debug">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="Debug_ClearText" Content="Clear Text" Padding="4,2" Background="LightGreen" />
+                            <Button x:Name="Debug_TriggerCacheRefresh" Content="Trigger cache refresh" Padding="4,2" Margin="4,0,0,0" Click="Debug_TriggerCacheRefresh_Click" />
+                        </StackPanel>
                     <TextBlock x:Name="DebugInfo"/>
-                </TabItem>
+                    </StackPanel>
+                </TabItem>-->
             </TabControl>
         </DockPanel>
     </Grid>

@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <Version>0.7</Version>
+    <Version>0.71</Version>
     <Authors>Mister B</Authors>
     <Company>I The P</Company>
     <Description>Loads Ark creature/survivor data files from an Ark web server and lets you find them etc. on maps. Has a taming countdown timer. Embeds other Ark web resources for ease of finding them.</Description>
@@ -88,7 +88,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="5.0.0" />
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.774.44" />
   </ItemGroup>
 

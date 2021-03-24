@@ -34,3 +34,9 @@ v0.7 Preview - 15/03/2021
 - Ark.Gamepedia embedding
 - Dodex embedding
 - Taming countdown timer
+
+v0.8 Preview - 24/03/2021
+- Various UI improvements
+- Sorted out the cache so it refreshes properly
+- Sorted out the UI so it shows updated cache data properly
+- Bulk display of creatures on the map (including level visualisation)

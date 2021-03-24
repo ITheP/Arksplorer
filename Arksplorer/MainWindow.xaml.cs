@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.IO.Packaging;
 using System.Linq;
 using System.Media;
 using System.Net.Cache;
@@ -61,6 +62,15 @@ namespace Arksplorer
 
         public static ObservableCollection<MapSelection> MapList { get; set; } = new();
 
+        /// <summary>
+        /// Forces use of local temp.json file as a data file. Used for debugging (rather than having to make a server trip for data we can't control)
+        /// </summary>
+        public bool ForceLocalLoad { get; set; } = false;
+        /// <summary>
+        /// Set this to true to force refresh of data reload, even if cache timings have not expired. Handy for debugging.
+        /// </summary>
+        public bool ForceRefreshOfData { get; set; } = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -86,7 +96,6 @@ namespace Arksplorer
             InitWebTabs();
 
             // Grab config from server that feeds into all this
-            // ToDo: Config required for where this comes from!
             try
             {
                 string lastServer = Settings.Default.LastServer;
@@ -197,10 +206,11 @@ namespace Arksplorer
             if (CheckingQueue)
                 return;
 
-            DateTime now = DateTime.Now;
-            StringBuilder details = new();
+            CheckingQueue = true;
 
-            details.AppendLine($"{now:hh:mm:ss} {from}");
+            DateTime now = DateTime.Now;
+
+            Debug.Print($"{now:HH:mm:ss} {from}");
 
             List<QueueDataItem> queue = new();
 
@@ -211,25 +221,26 @@ namespace Arksplorer
                     var mapPackage = map.Value;
                     bool expired = now > mapPackage.ApproxNextServerUpdateTimestamp;
 
-                    if (expired)
+                    if (expired || ForceRefreshOfData)
                     {
                         // We are reloading what we already have
                         // Load process will flush old data if it exists first
-                        AddToQueue(queue, map.Key, package.Value.Metadata, false);
+                        AddToQueue(queue, map.Key, package.Value.Metadata, ForceRefreshOfData); // false);
                     }
 
                     string difference = $"{(mapPackage.ApproxNextServerUpdateTimestamp - now):mm\\:ss}";
-                    details.AppendLine($"{package.Value.Metadata.Description}.{map.Key}.{mapPackage.Timestamp} {difference} {(expired ? "Expired" : "")}");
+
+                    Debug.Print($"{package.Value.Metadata.Description}.{map.Key} {mapPackage.Timestamp} {(expired ? $"Data expired {difference} ago" : $"Already using latest available data, expires in {difference}")}");
                 }
             }
 
             if (queue.Count > 0)
             {
-                details.AppendLine($"Refreshing cache...");
+                Debug.Print($"Refreshing cache...");
+                // We don't automatically refresh the visual display as someone may be part way through looking at data.
+                // Next filter/search it will show the new data.
                 LoadQueue(queue, false);
             }
-
-            DebugInfo.Text = details.ToString();
 
             CheckingQueue = false;
         }
@@ -354,7 +365,7 @@ namespace Arksplorer
             foreach (var selection in MapList)
             {
                 if (selection.Load)
-                    AddToQueue(queue, selection.Name, type, false);
+                    AddToQueue(queue, selection.Name, type, ForceRefreshOfData);
             }
 
             LoadQueue(queue, true);
@@ -462,23 +473,10 @@ namespace Arksplorer
             {
                 DataRow[] filteredRows = CurrentDataPackage.Data.Select(finalFilter);
 
-
-
                 if (filteredRows.Length == 0)
-                {
                     SetDataVisualData(null);
-
-                    //DataVisual.DataContext = null;
-                    //SetFlashMessage("No entries found");
-                    //DataVisualCount.Text = "No entries found";
-                }
                 else
-                {
-                    //DataVisual.DataContext = filteredRows.CopyToDataTable();
                     SetDataVisualData(filteredRows.CopyToDataTable());
-                    //DataVisualCount.Text = $"{filteredRows.Length} entries";
-                    //HideFlashMessage();
-                }
             }
             catch (Exception ex)
             {
@@ -493,6 +491,7 @@ namespace Arksplorer
             if (CurrentDataPackage.Data != null)
                 DataVisual.DataContext = CurrentDataPackage.Data;
         }
+
         private static Dictionary<string, DataPackage> DataPackages { get; set; } = new Dictionary<string, DataPackage>();
 
         private static DataPackage CurrentDataPackage { get; set; }
@@ -544,24 +543,28 @@ namespace Arksplorer
             }
         }
 
-        private void ShowData(string type)
+        private void ShowData(string type, bool updateVisualDataGrid)
         {
             if (DataPackages.ContainsKey(type))
             {
+                Debug.Print($"ShowData.CurrentDataPackage = DataPackages[{type}]");
+
                 CurrentDataPackage = DataPackages[type];
                 CurrentDataPackage.MakeSureDataIsUpToDate();
-                //DataVisual.DataContext = CurrentDataPackage.Data;
-                //DataVisualCount.Text = $"{filteredRows.Length} entries";
-                SetDataVisualData(CurrentDataPackage.Data);
+
+                if (updateVisualDataGrid)
+                {
+                    SetDataVisualData(CurrentDataPackage.Data);
+                    DataVisual.Visibility = Visibility.Visible;
+                }
 
                 ExtraInfoTitle.Text = CurrentDataPackage.MapsDescription;
-                ExtraInfo.Text = $"Total loaded: {CurrentDataPackage.Data.Rows.Count}";
-                ExtraInfoMapData.ItemsSource = CurrentDataPackage.IndividualMaps;
-                ExtraInfoMapData.Items.Refresh();
+                ExtraInfo.Text = $"Total loaded: {CurrentDataPackage.Data?.Rows.Count ?? 0}";
+                ExtraInfoMapData.ItemsSource = CurrentDataPackage.IndividualMaps.ToList();  // Don't belive it should require a Tolist() but have seen the display not update without it
+                //ExtraInfoMapData.Items.Refresh();
                 ShowExtraInfo(ExtraInfo, ExtraInfoMapDataHolder);
 
                 ExtraInfoMapDataHolder.Visibility = Visibility.Visible;
-                DataVisual.Visibility = Visibility.Visible;
 
                 if (CurrentDataPackage.Data == null)
                     Status.Text = $"No data found!";
@@ -611,6 +614,9 @@ namespace Arksplorer
 
                 // If we were successfull, we also want to clear down any displayed data, caches, etc. which could be from an older server
                 CurrentDataPackage = null;
+
+                Debug.Print($"LoadServerConfig.CurrentDataPackage = null");
+
                 DataPackages.Clear();
 
                 Dispatcher.Invoke(() =>
@@ -650,11 +656,10 @@ namespace Arksplorer
             MessageBox.Show($"There was a problem during start up...{Environment.NewLine}{error}){Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
             ExitApplication();
         }
-
-        private async Task<int> ProcessQueue(List<QueueDataItem> queue, bool autoUpdateDataGrid)
+        private async Task<int> ProcessQueue(List<QueueDataItem> queue, bool autoUpdateVisualDataGrid)
         {
             int count = 0;
-            string type = "";   // Should always be the same in a que
+            string type = "";
             int newRecords = 0;
             string description = "";
             int totalCount = queue.Count;
@@ -673,19 +678,30 @@ namespace Arksplorer
 
                 if (dataExists)
                 {
-                    // Check for timeout
-                    MapPackage mapPackage = DataPackages[type].IndividualMaps[mapName];
-                    DataTimestamp jsonTimestamp = await httpClient.GetFromJsonAsync<DataTimestamp>(item.TimestampUri);
-                    rawServerTimestamp = jsonTimestamp.Date;
-
-                    if (DateTime.TryParseExact(rawServerTimestamp, "yyyyMMdd_HHmm", CultureInfo.InvariantCulture, DateTimeStyles.None, out serverTimestamp))
+                    if (item.ForceRefresh)
                     {
-                        if (serverTimestamp > mapPackage.Timestamp)
-                            // Newer data available!!!
-                            grabData = true;
+                        Debug.Print("ProcessQue.GrabData forced refresh of data");
+                        grabData = true;
                     }
                     else
-                        MessageBox.Show($"Error reading timestamp for {mapName}.{type}, value returned: '{rawServerTimestamp}'", "Date error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    {
+                        // Check for timeout
+                        MapPackage mapPackage = DataPackages[type].IndividualMaps[mapName];
+                        DataTimestamp jsonTimestamp = await httpClient.GetFromJsonAsync<DataTimestamp>(item.TimestampUri);
+                        rawServerTimestamp = jsonTimestamp.Date;
+
+                        if (DateTime.TryParseExact(rawServerTimestamp, "yyyyMMdd_HHmm", CultureInfo.InvariantCulture, DateTimeStyles.None, out serverTimestamp))
+                        {
+                            if (serverTimestamp > mapPackage.Timestamp)
+                            {
+                                // Newer data available!!!
+                                Debug.Print("ProcessQue.GrabData on server time stamp out of date");
+                                grabData = true;
+                            }
+                        }
+                        else
+                            MessageBox.Show($"Error reading timestamp for {mapName}.{type}, value returned: '{rawServerTimestamp}'", "Date error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
                 else
                 {
@@ -694,7 +710,7 @@ namespace Arksplorer
 
                 if (grabData)
                 {
-                    // ToDo: Put loading marker
+                    // ToDo: More obvious+visual loading marker
                     this.Dispatcher.Invoke(() => Status.Text = $"Loading {++doneCount}/{totalCount}{Environment.NewLine}{mapName} {type} data...");
                     // We re-use the timestamp from earlier, if its available. Saves a server trip.
                     newRecords += await Task.Run(() => GetDataAsync(item, rawServerTimestamp, serverTimestamp));
@@ -702,14 +718,13 @@ namespace Arksplorer
                 else
                 {
                     Debug.Print($"Load of data skipped, already exists for {type}.{mapName} and is up to date");
+                    Debug.Print($"{type}.{mapName}.{serverTimestamp} Already using latest available data, loading skipped");
                 }
-
-                count++;
             }
-
 
             Dispatcher.Invoke(() =>
             {
+                Debug.Print($"ProcessQue with done count {doneCount}");
                 if (doneCount > 0)
                 {
                     if (newRecords > 0)
@@ -717,11 +732,14 @@ namespace Arksplorer
                     else
                         Status.Text = "Select maps to load first";
 
-                    if (autoUpdateDataGrid)
-                        ShowData(type);
                 }
                 else
+                {
                     Status.Text = "Nothing new to load";
+                }
+
+                // Even if nothing was loaded, if it's a different type of dino, we still want to `show things` - so always update here
+                ShowData(type, autoUpdateVisualDataGrid);
 
                 LoadableControlsEnabled(true);
                 LoadingVisualEnabled(false);
@@ -770,9 +788,14 @@ namespace Arksplorer
 
                 string mapName = item.MapName;
 
-                var result = (IEnumerable<IArkEntity>)await httpClient.GetFromJsonAsync(item.DataUri, typeof(List<>).MakeGenericType(item.MetaData.JsonClassType));
+                IEnumerable<IArkEntity> result;
+#if DEBUG
+                if (ForceLocalLoad)
+                    result = (IEnumerable<IArkEntity>)JsonSerializer.Deserialize(File.ReadAllText("./temp.json"), typeof(List<>).MakeGenericType(item.MetaData.JsonClassType));
+                else
+#endif
+                    result = (IEnumerable<IArkEntity>)await httpClient.GetFromJsonAsync(item.DataUri, typeof(List<>).MakeGenericType(item.MetaData.JsonClassType));
 
-                //DataTable newData = result.AddToDataTable(mapName, item.MetaData, null);
                 DataTable newData = DataTableExtensions.AddToDataTable(result, item.MetaData.JsonClassType, mapName, item.MetaData, null);
                 MapPackage newMapPackage = new();
                 newMapPackage.Data = newData;
@@ -783,12 +806,16 @@ namespace Arksplorer
                     DataTimestamp jsonTimestamp = await httpClient.GetFromJsonAsync<DataTimestamp>(item.TimestampUri);
                     rawServerTimestamp = jsonTimestamp.Date;
                     if (DateTime.TryParseExact(rawServerTimestamp, "yyyyMMdd_HHmm", CultureInfo.InvariantCulture, DateTimeStyles.None, out serverTimestamp))
+                    {
+                        Debug.Print($"GetDataAsync updating from web site into newMapPackage.Timestamp from {newMapPackage.Timestamp} to {serverTimestamp} : {mapName}.{metaDataType}");
                         newMapPackage.Timestamp = serverTimestamp;
+                    }
                     else
                         MessageBox.Show($"Error reading timestamp for {mapName}.{metaDataType}, value returned: '{rawServerTimestamp}'", "Date error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
+                    Debug.Print($"GetDataAsync updating from cached timestamp into newMapPackage.Timestamp from {newMapPackage.Timestamp} to {serverTimestamp} : {mapName}.{metaDataType}");
                     newMapPackage.Timestamp = serverTimestamp;
                 }
                 newMapPackage.RawTimestamp = rawServerTimestamp;
@@ -800,7 +827,9 @@ namespace Arksplorer
                 else
                     maps.Add(mapName, newMapPackage);
 
-                this.Dispatcher.Invoke(() => CheckAndRefreshCache("GetDataAsync"));
+                Debug.Print($"GetDataAsync CurrentDataPackage == dataPackage {CurrentDataPackage == dataPackage} to trigger visual refresh");
+
+                this.Dispatcher.Invoke(() => { ExtraInfoMapData.ItemsSource = CurrentDataPackage?.IndividualMaps.ToList(); }); //THIS should work but doesnt visually --> if (CurrentDataPackage == dataPackage) ExtraInfoMapData.Items.Refresh(); });
 
                 dataPackage.DataIsStale = true;
 
@@ -808,23 +837,25 @@ namespace Arksplorer
             }
             catch (HttpRequestException ex)
             {
-                Debug.Print($"Error: {ex.StatusCode}");
+                MessageBox.Show($"Error: {ex.StatusCode}", $"Error retrieving JSON data for {item.MetaData.Description}", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (NotSupportedException ex)
             {
-                Debug.Print($"Invalid content type: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}");
+                MessageBox.Show($"Invalid content type: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}", $"Error retrieving JSON data for {item.MetaData.Description}", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (JsonException ex)
             {
-                Debug.Print($"Invalid JSON: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}");
+                MessageBox.Show($"Invalid JSON: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}", $"Error retrieving JSON data for {item.MetaData.Description}", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                Debug.Print($"Problem loading data: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}");
+                MessageBox.Show($"Problem loading data: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}", $"Error retrieving JSON data for {item.MetaData.Description}", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             return -1;
         }
+
+        private string LastCreatureId { get; set; } = string.Empty;
 
         private void DataVisual_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -860,6 +891,15 @@ namespace Arksplorer
             {
                 creature = entity[columns["Creature"].Ordinal].ToString();
                 overviewMessage += $"Creature: {creature}{Environment.NewLine}";
+            }
+
+            string creatureId = string.Empty;
+            if (columns["CreatureId"] != null)
+            {
+                creatureId = entity[columns["CreatureId"].Ordinal].ToString();
+                // CreatureId also used for mass hilighting
+                // Not too fussed about having this as part of the overview message
+                //overviewMessage += $"CreatureId: {creatureId}{Environment.NewLine}";
             }
 
             string name;
@@ -939,7 +979,93 @@ namespace Arksplorer
                 MapImage.Visibility = Visibility.Visible;
             }
 
+            if (creatureId != LastCreatureId || mapName != LastSelected_Map)
+            {
+                // Visualisation of things, only do when the selected type has changed
+                if (ShowSameType.IsChecked == true)
+                {
+                    LastSelected_Map = mapName;
+                    LastSelected_CreatureId = creatureId;
+
+                    ShowMassMarkers(creatureId, mapName);
+                }
+            }
+
             SetOverviewMessage(overviewMessage);
+        }
+
+        // Note: at the moment mass markers are based around CreatureId's, but could be used in the future for other purposes (e.g. resources)
+
+        private string LastSelected_Map { get; set;  }
+        private string LastSelected_CreatureId { get; set; }
+
+        private void RemoveMassMarkers()
+        {
+            MassMarkerHolder.Children.Clear();
+        }
+
+        private void ShowMassMarkers(string creatureId, string mapName)
+        {
+            RemoveMassMarkers();    // Make sure any previous markers are no longer there
+
+            if (string.IsNullOrWhiteSpace(creatureId) || string.IsNullOrWhiteSpace(mapName))
+                return;
+
+            var data = (DataTable)DataVisual.DataContext;
+
+            if (data == null)
+                return;
+
+            int mapColumn = data.Columns["Map"].Ordinal;
+            int latColumn = data.Columns["Lat"].Ordinal;
+            int lonColumn = data.Columns["Lon"].Ordinal;
+            int idColumn = data.Columns["CreatureId"].Ordinal;
+            int lvlColumn = data.Columns["Lvl"].Ordinal;
+
+            if (mapColumn == -1 || latColumn == -1 || lonColumn == -1 || idColumn == -1)
+                return;
+
+            double lat, lon;
+            int level;
+            // Translate level from 0->150+ to 0->1%
+            double levelPerc;
+            byte g;
+
+            foreach (DataRow row in data.Rows)
+            {
+                if ((string)row[mapColumn] == mapName)
+                {
+                    if ((string)row[idColumn] == creatureId)
+                    {
+                        lat = (float)row[latColumn];
+                        lon = (float)row[lonColumn];
+
+                        if (lat > -1 && lon > -1)
+                        {
+                            level = (int)row[lvlColumn];
+
+                            double yPos = lat - 50.0f;
+                            double xPos = lon - 50.0f;
+
+                            levelPerc = level / 150.0d; // e.g. 120 out of max 150 = 80% <-- this will need to become dynamic e.g. if its a Tek dino and max wild level is 180
+                            if (levelPerc > 1.0)
+                                levelPerc = 1.0;
+
+                            g = (byte)(255 * (1.0 - levelPerc));
+
+                            var rec = new System.Windows.Shapes.Rectangle()
+                            {
+                                Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 255, g, 0)),
+                                Width = 1.2,
+                                Height = 1.2,
+                                RenderTransform = new TranslateTransform(xPos, yPos)
+                            };
+
+                            MassMarkerHolder.Children.Add(rec);
+                        }
+                    }
+                }
+            }
         }
 
         private void SetOverviewMessage(string message)
@@ -1018,7 +1144,7 @@ namespace Arksplorer
             e.Handled = true;
         }
 
-        private void OpenUrlInExternalBrowser(string url)
+        private static void OpenUrlInExternalBrowser(string url)
         {
             if (string.IsNullOrWhiteSpace(url))
                 return;
@@ -1082,11 +1208,8 @@ namespace Arksplorer
 
         private void DataVisual_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
-            DataGridTextColumn column = e.Column as DataGridTextColumn;
-            if (column != null && e.PropertyType == typeof(Single))
-            {
+            if (e.Column is DataGridTextColumn column && e.PropertyType == typeof(Single))
                 column.Binding = new Binding(e.PropertyName) { StringFormat = "N2" };
-            }
         }
 
         private void AlarmOff_Click(object sender, RoutedEventArgs e)
@@ -1111,14 +1234,13 @@ namespace Arksplorer
             e.CancelCommand();
         }
 
-        private bool IsInteger(string text)
+        private static bool IsInteger(string text)
         {
             return int.TryParse(text, out _);
         }
 
         private void MapsToIncludeCheckbox_Click(object sender, RoutedEventArgs e)
         {
-            string lastMaps = Properties.Settings.Default.LastMaps;
             string selectedMaps = "";
             string separator = "";
             foreach (var map in MapList)
@@ -1132,5 +1254,35 @@ namespace Arksplorer
 
             Settings.Default.LastMaps = selectedMaps;
         }
+
+        private void ShowSameType_Click(object sender, RoutedEventArgs e)
+        {
+            if (ShowSameType.IsChecked ?? false)
+                ShowMassMarkers(LastSelected_CreatureId, LastSelected_Map);
+            else
+                RemoveMassMarkers();
+        }
+
+        //private bool DebugEnabled { get; set; } = true;
+
+        //private StringBuilder DebugText { get; set; } = new();
+
+        //private void AddToDebug(string content)
+        //{
+        //    if (DebugEnabled)
+        //    {
+        //        DebugText.AppendLine(content);
+        //        DebugInfo.Text = DebugText.ToString();
+        //    }
+        //}
+
+        //private void AddToDebug(StringBuilder content)
+        //{
+        //    if (DebugEnabled)
+        //    {
+        //        DebugText.Append(content);
+        //        DebugInfo.Text = DebugText.ToString();
+        //    }
+        //}
     }
 }
