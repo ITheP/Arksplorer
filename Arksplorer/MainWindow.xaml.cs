@@ -21,6 +21,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Numerics;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Reflection.Metadata;
 using System.Resources;
 using System.Runtime.InteropServices.ComTypes;
@@ -43,6 +44,7 @@ using System.Windows.Navigation;
 using System.Windows.Threading;
 //using System.Windows.Shapes;
 using System.Xaml;
+using System.Xml.Linq;
 
 namespace Arksplorer
 {
@@ -81,7 +83,7 @@ namespace Arksplorer
             Marker.Visibility = Visibility.Collapsed;
             ServerLoadedControls.Visibility = Visibility.Collapsed;
             DataVisual.Visibility = Visibility.Collapsed;
-            ShowExtraInfo(null);
+            OverviewMessage.Visibility = Visibility.Collapsed;
 
             // Disable all controls that are reliant on working server connection...
             LoadableControlsEnabled(false);
@@ -91,7 +93,6 @@ namespace Arksplorer
             // We drag the loading effect out the page when not visible,
             // so it's not being calculated while hidden/collapsed (have seen overhead happen even when not visible if its linked into the page)
             LoadingSpinner = GeneralLoadingSpinner.Child;
-            //GeneralLoadingSpinner.Child = null;
 
             InitWebTabs();
 
@@ -423,10 +424,16 @@ namespace Arksplorer
 
         private void FilterDataTable(DataPackage dataPackage, string criteria, bool exactOnly)
         {
-            string levelFilter = FilterLevelType.SelectedValue.ToString();
+            string levelFilter = FilterLevelType.SelectedValue?.ToString();
 
-            if (dataPackage == null || (string.IsNullOrWhiteSpace(criteria) && levelFilter == "All"))
+            if (dataPackage == null)
                 return;
+
+            if (string.IsNullOrWhiteSpace(criteria) && levelFilter == "All")
+            {
+                ClearFilter();
+                return;
+            }
 
             PrevCursor = Mouse.OverrideCursor;
             Mouse.OverrideCursor = Cursors.Wait;
@@ -594,6 +601,7 @@ namespace Arksplorer
             }
 
             DataVisual.DataContext = data;
+            InitColumnPositions(data);
             DataVisualCount.Text = $"{data.Rows.Count} entries";
             HideFlashMessage();
         }
@@ -859,83 +867,23 @@ namespace Arksplorer
 
         private void DataVisual_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Debug.Print($"{DataVisual.SelectedIndex}");
-
             DataRowView entity = (DataRowView)(DataVisual.SelectedItem);
 
             if (entity == null)
             {
-                SetOverviewMessage(string.Empty);
+                SetOverviewMessage(null);
                 return;
             }
 
-            var data = CurrentDataPackage.Data;
-            var columns = data.Columns;
+            var columns = entity.Row.Table.Columns;
 
-            string overviewMessage = $"{CurrentDataPackage.Metadata.Description}\n";
-
-            double lat = -1;
-            if (columns["Lat"] != null)
-                lat = (float)entity[columns["Lat"].Ordinal];
-
-            double lon = -1;
-            if (columns["Lon"] != null)
-                lon = (float)entity[columns["Lon"].Ordinal];
-
-            if (lat > -1 && lon > -1)
-                overviewMessage += $"Location: {lat:0.00},{lon:0.00}{Environment.NewLine}";
-
-
-            string creature;
-            if (columns["Creature"] != null)
-            {
-                creature = entity[columns["Creature"].Ordinal].ToString();
-                overviewMessage += $"Creature: {creature}{Environment.NewLine}";
-            }
-
-            string creatureId = string.Empty;
-            if (columns["CreatureId"] != null)
-            {
-                creatureId = entity[columns["CreatureId"].Ordinal].ToString();
-                // CreatureId also used for mass hilighting
-                // Not too fussed about having this as part of the overview message
-                //overviewMessage += $"CreatureId: {creatureId}{Environment.NewLine}";
-            }
-
-            string name;
-            if (columns["Name"] != null)
-            {
-                name = entity[columns["Name"].Ordinal].ToString();      // Can be DBNull
-                if (string.IsNullOrWhiteSpace(name))
-                    overviewMessage += $"Name not set{Environment.NewLine}";
-                else
-                    overviewMessage += $"Name: {name}{Environment.NewLine}";
-            }
-
-            string sex;
-            if (columns["Sex"] != null)
-            {
-                sex = (string)entity[columns["Sex"].Ordinal];
-                overviewMessage += $"Sex: {sex}{Environment.NewLine}";
-            }
-
-            int lvl;
-            if (columns["Lvl"] != null)
-            {
-                lvl = (int)entity[columns["lvl"].Ordinal];
-                overviewMessage += $"Level: {lvl}";
-            }
-
-            bool cryo;
-            if (columns["Cryo"] != null)
-            {
-                cryo = (bool)entity[columns["Cryo"].Ordinal];
-                if (cryo)
-                    overviewMessage += $"{Environment.NewLine}Cryo'ed";
-            }
+            Info info = CreateInfoFromRow(entity.Row);
 
             // Marker offset
             // translate 0->100 to -50->50
+            double lat = info.Lat;
+            double lon = info.Lon;
+
             if (lat > -1 && lon > -1)
             {
                 double yPos = lat - 50.0f;
@@ -949,15 +897,9 @@ namespace Arksplorer
 
                 // We move the OverviewMessage to a different point over the map if there is a chance it might cover up the Marker
                 if (xPos > 0)
-                {
                     OverviewMessage.HorizontalAlignment = HorizontalAlignment.Left;
-                    OverviewMessage.TextAlignment = TextAlignment.Left;
-                }
                 else
-                {
                     OverviewMessage.HorizontalAlignment = HorizontalAlignment.Right;
-                    OverviewMessage.TextAlignment = TextAlignment.Right;
-                }
 
                 //if (yPos > 0)
                 //    OverviewMessage.VerticalAlignment = VerticalAlignment.Top;
@@ -979,24 +921,24 @@ namespace Arksplorer
                 MapImage.Visibility = Visibility.Visible;
             }
 
-            if (creatureId != LastCreatureId || mapName != LastSelected_Map)
+            if (info.CreatureId != LastCreatureId || mapName != LastSelected_Map)
             {
                 // Visualisation of things, only do when the selected type has changed
                 if (ShowSameType.IsChecked == true)
                 {
                     LastSelected_Map = mapName;
-                    LastSelected_CreatureId = creatureId;
+                    LastSelected_CreatureId = info.CreatureId;
 
-                    ShowMassMarkers(creatureId, mapName);
+                    ShowMassMarkers(info.CreatureId, mapName);
                 }
             }
 
-            SetOverviewMessage(overviewMessage);
+            SetOverviewMessage(info);
         }
 
         // Note: at the moment mass markers are based around CreatureId's, but could be used in the future for other purposes (e.g. resources)
 
-        private string LastSelected_Map { get; set;  }
+        private string LastSelected_Map { get; set; }
         private string LastSelected_CreatureId { get; set; }
 
         private void RemoveMassMarkers()
@@ -1004,6 +946,40 @@ namespace Arksplorer
             MassMarkerHolder.Children.Clear();
         }
 
+        private int MapColumn { get; set; }
+        private int LatColumn { get; set; }
+        private int LonColumn { get; set; }
+        private int CreatureIdColumn { get; set; }
+        private int LvlColumn { get; set; }
+        private int BaseColumn { get; set; }
+        private int CreatureColumn { get; set; }
+        private int NameColumn { get; set; }
+        private int SexColumn { get; set; }
+        private int CryoColumn { get; set; }
+
+        /// <summary>
+        /// Column positions are all assumed to be dynamic (even if they are actually pretty static)
+        /// This is to account for future expansion, new datasets, columns, definitions, changes etc.
+        /// so we don't need to hardcode/recode values. Not quite as performant as hardcoding but does
+        /// the job nicely.
+        /// </summary>
+        /// <param name="data"></param>
+        private void InitColumnPositions(DataTable data)
+        {
+            MapColumn = data.Columns["Map"]?.Ordinal ?? -1;
+            LatColumn = data.Columns["Lat"]?.Ordinal ?? -1;
+            LonColumn = data.Columns["Lon"]?.Ordinal ?? -1;
+            CreatureIdColumn = data.Columns["CreatureId"]?.Ordinal ?? -1;
+            LvlColumn = data.Columns["Lvl"]?.Ordinal ?? -1;
+            BaseColumn = data.Columns["Base"]?.Ordinal ?? -1;
+            CreatureColumn = data.Columns["Creature"]?.Ordinal ?? -1;
+            NameColumn = data.Columns["Name"]?.Ordinal ?? -1;
+            SexColumn = data.Columns["Sex"]?.Ordinal ?? -1;
+            CryoColumn = data.Columns["Cryo"]?.Ordinal ?? -1;
+        }
+
+
+        // ToDo: Regeneration of extra info all the time is a needless overhead. Cache once generate and reuse!
         private void ShowMassMarkers(string creatureId, string mapName)
         {
             RemoveMassMarkers();    // Make sure any previous markers are no longer there
@@ -1016,13 +992,7 @@ namespace Arksplorer
             if (data == null)
                 return;
 
-            int mapColumn = data.Columns["Map"].Ordinal;
-            int latColumn = data.Columns["Lat"].Ordinal;
-            int lonColumn = data.Columns["Lon"].Ordinal;
-            int idColumn = data.Columns["CreatureId"].Ordinal;
-            int lvlColumn = data.Columns["Lvl"].Ordinal;
-
-            if (mapColumn == -1 || latColumn == -1 || lonColumn == -1 || idColumn == -1)
+            if (MapColumn == -1 || LatColumn == -1 || LonColumn == -1 || CreatureIdColumn == -1)
                 return;
 
             double lat, lon;
@@ -1033,16 +1003,18 @@ namespace Arksplorer
 
             foreach (DataRow row in data.Rows)
             {
-                if ((string)row[mapColumn] == mapName)
+                if ((string)row[MapColumn] == mapName)
                 {
-                    if ((string)row[idColumn] == creatureId)
+                    if ((string)row[CreatureIdColumn] == creatureId)
                     {
-                        lat = (float)row[latColumn];
-                        lon = (float)row[lonColumn];
+                        lat = (float)row[LatColumn];
+                        lon = (float)row[LonColumn];
 
                         if (lat > -1 && lon > -1)
                         {
-                            level = (int)row[lvlColumn];
+                            Info info = CreateInfoFromRow(row);
+
+                            level = info.Level;
 
                             double yPos = lat - 50.0f;
                             double xPos = lon - 50.0f;
@@ -1056,10 +1028,14 @@ namespace Arksplorer
                             var rec = new System.Windows.Shapes.Rectangle()
                             {
                                 Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 255, g, 0)),
-                                Width = 1.2,
-                                Height = 1.2,
+                                Stroke = (info.Sex == "M" ? Brushes.DarkBlue : Brushes.DarkRed),
+                                StrokeThickness = 0.2,
+                                Width = 1.4,
+                                Height = 1.4,
                                 RenderTransform = new TranslateTransform(xPos, yPos)
                             };
+
+                            rec.Tag = info;
 
                             MassMarkerHolder.Children.Add(rec);
                         }
@@ -1068,9 +1044,62 @@ namespace Arksplorer
             }
         }
 
-        private void SetOverviewMessage(string message)
+        private Info CreateInfoFromRow(DataRow row)
         {
-            OverviewMessage.Text = message;
+            Info info = new();
+
+            info.Lat = (float)row[LatColumn];
+            info.Lon = (float)row[LonColumn];
+
+            if (NameColumn > -1)
+                info.Name = row[NameColumn] as string;
+
+            //info.Add("Location", $"{info.Lat:0.00},{info.Lon:0.00}");
+
+            if (CreatureColumn > -1)
+                info.Add("Creature", row[CreatureColumn] as string);
+
+            if (CreatureIdColumn > -1)
+                info.CreatureId = row[CreatureIdColumn] as string;
+
+            if (SexColumn > -1)
+            {
+                string sex = row[SexColumn] as string;
+                info.Add("Sex", sex);
+                info.Sex = sex;
+                if (sex == "M")
+                    info.AddIcon(Icons.Male);
+                else
+                    info.AddIcon(Icons.Female);
+            }
+
+            if (BaseColumn > -1)
+                info.Add("Base level", $"{row[BaseColumn] as int?}");
+
+            int level = (int)row[LvlColumn];
+            info.Add("Level", $"{level}");
+            info.Level = level;
+
+            if (CryoColumn > -1)
+            {
+                if ((bool)row[CryoColumn] == true)
+                {
+                    info.AddIcon(Icons.Cryopod);
+                    info.Cryoed = true;
+                }
+            }
+
+            return (info);
+        }
+
+        private void SetOverviewMessage(Info info) //string message)
+        {
+            if (info == null)
+                return;
+
+            OverviewMessage.ShowInfo(info);
+
+            OverviewMessage.Visibility = Visibility.Visible;
         }
 
         private void ExactFilter_Click(object sender, RoutedEventArgs e)
@@ -1121,12 +1150,71 @@ namespace Arksplorer
                 whatToShow2.Visibility = Visibility.Visible;
         }
 
+        private DataGridRow LastDataGridRow { get; set; }
+        private System.Windows.Shapes.Rectangle LastRectangle { get; set; }
+        // Note that we COULD attach mouse enter/leave events to all rectangles we have created (mass markers) along with
+        // other entities, but then we have to keep track of all the events and remove on rectangle disposal as well (else
+        // we can end up with references hanging around). Nightmare. So we don't bother and just check if we are
+        // over a rectangle or not with a tag of type Info.
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
+            bool updatePopUpPosition = false;
+
+            // MouseOver on the DataGrid results list
+            System.Windows.Point pos = e.GetPosition(Root); // DataVisual);
+            HitTestResult hitTestResult = VisualTreeHelper.HitTest(Root, pos); // DataVisual, pos);
+            var hitElement = hitTestResult?.VisualHit;
+            if (hitElement != null)
+            {
+                DependencyObject element = hitElement;
+                while (element != null && !(element is DataGridCell || element is System.Windows.Shapes.Rectangle))
+                    element = VisualTreeHelper.GetParent(element);
+
+                if (element != null)
+                {
+                    if (element is System.Windows.Shapes.Rectangle rectangle)
+                    {
+                        // Only interested in rectangles that have an Info in their tag - otherwise we assume its some random other rectangle
+                        if (rectangle.Tag is Info info)
+                        {
+                            if (rectangle != LastRectangle)
+                            {
+                                LastRectangle = rectangle;
+                                PopUpInfoVisual.ShowInfo(info);
+                            }
+
+                            updatePopUpPosition = true;
+                        }
+                    }
+                    else
+                    {
+                        DataGridCell cell = (DataGridCell)element;
+                        DataGridRow gridRow = DataGridRow.GetRowContainingElement(cell);
+                        if (gridRow != LastDataGridRow)
+                        {
+                            LastDataGridRow = gridRow;
+
+                            DataRowView dataRowView = (System.Data.DataRowView)gridRow.Item;
+                            PopUpInfoVisual.ShowInfo(CreateInfoFromRow(dataRowView.Row));
+                        }
+                    }
+
+                    // Even if we don't change how this looks, we want to make sure its position is updated
+                    updatePopUpPosition = true;
+                }
+            }
+
+            PopUpInfo.IsOpen = updatePopUpPosition;
+            if (updatePopUpPosition)
+            {
+                PopUpInfo.HorizontalOffset = pos.X + 25;
+                PopUpInfo.VerticalOffset = pos.Y + 25;
+            }
+
             if (FlashMessage.Visibility != Visibility.Visible)
                 return;
 
-            var pos = e.GetPosition(this);
+            pos = e.GetPosition(this);
             var width = Width;
             var height = Height;
 
@@ -1208,8 +1296,15 @@ namespace Arksplorer
 
         private void DataVisual_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
-            if (e.Column is DataGridTextColumn column && e.PropertyType == typeof(Single))
-                column.Binding = new Binding(e.PropertyName) { StringFormat = "N2" };
+            if (e.Column is DataGridTextColumn column)
+            {
+                //      if (column.Header == "Index")
+                //        column.Visibility = Visibility.Collapsed;
+
+                if (e.PropertyType == typeof(Single))
+                    column.Binding = new Binding(e.PropertyName) { StringFormat = "N2" };
+            }
+
         }
 
         private void AlarmOff_Click(object sender, RoutedEventArgs e)
@@ -1261,6 +1356,11 @@ namespace Arksplorer
                 ShowMassMarkers(LastSelected_CreatureId, LastSelected_Map);
             else
                 RemoveMassMarkers();
+        }
+
+        private void FilterLevelType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplyFilterCriteria();
         }
 
         //private bool DebugEnabled { get; set; } = true;

@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="Arksplorer.InfoVisual"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Arksplorer"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="150">
+    <Border BorderThickness="1" BorderBrush="Black">
+        <Grid Background="#EFFF" >
+            <StackPanel>
+                <TextBlock x:Name="Name" HorizontalAlignment="Center" FontSize="16" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="Lat" FontSize="10" VerticalAlignment="Center"  />
+                    <TextBlock x:Name="Lat" FontStyle="Italic" FontSize="14" VerticalAlignment="Center" Margin="4,0,0,0" />
+                    <TextBlock Text="Lon" FontSize="10"  VerticalAlignment="Center" Margin="12,0,0,0" />
+                    <TextBlock x:Name="Lon" FontStyle="Italic" FontSize="14" VerticalAlignment="Center"  Margin="4,0,0,0"/>
+                </StackPanel>
+                <ListView x:Name="InfoList" BorderThickness="0" Background="Transparent">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Stretch" Margin="0" Width="150">
+                                <TextBlock Text="{Binding Path=Description}" />
+                                <TextBlock Text="{Binding Value}" FontWeight="Bold" TextAlignment="Right"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <ListView x:Name="IconList" BorderThickness="0" HorizontalAlignment="Center" Background="Transparent">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding}"  Height="24"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

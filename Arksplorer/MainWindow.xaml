@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Arksplorer"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
-        Title="Arksplorer" Height="1100" Width="800" MouseMove="Window_MouseMove">
+        Title="Arksplorer" Height="1100" Width="800"
+        MouseMove="Window_MouseMove">
     <Window.Resources>
         <Style TargetType="Button" x:Key="BrowserButton">
             <Setter Property="Margin" Value="3" />
@@ -35,7 +36,15 @@
             <BeginStoryboard Storyboard="{StaticResource MarkerShrinker}"/>
         </EventTrigger>
     </Window.Triggers>
-    <Grid>
+    <Grid x:Name="Root">
+        <Popup Name="PopUpInfo"
+            Placement="Relative"
+            PlacementTarget="{Binding ElementName=Root}"
+            IsOpen="False"
+            StaysOpen="True"
+            AllowsTransparency="True">
+            <local:InfoVisual x:Name="PopUpInfoVisual" />
+        </Popup>
         <DockPanel>
             <Grid>
                 <DockPanel Width="200" Margin="10,0,10,0">
@@ -70,7 +79,7 @@
                     <StackPanel DockPanel.Dock="Top">
                         <Image Source="/Images/ark.png" />
                         <TextBlock x:Name="Title" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>
-                        <TextBlock x:Name="Version" Text="v0.8 Preview" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
+                        <TextBlock x:Name="Version" Text="v0.9 Preview" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
                         <Separator Margin="0,7,0,8"/>
                         <ComboBox x:Name="ServerList" IsEditable="False" SelectedValuePath="Name" SelectionChanged="ServerList_SelectionChanged">
                             <ComboBox.ItemTemplate>
@@ -268,19 +277,7 @@
                                     </Ellipse>
                                 </Grid>
                             </Viewbox>
-                            <TextBlock x:Name="OverviewMessage" Background="#9000" Foreground="#FF9" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Right" TextAlignment="Right" Margin="4" Padding="4">
-                        Shout outs to...
-                        <LineBreak/>
-                        DuoMog, Scully, Ward who first tried this
-                        <LineBreak/>
-                        Shauna, LemonCake, best darn tribe around!
-                        <LineBreak/>
-                        Caulkinator, Kurt, Joanna,
-                        <LineBreak/>
-                        Kokow, Ray, ExStAsY,
-                        <LineBreak/>
-                        and the rest of you!
-                            </TextBlock>
+                            <local:InfoVisual x:Name="OverviewMessage" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="4" Padding="4" />
                         </Grid>
                         <Grid Grid.Row="1" VerticalAlignment="Stretch">
                             <DockPanel VerticalAlignment="Stretch">
@@ -297,13 +294,13 @@
                                     </DockPanel>
                                     <Grid>
                                         <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
-                                            <ComboBox x:Name="FilterLevelType" Margin="35,0,4,0" Width="130" SelectedValuePath="Tag">
+                                            <ComboBox x:Name="FilterLevelType" Margin="35,0,4,0" Width="130" SelectedValuePath="Tag" SelectionChanged="FilterLevelType_SelectionChanged">
                                                 <ComboBoxItem Content="Include all levels" IsSelected="True" Tag="All"/>
                                                 <ComboBoxItem Content="Ignore below level" Tag="Below"/>
                                                 <ComboBoxItem Content="Ignore above level" Tag="Above"/>
                                             </ComboBox>
                                             <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
-                                            <CheckBox x:Name="ShowSameType" Content="Show same type" Margin="8,0,0,0" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" />
+                                            <CheckBox x:Name="ShowSameType" Content="Show matching type dinos" Margin="8,0,0,0" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" />
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                                             <TextBlock x:Name="DataVisualCount" Text=""/>
@@ -326,12 +323,26 @@
                             </DockPanel>
                             <Viewbox>
                                 <TextBlock x:Name="FlashMessage" FontSize="8" HorizontalAlignment="Center" Foreground="White" Margin="5" FontWeight="Black" VerticalAlignment="Center" TextAlignment="Center">
-                                wiredcat.hopto.org
+                                <Run FontSize="16">wiredcat.hopto.org</Run>
+                                <LineBreak/>  
+                                Shout outs go to to...
+                                <LineBreak/>
+                                DuoMog, Scully, Ward who first tried this
+                                <LineBreak/>
+                                Shauna &amp; LemonCake - best darn tribe around!
+                                <LineBreak/>
+                                Caulkinator, Kurt, Joanna,
+                                <LineBreak/>
+                                Kokow, Ray, EcStAsY,
+                                <LineBreak/>
+                                and the rest of you!
                                 </TextBlock>
                             </Viewbox>
+
+                            <!--<local:InfoVisual x:Name="PopUpInfoVisual" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4" Padding="4" />-->
                         </Grid>
 
-                        <GridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Top" ShowsPreview="False" Background="Black"/>
+                        <GridSplitter Grid.Row="0" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" ShowsPreview="False" Background="Black"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Ark-pedia">

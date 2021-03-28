@@ -394,7 +394,11 @@ namespace Arksplorer
             { "Volcano_Ankylo_Character_BP_C", "X-Ankylosaurus" },
             { "Volcano_Rex_Character_BP_C", "X-Rex" },
             { "Volcano_Trike_Character_BP_C", "X-Triceratops" },
-            { "Snow_Otter_Character_BP_C", "X-Otter" }
+            { "CrystalWyvern_Character_BP_WS_C", "Tropical Crystal Wyvern" },
+            { "CrystalWyvern_Character_BP_Blood_C", "Blood Crystal Wyvern" },
+            { "CrystalWyvern_Character_BP_Ember_C", "Ember Crystal Wyvern" },
+            { "Tropeognathus_Character_BP_C", "Tropeognathus" },
+            { "TekHoverSkiff_Character_BP_C", "Skiff" }
         };
     }
 }

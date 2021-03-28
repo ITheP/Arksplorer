@@ -40,3 +40,17 @@ v0.8 Preview - 24/03/2021
 - Sorted out the cache so it refreshes properly
 - Sorted out the UI so it shows updated cache data properly
 - Bulk display of creatures on the map (including level visualisation)
+
+v0.81 Preview
+- Outlining around mass dino visualisation blocks
+- Extra cases of filter applying on chances
+
+v0.9 Preview - 28/03/2021
+- Merged any Info on selected dino/hover over info into one
+- Pop up info inprovements
+- Icons (for sex, cryo state)
+- Hover over dino in list info pop up
+- Hover over mass marker info pop up
+- Colouration changes to mass marker
+- Optimisations
+- Other UI changes
