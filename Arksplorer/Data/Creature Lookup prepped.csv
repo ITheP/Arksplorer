@@ -1,0 +1,364 @@
+CreatureId,Arksplorer,Arkpedia,ArkpediaUrl,Dodex,DodexUrl,Maps,Habitat
+Achatina_Character_BP_C,Achatina,Achatina,Achatina,Achatina,achatina,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Allo_Character_BP_C,Allosaurus,Allosaurus,Allosaurus,Allosaurus,allosaurus,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Ammonite_Character_C,Ammonite,Ammonite,Ammonite,Ammonite,ammonite,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Angler_Character_BP_C,Anglerfish,Anglerfish,Anglerfish,Angler,angler,"The Island, The Center, Ragnarok, Aberration, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Ankylo_Character_BP_C,Ankylosaurus,Ankylosaurus,Ankylosaurus,Ankylosaurus,ankylosaurus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+SpiderS_Character_BP_C,Araneo,Araneo,Araneo,Araneo,araneo,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Archa_Character_BP_C,Archaeopteryx,Archaeopteryx,Archaeopteryx,Archaeopteryx,archaeopteryx,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Arboreal
+Argent_Character_BP_C,Argentavis,Argentavis,Argentavis,Argentavis,argentavis,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aerial
+Arthro_Character_BP_C,Arthropluera,Arthropluera,Arthropluera,Arthropluera,arthropluera,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Baryonyx_Character_BP_C,Baryonyx,Baryonyx,Baryonyx,Baryonyx,baryonyx,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Basilosaurus_Character_BP_C,Basilosaurus,Basilosaurus,Basilosaurus,Basilosaurus,basilosaurus,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Toad_Character_BP_C,Beelzebufo,Beelzebufo,Beelzebufo,Beelzebufo,beelzebufo,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Sauropod_Character_BP_C,Brontosaurus,Brontosaurus,Brontosaurus,Brontosaurus,brontosaurus,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile",Terrestrial
+Turtle_Character_BP_C,Carbonemys,Carbonemys,Carbonemys,Carbonemys,carbonemys,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Terrestrial, Subterranean"
+Carno_Character_BP_C,Carnotaurus,Carnotaurus,Carnotaurus,Carnotaurus,carnotaurus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Beaver_Character_BP_C,Castoroides,Castoroides,Castoroides,Castoroides,castoroides,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Chalico_Character_BP_C,Chalicotherium,Chalicotherium,Chalicotherium,Chalicotherium,chalicotherium,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+ChalkGolem_Character_BP_C,Chalk Golem,Chalk Golem,Chalk_Golem,,,Valguero,Terrestrial
+Cnidaria_Character_BP_C,Cnidaria,Cnidaria,Cnidaria,Cnidaria,cnidaria,"The Island, The Center, Ragnarok, Aberration, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Coel_Character_BP_Ocean_C,Coelacanth (Ocean),Coelacanth,Coelacanth,Coelacanth,coelacanth,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Coel_Character_BP_C,Coelacanth,Coelacanth,Coelacanth,Coelacanth,coelacanth,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Compy_Character_BP_C,Compy,Compy,Compy,Compy,compy,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles, Genesis: Part 2, Mobile",Terrestrial
+Daeodon_Character_BP_C,Daeodon,Daeodon,Daeodon,Daeodon,daeodon,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Deathworm_Character_BP_C,Deathworm,Deathworm,Deathworm,Deathworm,deathworm,"Scorched Earth, Ragnarok, Genesis: Part 1",Fossorial
+Deinonychus_Character_BP_C,Deinonychus,Deinonychus,Deinonychus,Deinonychus,deinonychus,Valguero,Terrestrial
+Dilo_Character_BP_C,Dilophosaur,Dilophosaur,Dilophosaur,Dilophosaur,dilophosaur,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile","Subterranean, Terrestrial"
+Dimetro_Character_BP_C,Dimetrodon,Dimetrodon,Dimetrodon,Dimetrodon,dimetrodon,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Dimorph_Character_BP_C,Dimorphodon,Dimorphodon,Dimorphodon,Dimorphodon,dimorphodon,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aerial, Subterranean"
+Diplocaulus_Character_BP_C,Diplocaulus,Diplocaulus,Diplocaulus,Diplocaulus,diplocaulus,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Diplodocus_Character_BP_C,Diplodocus,Diplodocus,Diplodocus,Diplodocus,diplodocus,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Direbear_Character_BP_C,Dire Bear,Dire Bear,Dire_Bear,Direbear,direbear,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Direbear_LL_Character_BP_C,Dire Bear,Dire Bear,Dire_Bear,Direbear,direbear,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Direwolf_LL_Character_BP_C,Dire Wolf,Direwolf,Direwolf,Direwolf,direwolf,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Direwolf_Character_BP_C,Dire Wolf,Direwolf,Direwolf,Direwolf,direwolf,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Leech_Character_Diseased_C,Diseased Leech,Diseased Leech,Diseased_Leech,Leech,leech,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Dodo_Character_BP_C,Dodo,Dodo,Dodo,Dodo,dodo,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Doed_Character_BP_C,Doedicurus,Doedicurus,Doedicurus,Doedicurus,doedicurus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+DungBeetle_Character_BP_C,Dung Beetle,Dung Beetle,Dung_Beetle,Dung Beetle,dungbeetle,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Dunkle_Character_BP_C,Dunkleosteus,Dunkleosteus,Dunkleosteus,Dunkleosteus,dunkleosteus,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Eel_Character_BP_C,Electrophorus,Electrophorus,Electrophorus,Electrophorus,electrophorus,"The Island, The Center, Ragnarok, Aberration, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Equus_Character_BP_C,Equus,Equus,Equus,Equus,equus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile","Terrestrial, Subterranean"
+Euryp_Character_C,Eurypterid,Eurypterid,Eurypterid,Eurypterid,eurypterid,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Wyvern_Character_BP_Fire_C,Fire Wyvern,Fire Wyvern,Fire_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok, Valguero, Genesis: Part 1",Aerial
+Galli_Character_BP_C,Gallimimus,Gallimimus,Gallimimus,Gallimimus,gallimimus,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Bee_Queen_Character_BP_C,Giant Queen Bee,Giant Queen Bee,Giant_Queen_Bee,Giant Bee,giantbee,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles","Aerial, Subterranean"
+Gigant_Character_BP_C,Giganotosaurus,Giganotosaurus,Giganotosaurus,Giganotosaurus,giganotosaurus,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles, Mobile",Terrestrial
+Gigant_Character_BP_TekCave_C,Giganotosaurus,Giganotosaurus,Giganotosaurus,Giganotosaurus,giganotosaurus,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles, Mobile",Terrestrial
+Bigfoot_Character_BP_C,Gigantopithecus,Gigantopithecus,Gigantopithecus,Gigantopithecus,gigantopithecus,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Hesperornis_Character_BP_C,Hesperornis,Hesperornis,Hesperornis,Hesperornis,hesperornis,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles","Aquatic, Terrestrial"
+Hyaenodon_Character_BP_C,Hyaenodon,Hyaenodon,Hyaenodon,Hyaenodon,hyaenodon,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Crystal Isles",Terrestrial
+IceGolem_Character_BP_C,Ice Golem,Ice Golem,Ice_Golem,,,"Valguero, Genesis: Part 1",Terrestrial
+Ragnarok_Wyvern_Override_Ice_C,Ice Wyvern,Ice Wyvern,Ice_Wyvern,Wyvern,wyvern,"Ragnarok, Valguero",Aerial
+Ichthyornis_Character_BP_C,Ichthyornis,Ichthyornis,Ichthyornis,Ichthyornis,ichthyornis,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles",Aerial
+Dolphin_Character_BP_C,Ichthyosaurus,Ichthyosaurus,Ichthyosaurus,Ichthyosaurus,ichthyosaurus,"The Island, The Center, Ragnarok, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Iguanodon_Character_BP_C,Iguanodon,Iguanodon,Iguanodon,Iguanodon,iguanodon,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Jerboa_Character_BP_C,Jerboa,Jerboa,Jerboa,Jerboa,jerboa,"Scorched Earth, Ragnarok, Valguero, Crystal Isles, Mobile",Terrestrial
+Kairuku_Character_BP_C,Kairuku,Kairuku,Kairuku,Kairuku,kairuku,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Kaprosuchus_Character_BP_C,Kaprosuchus,Kaprosuchus,Kaprosuchus,Kaprosuchus,kaprosuchus,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Kentro_Character_BP_C,Kentrosaurus,Kentrosaurus,Kentrosaurus,Kentrosaurus,kentrosaurus,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles",Terrestrial
+Lamprey_Character_C,Lamprey,Lamprey,Lamprey,Lamprey,lamprey,"Aberration, Valguero, Genesis: Part 1, Crystal Isles","Aquatic, Subterranean"
+Leech_Character_C,Leech,Leech,Leech,Leech,leech,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Leedsichthys_Character_BP_C,Leedsichthys,Leedsichthys,Leedsichthys,Leedsichthys,leedsichthys,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Moth_Character_BP_C,Lymantria,Lymantria,Lymantria,Lymantria,lymantria,"Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles",Aerial
+Lystro_Character_BP_C,Lystrosaurus,Lystrosaurus,Lystrosaurus,Lystrosaurus,lystrosaurus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Mammoth_Character_BP_C,Mammoth,Mammoth,Mammoth,Mammoth,mammoth,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Manta_Character_BP_C,Manta,Manta,Manta,Manta,manta,"The Island, The Center, Ragnarok, Aberration, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Mantis_Character_BP_C,Mantis,Mantis,Mantis,Mantis,mantis,"Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles","Subterranean, Terrestrial"
+Stag_Character_BP_C,Megaloceros,Megaloceros,Megaloceros,Megaloceros,megaloceros,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Megalodon_Character_BP_C,Megalodon,Megalodon,Megalodon,Megalodon,megalodon,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Dragonfly_Character_BP_C,Meganeura,Meganeura,Meganeura,Meganeura,meganeura,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Aerial"
+Megatherium_Character_BP_C,Megatherium,Megatherium,Megatherium,Megatherium,megatherium,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Megalosaurus_Character_BP_C,Megalosaurus,Megalosaurus,Megalosaurus,Megalosaurus,megalosaurus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Genesis: Part 1, Crystal Isles, Mobile",Subterranean
+Monkey_Character_BP_C,Mesopithecus,Mesopithecus,Mesopithecus,Mesopithecus,mesopithecus,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Microraptor_Character_BP_C,Microraptor,Microraptor,Microraptor,Microraptor,microraptor,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles",Terrestrial
+camelsaurus_Character_BP_C,Morellatops,Morellatops,Morellatops,Morellatops,morellatops,"Scorched Earth, Ragnarok, Extinction, Crystal Isles",Terrestrial
+Mosa_Character_BP_C,Mosasaurus,Mosasaurus,Mosasaurus,Mosasaurus,mosasaurus,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Moschops_Character_BP_C,Moschops,Moschops,Moschops,Moschops,moschops,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Bat_Character_BP_C,Onyc,Onyc,Onyc,Onyc,onyc,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Aerial"
+Otter_Character_BP_C,Otter,Otter,Otter,Otter,otter,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Aquatic, Subterranean"
+Oviraptor_Character_BP_C,Oviraptor,Oviraptor,Oviraptor,Oviraptor,oviraptor,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Sheep_Character_BP_C,Ovis,Ovis,Ovis,Ovis,ovis,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles","Terrestrial, Subterranean"
+Jugbug_Oil_Character_BP_C,Oil Jugbug,Oil Jug Bug,Oil_Jug_Bug,Jug Bug,jugbug,"Scorched Earth, Ragnarok, Extinction, Genesis: Part 1, Crystal Isles",Aerial
+Pachy_Character_BP_C,Pachy,Pachy,Pachy,Pachy,pachy,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles, Mobile",Terrestrial
+Pachyrhino_Character_BP_C,Pachyrhinosaurus,Pachyrhinosaurus,Pachyrhinosaurus,Pachyrhinosaurus,pachyrhinosaurus,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Paracer_Character_BP_C,Paraceratherium,Paraceratherium,Paraceratherium,Paraceratherium,paracer,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Para_Character_BP_C,Parasaur,Parasaur,Parasaur,Parasaur,parasaur,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Pegomastax_Character_BP_C,Pegomastax,Pegomastax,Pegomastax,Pegomastax,pegomastax,"The Island, The Center, Scorched Earth, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Pela_Character_BP_C,Pelagornis,Pelagornis,Pelagornis,Pelagornis,pelagornis,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile",Terrestrial
+Phiomia_Character_BP_C,Phiomia,Phiomia,Phiomia,Phiomia,phiomia,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Phoenix_Character_BP_C,Phoenix,Phoenix,Phoenix,Phoenix,phoenix,"Scorched Earth, Genesis: Part 1",Aerial
+Piranha_Character_BP_C,Piranha,Piranha,Piranha,Piranha,piranha,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Plesiosaur_Character_BP_C,Plesiosaur,Plesiosaur,Plesiosaur,Plesiosaur,plesiosaur,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Direbear_Character_Polar_C,Polar Bear,Polar Bear,Polar_Bear,Direbear,direbear,"The Island, Extinction, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Polar_Bear_C,Polar Bear,Polar Bear,Polar_Bear,Direbear,direbear,"The Island, Extinction, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Procoptodon_Character_BP_C,Procoptodon,Procoptodon,Procoptodon,Procoptodon,procoptodon,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Ptero_Character_BP_C,Pteranodon,Pteranodon,Pteranodon,Pteranodon,pteranodon,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile",Aerial
+Scorpion_Character_BP_C,Pulmonoscorpius,Pulmonoscorpius,Pulmonoscorpius,Pulmonoscorpius,pulmonoscorpius,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Purlovia_Character_BP_C,Purlovia,Purlovia,Purlovia,Purlovia,purlovia,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Fossorial, Subterranean"
+Purlovia_Character_BP_Polar_C,Purlovia (Polar),Purlovia,Purlovia,Purlovia,purlovia,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Fossorial, Subterranean"
+Quetz_Character_BP_C,Quetzal,Quetzal,Quetzal,Quetzal,quetzal,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles, Genesis: Part 2, Mobile",Aerial
+Raptor_Character_BP_C,Raptor,Raptor,Raptor,Raptor,raptor,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Rex_Character_BP_C,Rex,Rex,Rex,Rex,rex,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Salmon_Character_BP_C,Sabertooth Salmon,Sabertooth Salmon,Sabertooth_Salmon,Sabertooth Salmon,sabertoothsalmon,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Saber_Character_BP_C,Sabertooth,Sabertooth,Sabertooth,Sabertooth,sabertooth,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Sarco_Character_BP_C,Sarco,Sarco,Sarco,Sarco,sarco,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean, Aquatic"
+Spino_Character_BP_C,Spinosaur,Spino,Spino,Spinosaurus,spinosaur,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Stego_Character_BP_C,Stegosaurus,Stegosaurus,Stegosaurus,Stegosaurus,stegosaurus,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile","Terrestrial, Subterranean"
+Tapejara_Character_BP_C,Tapejara,Tapejara,Tapejara,Tapejara,tapejara,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aerial
+TerrorBird_Character_BP_C,Terror Bird,Terror Bird,Terror_Bird,Terror Bird,terrorbird,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Therizino_Character_BP_C,Therizinosaur,Therizinosaur,Therizinosaur,Therizinosaurus,therizinosaurus,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+SpineyLizard_Character_BP_C,Thorny Dragon,Thorny Dragon,Thorny_Dragon,Thorny Dragon,thornydragon,"Scorched Earth, Ragnarok, Extinction, Genesis: Part 1, Crystal Isles",Terrestrial
+Thylacoleo_Character_BP_C,Thylacoleo,Thylacoleo,Thylacoleo,Thylacoleo,thylacoleo,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Crystal Isles",Arboreal
+BoaFrill_Character_BP_C,Titanoboa,Titanoboa,Titanoboa,Titanoboa,titanoboa,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Ant_Character_BP_C,Titanomyrma Drone,Titanomyrma Drone,Titanomyrma_Drone,Titanomyrma,titanomyrma,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+FlyingAnt_Character_BP_C,Titanomyrma Soldier,Titanomyrma Soldier,Titanomyrma_Soldier,Titanomyrma,titanomyrma,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aerial
+Titanosaur_Character_BP_C,Titanosaur,Titanosaur,Titanosaur,Titanosaur,titanosaur,"The Island, The Center, Scorched Earth, Ragnarok, Crystal Isles, Mobile",Terrestrial
+Trike_Character_BP_C,Triceratops,Triceratops,Triceratops,Triceratops,triceratops,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Trilobite_Character_C,Trilobite,Trilobite,Trilobite,Trilobite,trilobite,"The Island, The Center, Ragnarok, Aberration, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Troodon_Character_BP_C,Troodon,Troodon,Troodon,Troodon,troodon,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Crystal Isles, Mobile",Terrestrial
+Tusoteuthis_Character_BP_C,Tusoteuthis,Tusoteuthis,Tusoteuthis,Tusoteuthis,tusoteuthis,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Equus_Character_BP_Unicorn_C,Unicorn,Unicorn,Unicorn,Unicorn,unicorn,"The Island, Ragnarok, Valguero, Crystal Isles, Mobile",Terrestrial
+Spindles_Character_BP_C,Velonasaur,Velonasaur,Velonasaur,Velonasaur,velonasaur,Extinction,Subterranean
+Jugbug_Water_Character_BP_C,Water Jugbug,Water Jug Bug,Water_Jug_Bug,Jug Bug,jugbug,"Scorched Earth, Ragnarok, Extinction, Genesis: Part 1, Crystal Isles",Aerial
+Rhino_Character_BP_C,Woolly Rhino,Woolly Rhino,Woolly_Rhino,Woolly Rhino,woollyrhino,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile",Terrestrial
+Yeti_Character_BP_C,Yeti,Yeti,Yeti,Yeti,yeti,"The Island, The Center, Extinction, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Yutyrannus_Character_BP_C,Yutyrannus,Yutyrannus,Yutyrannus,Yutyrannus,yutyrannus,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles",Terrestrial
+BionicPara_Character_BP_C,Tek Parasaur,Tek Parasaur,Tek_Parasaur,Parasaur,parasaur,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles","Terrestrial, Subterranean"
+BionicQuetz_Character_BP_C,Tek Quetzal,Tek Quetzal,Tek_Quetzal,Quetzal,quetzal,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles",Aerial
+BionicRaptor_Character_BP_C,Tek Raptor,Tek Raptor,Tek_Raptor,Raptor,raptor,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles","Subterranean, Terrestrial"
+BionicRex_Character_BP_C,Tek Rex,Tek Rex,Tek_Rex,Rex,rex,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles",Terrestrial
+BionicStego_Character_BP_C,Tek Stegosaurus,Tek Stegosaurus,Tek_Stegosaurus,Stegosaurus,stegosaurus,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles","Terrestrial, Subterranean"
+Achatina_Character_BP_Aberrant_C,Aberrant Achatina,Achatina,Achatina,Achatina,achatina,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Angler_Character_BP_Aberrant_C,Aberrant Anglerfish,Anglerfish,Anglerfish,Angler,angler,"The Island, The Center, Ragnarok, Aberration, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Ankylo_Character_BP_Aberrant_C,Aberrant Ankylosaurus,Ankylosaurus,Ankylosaurus,Ankylosaurus,ankylosaurus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+SpiderS_Character_BP_Aberrant_C,Aberrant Araneo,Araneo,Araneo,Araneo,araneo,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Arthro_Character_BP_Aberrant_C,Aberrant Arthropluera,Arthropluera,Arthropluera,Arthropluera,arthropluera,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Baryonyx_Character_BP_Aberrant_C,Aberrant Baryonyx,Baryonyx,Baryonyx,Baryonyx,baryonyx,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Toad_Character_BP_Aberrant_C,Aberrant Beelzebufo,Beelzebufo,Beelzebufo,Beelzebufo,beelzebufo,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Turtle_Character_BP_Aberrant_C,Aberrant Carbonemys,Carbonemys,Carbonemys,Carbonemys,carbonemys,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Terrestrial, Subterranean"
+Carno_Character_BP_Aberrant_C,Aberrant Carnotaurus,Carnotaurus,Carnotaurus,Carnotaurus,carnotaurus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Coel_Character_BP_Aberrant_C,Aberrant Coelacanth,Coelacanth,Coelacanth,Coelacanth,coelacanth,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Cnidaria_Character_BP_Aberrant_C,Aberrant Cnidaria,Cnidaria,Cnidaria,Cnidaria,cnidaria,"The Island, The Center, Ragnarok, Aberration, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Dimetro_Character_BP_Aberrant_C,Aberrant Dimetrodon,Dimetrodon,Dimetrodon,Dimetrodon,dimetrodon,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Dimorph_Character_BP_Aberrant_C,Aberrant Dimorphodon,Dimorphodon,Dimorphodon,Dimorphodon,dimorphodon,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aerial, Subterranean"
+Diplocaulus_Character_BP_Aberrant_C,Aberrant Diplocaulus,Diplocaulus,Diplocaulus,Diplocaulus,diplocaulus,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Diplodocus_Character_BP_Aberrant_C,Aberrant Diplodocus,Diplodocus,Diplodocus,Diplodocus,diplodocus,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Direbear_Character_BP_Aberrant_C,Aberrant Dire Bear,Dire Bear,Dire_Bear,Direbear,direbear,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Dodo_Character_BP_Aberrant_C,Aberrant Dodo,Dodo,Dodo,Dodo,dodo,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Doed_Character_BP_Aberrant_C,Aberrant Doedicurus,Doedicurus,Doedicurus,Doedicurus,doedicurus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Eel_Character_BP_Aberrant_C,Aberrant Electrophorus,Electrophorus,Electrophorus,Electrophorus,electrophorus,"The Island, The Center, Ragnarok, Aberration, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Equus_Character_BP_Aberrant_C,Aberrant Equus,Equus,Equus,Equus,equus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile","Terrestrial, Subterranean"
+Iguanodon_Character_BP_Aberrant_C,Aberrant Iguanodon,Iguanodon,Iguanodon,Iguanodon,iguanodon,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Lystro_Character_BP_Aberrant_C,Aberrant Lystrosaurus,Lystrosaurus,Lystrosaurus,Lystrosaurus,lystrosaurus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Manta_Character_BP_Aberrant_C,Aberrant Manta,Manta,Manta,Manta,manta,"The Island, The Center, Ragnarok, Aberration, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Megalania_Character_BP_C,Megalania,Megalania,Megalania,Megalania,megalania,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Genesis: Part 1, Crystal Isles","Subterranean, Terrestrial"
+Liopleurodon_Character_BP_C,Liopleurodon,Liopleurodon,Liopleurodon,Liopleurodon,liopleurodon,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Megalania_Character_BP_Aberrant_C,Aberrant Megalania,Megalania,Megalania,Megalania,megalania,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Genesis: Part 1, Crystal Isles","Subterranean, Terrestrial"
+Megalosaurus_Character_BP_Aberrant_C,Aberrant Megalosaurus,Megalosaurus,Megalosaurus,Megalosaurus,megalosaurus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Genesis: Part 1, Crystal Isles, Mobile",Subterranean
+Dragonfly_Character_BP_Aberrant_C,Aberrant Meganeura,Meganeura,Meganeura,Meganeura,meganeura,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Aerial"
+Moschops_Character_BP_Aberrant_C,Aberrant Moschops,Moschops,Moschops,Moschops,moschops,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Otter_Character_BP_Aberrant_C,Aberrant Otter,Otter,Otter,Otter,otter,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Aquatic, Subterranean"
+Sheep_Character_BP_Aberrant_C,Aberrant Ovis,Ovis,Ovis,Ovis,ovis,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles","Terrestrial, Subterranean"
+Paracer_Character_BP_Aberrant_C,Aberrant Paraceratherium,Paraceratherium,Paraceratherium,Paraceratherium,paracer,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Para_Character_BP_Aberrant_C,Aberrant Parasaur,Parasaur,Parasaur,Parasaur,parasaur,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Piranha_Character_BP_Aberrant_C,Aberrant Piranha,Piranha,Piranha,Piranha,piranha,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Scorpion_Character_BP_Aberrant_C,Aberrant Pulmonoscorpius,Pulmonoscorpius,Pulmonoscorpius,Pulmonoscorpius,pulmonoscorpius,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Purlovia_Character_BP_Aberrant_C,Aberrant Purlovia,Purlovia,Purlovia,Purlovia,purlovia,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Fossorial, Subterranean"
+Raptor_Character_BP_Aberrant_C,Aberrant Raptor,Raptor,Raptor,Raptor,raptor,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Salmon_Character_Aberrant_C,Aberrant Salmon,Sabertooth Salmon,Sabertooth_Salmon,Sabertooth Salmon,sabertoothsalmon,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Sarco_Character_BP_Aberrant_C,Aberrant Sarco,Sarco,Sarco,Sarco,sarco,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean, Aquatic"
+Spino_Character_BP_Aberrant_C,Aberrant Spino,Spino,Spino,Spinosaurus,spinosaur,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Stego_Character_BP_Aberrant_C,Aberrant Stegosaurus,Stegosaurus,Stegosaurus,Stegosaurus,stegosaurus,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile","Terrestrial, Subterranean"
+BoaFrill_Character_BP_Aberrant_C,Aberrant Titanoboa,Titanoboa,Titanoboa,Titanoboa,titanoboa,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Trike_Character_BP_Aberrant_C,Aberrant Triceratops,Triceratops,Triceratops,Triceratops,triceratops,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Trilobite_Character_Aberrant_C,Aberrant Trilobite,Trilobite,Trilobite,Trilobite,trilobite,"The Island, The Center, Ragnarok, Aberration, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+LanternPug_Character_BP_C,Bulbdog,Bulbdog,Bulbdog,Bulbdog,bulbdog,"Aberration, Valguero, Genesis: Part 1","Terrestrial, Subterranean"
+LanternBird_Character_BP_C,Featherlight,Featherlight,Featherlight,Featherlight,featherlight,"Aberration, Genesis: Part 1, Crystal Isles","Aerial, Subterranean"
+Lightbug_Character_BaseBP_C,Glowbug,Glowbug,Glowbug,Glowbug,glowbug,"Aberration, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2","Aerial, Subterranean"
+LanternLizard_Character_BP_C,Glowtail,Glowtail,Glowtail,Glowtail,glowtail,"Aberration, Valguero, Crystal Isles","Terrestrial, Subterranean"
+Crab_Character_BP_C,Karkinos,Karkinos,Karkinos,Karkinos,karkinos,"Aberration, Valguero, Genesis: Part 1, Crystal Isles","Terrestrial, Subterranean"
+CaveWolf_Character_BP_C,Ravager,Ravager,Ravager,Ravager,ravager,"Aberration, Valguero, Genesis: Part 1, Crystal Isles","Subterranean, Terrestrial"
+MoleRat_Character_BP_C,Roll Rat,Roll Rat,Roll_Rat,Roll Rat,rollrat,"Aberration, Valguero, Genesis: Part 1","Fossorial, Subterranean"
+Pteroteuthis_Char_BP_C,Seeker,Seeker,Seeker,Seeker,seeker,"Aberration, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2","Terrestrial, Subterranean, Aerial"
+Xenomorph_Character_BP_Male_C,Reaper,Reaper,Reaper,Reaper,reaper,"Aberration, Extinction, Genesis: Part 1, Genesis: Part 2","Subterranean, Terrestrial, Fossorial"
+Xenomorph_Character_BP_Male_Chupa_C,Reaper King,Reaper King,Reaper_King,Reaper,reaper,Aberration,
+Xenomorph_Character_BP_Male_Minion_C,Reaper King,Reaper King,Reaper_King,Reaper,reaper,Aberration,
+Xenomorph_Character_BP_Female_C,Reaper Queen,Reaper Queen,Reaper_Queen,Reaper,reaper,"Aberration, Genesis: Part 1","Subterranean, Fossorial"
+ChupaCabra_Character_BP_C,Nameless,Nameless,Nameless,Nameless,nameless,"Aberration, Genesis: Part 1","Terrestrial, Fossorial, Subterranean"
+RockDrake_Character_BP_C,Rock Drake,Rock Drake,Rock_Drake,Rock Drake,rockdrake,"Aberration, Extinction, Genesis: Part 1","Terrestrial, Aerial, Subterranean"
+EndDrone_Character_BP_C,Attack Drone,Attack Drone,Attack_Drone,Attack Drone,attackdrone,"The Island, Genesis: Part 1",Aerial
+EndDrone_Character_BP_Hard_C,Attack Drone,Attack Drone,Attack_Drone,Attack Drone,attackdrone,"The Island, Genesis: Part 1",Aerial
+EndDrone_Character_BP_Med_C,Attack Drone,Attack Drone,Attack_Drone,Attack Drone,attackdrone,"The Island, Genesis: Part 1",Aerial
+EndDrone_Character_BP_Easy_C,Attack Drone,Attack Drone,Attack_Drone,Attack Drone,attackdrone,"The Island, Genesis: Part 1",Aerial
+Basilisk_Character_BP_C,Basilisk,Basilisk,Basilisk,Basilisk,basilisk,"Aberration, Genesis: Part 1, Crystal Isles","Terrestrial, Fossorial, Subterranean"
+Arthro_Character_BP_Corrupt_C,Corrupted Arthropluera,Arthropluera,Arthropluera,Arthropluera,arthropluera,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Carno_Character_BP_Corrupt_C,Corrupted Carnotaurus,Carnotaurus,Carnotaurus,Carnotaurus,carnotaurus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Chalico_Character_BP_Corrupt_C,Corrupted Chalicotherium,Chalicotherium,Chalicotherium,Chalicotherium,chalicotherium,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+CorruptTumor_Character_BP_C,Corrupt Tumor,,,,,,
+Dilo_Character_BP_Corrupt_C,Corrupted Dilophosaur,Dilophosaur,Dilophosaur,Dilophosaur,dilophosaur,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile","Subterranean, Terrestrial"
+Dimorph_Character_BP_Corrupt_C,Corrupted Dimorphodon,Dimorphodon,Dimorphodon,Dimorphodon,dimorphodon,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aerial, Subterranean"
+Gigant_Character_BP_Corrupt_C,Corrupted Giganotosaurus,Giganotosaurus,Giganotosaurus,Giganotosaurus,giganotosaurus,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles, Mobile",Terrestrial
+Paracer_Character_BP_Corrupt_C,Corrupted Paraceratherium,Paraceratherium,Paraceratherium,Paraceratherium,paracer,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Ptero_Character_BP_Corrupt_C,Corrupted Pteranodon,Pteranodon,Pteranodon,Pteranodon,pteranodon,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile",Aerial
+Raptor_Character_BP_Corrupt_C,Corrupted Raptor,Raptor,Raptor,Raptor,raptor,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Xenomorph_Character_BP_Male_Tamed_Corrupt_C,Corrupted Reaper King,Reaper King,Reaper_King,Reaper,reaper,Aberration,
+Rex_Character_BP_Corrupt_C,Corrupted Rex,Rex,Rex,Rex,rex,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+RockDrake_Character_BP_Corrupt_C,Corrupted Rock Drake,Rock Drake,Rock_Drake,Rock Drake,rockdrake,"Aberration, Extinction, Genesis: Part 1","Terrestrial, Aerial, Subterranean"
+Spino_Character_BP_Corrupt_C,Corrupted Spino,Spino,Spino,Spinosaurus,spinosaur,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Stego_Character_BP_Corrupt_C,Corrupted Stegosaurus,Stegosaurus,Stegosaurus,Stegosaurus,stegosaurus,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile","Terrestrial, Subterranean"
+Trike_Character_BP_Corrupt_C,Corrupted Triceratops,Triceratops,Triceratops,Triceratops,triceratops,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Wyvern_Character_BP_Fire_Corrupt_C,Corrupted Wyvern,Wyvern,Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1",Aerial
+EndTank_Character_BP_C,Defense Unit,Defense Unit,Defense_Unit,Defense Unit,defenseunit,"The Island, Genesis: Part 1",Terrestrial
+Enforcer_Character_BP_C,Enforcer,Enforcer,Enforcer,Enforcer,enforcer,Extinction,Terrestrial
+Gacha_Character_BP_C,Gacha,Gacha,Gacha,Gacha,gacha,Extinction,"Terrestrial, Subterranean"
+Gacha_Claus_Character_BP_C,Gacha Claus,GachaClaus,GachaClaus,,,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero",Terrestrial
+GasBags_Character_BP_C,Gasbags,Gasbags,Gasbags,Gasbags,gasbags,"Extinction, Genesis: Part 1",Aerial
+IceJumper_Character_BP_C,Managarmr,Managarmr,Managarmr,Managarmr,managarmr,"Extinction, Genesis: Part 1",Aerial
+Mek_Character_BP_C,Mek,Mek,Mek,Mek,mek,Extinction,Terrestrial
+MegaMek_Character_BP_C,Mega Mek,Mega Mek,Mega_Mek,Mega Mek,megamek,Extinction,Terrestrial
+Scout_Character_BP_C,Scout,Scout,Scout,Scout,scout,Extinction,Aerial
+Owl_Character_BP_C,Snow Owl,Snow Owl,Snow_Owl,Snow Owl,snowowl,"Extinction, Genesis: Part 1",Aerial
+Griffin_Character_BP_C,Griffin,Griffin,Griffin,Griffin,griffin,"Ragnarok, Crystal Isles","Terrestrial, Aerial"
+Griffin_Character_Minion_BP_C,Griffin,Griffin,Griffin,Griffin,griffin,"Ragnarok, Crystal Isles","Terrestrial, Aerial"
+Iceworm_Character_Minion_BP_smaller_C,Iceworm,Iceworm Male,Iceworm_Male,,,Ragnarok,"Fossorial, Subterranean"
+LavaGolem_Character_BP_C,Lava Golem,Lava Elemental,Lava_Elemental,,,Ragnarok,Subterranean
+Wyvern_Character_BP_Lightning_C,Lightning Wyvern,Lightning Wyvern,Lightning_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok, Genesis: Part 1",Aerial
+Wyvern_Character_BP_Poison_C,Poison Wyvern,Poison Wyvern,Poison_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok, Genesis: Part 1",Aerial
+MegaBasilisk_Character_BP_C,Alpha Basilisk,Alpha Basilisk,Alpha_Basilisk,Basilisk,basilisk,Aberration,"Terrestrial, Fossorial, Subterranean"
+MegaCarno_Character_BP_C,Alpha Carnotaurus,Alpha Carnotaurus,Alpha_Carnotaurus,Carnotaurus,carnotaurus,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+MegaDeathworm_Character_BP_C,Alpha Deathworm,Alpha Deathworm,Alpha_Deathworm,Deathworm,deathworm,"Scorched Earth, Ragnarok",Fossorial
+MegaWyvern_Character_BP_Fire_C,Alpha Fire Wyvern,Alpha Fire Wyvern,Alpha_Fire_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok, Valguero",Aerial
+MegaCrab_Character_BP_C,Alpha Karkinos,Alpha Karkinos,Alpha_Karkinos,Karkinos,karkinos,"Aberration, Valguero","Terrestrial, Subterranean"
+Alpha_Leedsichthys_Character_BP_C,Alpha Leedsichthys,Alpha Leedsichthys,Alpha_Leedsichthys,Leedsichthys,leedsichthys,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles",Aquatic
+Mosa_Character_BP_Mega_C,Alpha Mosasaur,Alpha Mosasaur,Alpha_Mosasaur,Mosasaurus,mosasaurus,"The Island, The Center, Ragnarok, Valguero, Crystal Isles, Mobile",Aquatic
+Mosa_Character_BP_Mega_Cave_C,Alpha Mosasaur (Cave),Alpha Mosasaur,Alpha_Mosasaur,Mosasaurus,mosasaurus,"The Island, The Center, Ragnarok, Valguero, Crystal Isles, Mobile",Aquatic
+MegaMegalodon_Character_BP_C,Alpha Megalodon,Alpha Megalodon,Alpha_Megalodon,Megalodon,megalodon,"The Island, The Center, Ragnarok, Valguero, Crystal Isles",Aquatic
+MegaRaptor_Character_BP_C,Alpha Raptor,Alpha Raptor,Alpha_Raptor,Raptor,raptor,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles, Mobile","Terrestrial, Subterranean"
+MegaRex_Character_BP_C,Alpha T-Rex,Alpha T-Rex,Alpha_T-Rex,Rex,rex,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles, Mobile",Terrestrial
+Mega_Tusoteuthis_Character_BP_C,Alpha Tusoteuthis,Alpha Tusoteuthis,Alpha_Tusoteuthis,Tusoteuthis,tusoteuthis,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles",Aquatic
+MegaXenomorph_Character_BP_Male_Surface_C,Alpha Reaper King (Surface),Surface Reaper King,Surface_Reaper_King,Reaper,reaper,"Aberration, Genesis: Part 1","Terrestrial, Fossorial"
+MegaRex_Character_BP_Corrupt_C,Alpha Corrupted Rex,Alpha T-Rex,Alpha_T-Rex,Rex,rex,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles, Mobile",Terrestrial
+Enraged Triceratops,Enraged Triceratops,Enraged Triceratops,Enraged_Triceratops,Triceratops,triceratops,Extinction,Terrestrial
+DesertKaiju_FirstFlockChar_BP_C,Desert Titan Flock,Desert Titan Flock,Desert_Titan_Flock,Desert Titan,deserttitan,Extinction,Boss
+DesertKaiju_Character_BP_C,Desert Titan,Desert Titan,Desert_Titan,Desert Titan,deserttitan,Extinction,Boss
+DesertKaiju_Character_BP_Hard_C,Desert Titan (Alpha),Desert Titan,Desert_Titan,Desert Titan,deserttitan,Extinction,Boss
+DesertKaiju_Character_BP_Medium_C,Desert Titan (Beta),Desert Titan,Desert_Titan,Desert Titan,deserttitan,Extinction,Boss
+DesertKaiju_Character_BP_Easy_C,Desert Titan (Gamma),Desert Titan,Desert_Titan,Desert Titan,deserttitan,Extinction,Boss
+ForestKaiju_Character_BP_C,Forest Titan,Forest Titan,Forest_Titan,Forest Titan,foresttitan,Extinction,Boss
+ForestKaiju_Character_BP_Hard_C,Forest Titan (Alpha),Forest Titan,Forest_Titan,Forest Titan,foresttitan,Extinction,Boss
+ForestKaiju_Character_BP_Medium_C,Forest Titan (Beta),Forest Titan,Forest_Titan,Forest Titan,foresttitan,Extinction,Boss
+ForestKaiju_Character_BP_Easy_C,Forest Titan (Gamma),Forest Titan,Forest_Titan,Forest Titan,foresttitan,Extinction,Boss
+IceKaiju_Character_BP_C,Ice Titan,Ice Titan,Ice_Titan,Ice Titan,icetitan,Extinction,Boss
+IceKaiju_Character_BP_Hard_C,Ice Titan (Alpha),Ice Titan,Ice_Titan,Ice Titan,icetitan,Extinction,Boss
+IceKaiju_Character_BP_Medium_C,Ice Titan (Beta),Ice Titan,Ice_Titan,Ice Titan,icetitan,Extinction,Boss
+IceKaiju_Character_BP_Easy_C,Ice Titan (Gamma),Ice Titan,Ice_Titan,Ice Titan,icetitan,Extinction,Boss
+KingKaiju_Character_BP_Alpha_C,King Titan (Alpha),King Titan,King_Titan,King Titan,kingtitan,Extinction,Boss
+KingKaiju_Character_BP_Beta_C,King Titan (Beta),King Titan,King_Titan,King Titan,kingtitan,Extinction,Boss
+KingKaiju_Character_BP_Gamma_C,King Titan (Gamma),King Titan,King_Titan,King Titan,kingtitan,Extinction,Boss
+Dragon_Character_BP_Boss_Hard_C,Dragon (Alpha),Dragon,Dragon,Dragon,dragon,"The Island, Ragnarok, Valguero, Genesis: Part 1","Aerial, Boss"
+Dragon_Character_BP_Boss_Medium_C,Dragon (Beta),Dragon,Dragon,Dragon,dragon,"The Island, Ragnarok, Valguero, Genesis: Part 1","Aerial, Boss"
+Dragon_Character_BP_Boss_Easy_C,Dragon (Gamma),Dragon,Dragon,Dragon,dragon,"The Island, Ragnarok, Valguero, Genesis: Part 1","Aerial, Boss"
+Dragon_Character_BP_Boss_Hard_Ragnarok_C,Dragon (Alpha),Dragon,Dragon,Dragon,dragon,"The Island, Ragnarok, Valguero, Genesis: Part 1","Aerial, Boss"
+Dragon_Character_BP_Boss_Medium_Ragnarok_C,Dragon (Beta),Dragon,Dragon,Dragon,dragon,"The Island, Ragnarok, Valguero, Genesis: Part 1","Aerial, Boss"
+Dragon_Character_BP_Boss_Easy_Ragnarok_C,Dragon (Gamma),Dragon,Dragon,Dragon,dragon,"The Island, Ragnarok, Valguero, Genesis: Part 1","Aerial, Boss"
+EndBossSpiderL_Character_BP_C,Broodmother,Broodmother Lysrix,Broodmother_Lysrix,Broodmother Lysrix,broodmotherlysrix,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+EndBossSpiderL_Character_BP_Hard_C,Broodmother (Alpha),Broodmother Lysrix,Broodmother_Lysrix,Broodmother Lysrix,broodmotherlysrix,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+EndBossSpiderL_Character_BP_Medium_C,Broodmother (Beta),Broodmother Lysrix,Broodmother_Lysrix,Broodmother Lysrix,broodmotherlysrix,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+EndBossSpiderL_Character_BP_Easy_C,Broodmother (Gamma),Broodmother Lysrix,Broodmother_Lysrix,Broodmother Lysrix,broodmotherlysrix,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+SpiderL_Character_BP_Hard_C,Broodmother (Alpha),Broodmother Lysrix,Broodmother_Lysrix,Broodmother Lysrix,broodmotherlysrix,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+SpiderL_Character_BP_Medium_C,Broodmother (Beta),Broodmother Lysrix,Broodmother_Lysrix,Broodmother Lysrix,broodmotherlysrix,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+SpiderL_Character_BP_Easy_C,Broodmother (Gamma),Broodmother Lysrix,Broodmother_Lysrix,Broodmother Lysrix,broodmotherlysrix,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+SpiderL_Character_BP_TheCenterHard_C,Broodmother (Alpha),Broodmother Lysrix,Broodmother_Lysrix,Broodmother Lysrix,broodmotherlysrix,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+SpiderL_Character_BP_TheCenterMedium_C,Broodmother (Beta),Broodmother Lysrix,Broodmother_Lysrix,Broodmother Lysrix,broodmotherlysrix,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+SpiderL_Character_BP_TheCenterEasy_C,Broodmother (Gamma),Broodmother Lysrix,Broodmother_Lysrix,Broodmother Lysrix,broodmotherlysrix,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+SpiderL_VAL_Character_BP_C,Valguero Broodmother,Broodmother Lysrix,Broodmother_Lysrix,Broodmother Lysrix,broodmotherlysrix,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+SpiderL_Character_BP_C,Dominus Broodmother,Broodmother Lysrix,Broodmother_Lysrix,Broodmother Lysrix,broodmotherlysrix,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+Gorilla_Character_BP_Hard_C,Megapithecus (Alpha),Megapithecus,Megapithecus,Megapithecus,megapithecus,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+Gorilla_Character_BP_Medium_C,Megapithecus (Beta),Megapithecus,Megapithecus,Megapithecus,megapithecus,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+Gorilla_Character_BP_Easy_C,Megapithecus (Gamma),Megapithecus,Megapithecus,Megapithecus,megapithecus,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+Gorilla_Character_BP_TheCenter_Hard_C,Megapithecus (Alpha),Megapithecus,Megapithecus,Megapithecus,megapithecus,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+Gorilla_Character_BP_TheCenter_Medium_C,Megapithecus (Beta),Megapithecus,Megapithecus,Megapithecus,megapithecus,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+Gorilla_Character_BP_TheCenter_Easy_C,Megapithecus (Gamma),Megapithecus,Megapithecus,Megapithecus,megapithecus,"The Island, The Center, Valguero, Genesis: Part 1","Terrestrial, Boss"
+Iceworm_Queen_Character_BP_C,Iceworm Queen,Iceworm Queen,Iceworm_Queen,,,Ragnarok,"Fossorial, Subterranean"
+Manticore_Character_BP_C,Manticore,Manticore,Manticore,Manticore,manticore,"Scorched Earth, Ragnarok, Valguero",Boss
+Manticore_Character_BP_Hard_C,Manticore (Alpha),Manticore,Manticore,Manticore,manticore,"Scorched Earth, Ragnarok, Valguero",Boss
+Manticore_Character_BP_Medium_C,Manticore (Beta),Manticore,Manticore,Manticore,manticore,"Scorched Earth, Ragnarok, Valguero",Boss
+Manticore_Character_BP_Easy_C,Manticore (Gamma),Manticore,Manticore,Manticore,manticore,"Scorched Earth, Ragnarok, Valguero",Boss
+Manticore_Character_BP_Hard_Ragnarok_C,Manticore (Alpha),Manticore,Manticore,Manticore,manticore,"Scorched Earth, Ragnarok, Valguero",Boss
+Manticore_Character_BP_Medium_Ragnarok_C,Manticore (Beta),Manticore,Manticore,Manticore,manticore,"Scorched Earth, Ragnarok, Valguero",Boss
+Manticore_Character_BP_Easy_Ragnarok_C,Manticore (Gamma),Manticore,Manticore,Manticore,manticore,"Scorched Earth, Ragnarok, Valguero",Boss
+Bone_MegaWyvern_Character_BP_Fire_C,Bone Fire Wyvern,Bone Fire Wyvern,Bone_Fire_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok, Valguero",Aerial
+DodoWyvern_Character_BP_C,Dodo Wyvern,Dodo Wyvern,Dodo_Wyvern,,,Scorched Earth,Aerial
+DodoRex_Character_BP_C,Dodo Rex,DodoRex,DodoRex,,,The Island,Terrestrial
+Bone_Sauropod_Character_BP_C,Skeletal Bronto,Skeletal Bronto,Skeletal_Bronto,Brontosaurus,brontosaurus,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles",Terrestrial
+Bone_MegaCarno_Character_BP_C,Skeletal Carnotaurus,Skeletal Carnotaurus,Skeletal_Carnotaurus,Carnotaurus,carnotaurus,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles",Terrestrial
+Bone_Gigant_Character_BP_C,Skeletal Giganotosaurus,Skeletal Giganotosaurus,Skeletal_Giganotosaurus,Giganotosaurus,giganotosaurus,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles",Terrestrial
+Bone_Jerboa_Character_BP_C,Skeletal Jerboa,Skeletal Jerboa,Skeletal_Jerboa,Jerboa,jerboa,"Scorched Earth, Ragnarok, Valguero, Crystal Isles",Terrestrial
+Bone_Quetz_Character_BP_C,Skeletal Quetzal,Skeletal Quetzal,Skeletal_Quetzal,Quetzal,quetzal,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles",Aerial
+Bone_MegaRaptor_Character_BP_C,Skeletal Raptor,Skeletal Raptor,Skeletal_Raptor,Raptor,raptor,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles",Terrestrial
+Bone_MegaRex_Character_BP_C,Skeletal Rex,Skeletal Rex,Skeletal_Rex,Rex,rex,"The Island, The Center, Ragnarok, Extinction, Valguero, Crystal Isles",Terrestrial
+Bone_Stego_Character_BP_C,Skeletal Stego,Skeletal Stego,Skeletal_Stego,Stegosaurus,stegosaurus,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles",Terrestrial
+Bone_Trike_Character_BP_C,Skeletal Trike,Skeletal Trike,Skeletal_Trike,Triceratops,triceratops,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles",Terrestrial
+Wyvern_Character_BP_ZombieFire,Zombie Fire Wyvern,Zombie Fire Wyvern,Zombie_Fire_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok, Extinction, Valguero",Aerial
+Wyvern_Character_BP_ZombieLightning,Zombie Lightning Wyvern,Zombie Lightning Wyvern,Zombie_Lightning_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok",Aerial
+Wyvern_Character_BP_ZombiePoison,Zombie Poison Wyvern,Zombie Poison Wyvern,Zombie_Poison_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok",Aerial
+Wyvern_Character_BP_ZombieFire_C,Zombie Fire Wyvern,Zombie Fire Wyvern,Zombie_Fire_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok, Extinction, Valguero",Aerial
+Wyvern_Character_BP_ZombieLightning_C,Zombie Lightning Wyvern,Zombie Lightning Wyvern,Zombie_Lightning_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok",Aerial
+Wyvern_Character_BP_ZombiePoison_C,Zombie Poison Wyvern,Zombie Poison Wyvern,Zombie_Poison_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok",Aerial
+ZombieWyvern_Character_BP_Fire_C,Zombie Fire Wyvern,Zombie Fire Wyvern,Zombie_Fire_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok, Extinction, Valguero",Aerial
+ZombieWyvern_Character_BP_Poison_C,Zombie Poison Wyvern,Zombie Poison Wyvern,Zombie_Poison_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok",Aerial
+ZombieWyvern_Character_BP_Lightning_C,Zombie Lightning Wyvern,Zombie Lightning Wyvern,Zombie_Lightning_Wyvern,Wyvern,wyvern,"Scorched Earth, Ragnarok",Aerial
+ZombieDodo_Character_BP_C,Zomdodo,Zomdodo,Zomdodo,,,The Island,Terrestrial
+Turkey_Character_BP_C,Turkey,Super Turkey,Super_Turkey,,,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero",Terrestrial
+MotorRaft_BP_C,Motorboat,Motorboat ,Motorboat,,,,
+Raft_BP_C,Raft,Wooden Raft,Wooden_Raft,,,,
+RockGolem_Character_BP_C,Rock Elemental,Rock Elemental,Rock_Elemental,Rock Elemental,rockelemental,"Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles",Terrestrial
+RubbleGolem_Character_BP_C,Rubble Golem,Rubble Golem,Rubble_Golem,,,"Scorched Earth, Extinction",Subterranean
+Vulture_Character_BP_C,Vulture,Vulture,Vulture,Vulture,vulture,"Scorched Earth, Ragnarok, Crystal Isles",Aerial
+Bigfoot_Character_BP_Aberrant_C,Aberrant Gigantopithecus,Gigantopithecus,Gigantopithecus,Gigantopithecus,gigantopithecus,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+ChupaCabra_Character_BP_Surface_C,Nameless (Surface),Nameless,Nameless,Nameless,nameless,"Aberration, Genesis: Part 1","Terrestrial, Fossorial, Subterranean"
+DungBeetle_Character_BP_Aberrant_C,Aberrant Dung Beetle,Dung Beetle,Dung_Beetle,Dung Beetle,dungbeetle,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+LanternGoat_Character_BP_C,Shinehorn,Shinehorn,Shinehorn,Shinehorn,shinehorn,"Aberration, Genesis: Part 1","Terrestrial, Subterranean"
+Pteroteuthis_Char_BP_Surface_C,Seeker (Surface),Seeker,Seeker,Seeker,seeker,"Aberration, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2","Terrestrial, Subterranean, Aerial"
+Xenomorph_Character_BP_Male_Surface_C,Reaper King (Surface),Reaper King,Reaper_King,Reaper,reaper,Aberration,
+Xenomorph_Character_BP_Male_Tamed_C,Reaper King,Reaper King,Reaper_King,Reaper,reaper,Aberration,
+BionicTrike_Character_BP_C,Tek Trike,Tek Triceratops,Tek_Triceratops,Triceratops,triceratops,Genesis: Part 1,Terrestrial
+Bog_Para_Character_BP_C,X-Parasaur,Parasaur,Parasaur,Parasaur,parasaur,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Bog_Paracer_Character_BP_C,X-Paracer,Paraceratherium,Paraceratherium,Paraceratherium,paracer,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Bog_Raptor_Character_BP_C,X-Raptor,Raptor,Raptor,Raptor,raptor,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Bog_Spino_Character_BP_C,X-Spino,Spino,Spino,Spinosaurus,spinosaur,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+BogSpider_Character_BP_C,Bloodstalker,Bloodstalker,Bloodstalker,Bloodstalker,bloodstalker,Genesis: Part 1,Terrestrial
+Cherufe_Character_BP_C,Magmasaur,Magmasaur,Magmasaur,Magmasaur,magmasaur,Genesis: Part 1,Terrestrial
+EndDrone_Lunar_Character_BP_C,X-Drone,Attack Drone,Attack_Drone,Attack Drone,attackdrone,"The Island, Genesis: Part 1",Aerial
+EndTank_Lunar_Character_BP_C,X-Defense Unit,Defense Unit,Defense_Unit,Defense Unit,defenseunit,"The Island, Genesis: Part 1",Terrestrial
+GiantTurtle_Character_BP_C,Megachelon,Megachelon,Megachelon,Megachelon,megachelon,Genesis: Part 1,Aquatic
+InsectSwarmChar_BP_C,Insect Swarm,Insect Swarm,Insect_Swarm,Insect Swarm,bladewasp,Genesis: Part 1,Aerial
+Lunar_Salmon_Character_BP_C,X-Salmon,Sabertooth Salmon,Sabertooth_Salmon,Sabertooth Salmon,sabertoothsalmon,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Ocean_Basilosaurus_Character_BP_C,X-Basilosaurus,Basilosaurus,Basilosaurus,Basilosaurus,basilosaurus,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Ocean_Dolphin_Character_BP_C,X-Ichthyosaurus,Ichthyosaurus,Ichthyosaurus,Ichthyosaurus,ichthyosaurus,"The Island, The Center, Ragnarok, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Ocean_Dunkle_Character_BP_C,X-Dunkleosteus,Dunkleosteus,Dunkleosteus,Dunkleosteus,dunkleosteus,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Ocean_Megalodon_Character_BP_C,X-Megalodon,Megalodon,Megalodon,Megalodon,megalodon,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Ocean_Mosa_Character_BP_C,X-Mosasaur,Mosasaurus,Mosasaurus,Mosasaurus,mosasaurus,"The Island, The Center, Ragnarok, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aquatic
+Rare_Lunar_Salmon_Character_BP_C,X-Salmon (Rare),Sabertooth Salmon,Sabertooth_Salmon,Sabertooth Salmon,sabertoothsalmon,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Aquatic, Subterranean"
+Shapeshifter_Small_Character_BP_C,Ferox (Small),Ferox,Ferox,Ferox,ferox,Genesis: Part 1,Terrestrial
+Shapeshifter_Large_Character_BP_C,Ferox (Large),Ferox (Large),Ferox_(Large),Ferox,ferox,Genesis: Part 1,Terrestrial
+SpaceWhale_Character_BP_C,Astrocetus,Astrocetus,Astrocetus,Astrocetus,astrocetus,Genesis: Part 1,Aerial
+MicrobeSwarmChar_BP_C,Parakeet Fish School,Parakeet Fish School,Parakeet_Fish_School,Parakeet Fish School,parakeetfishschool,Genesis: Part 1,Aquatic
+Volcano_Golem_Character_BP_C,X-Rock Elemental,Rock Elemental,Rock_Elemental,Rock Elemental,rockelemental,"Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles",Terrestrial
+Xenomorph_Character_BP_Male_Lunar_C,X-Reaper King,Reaper King,Reaper_King,Reaper,reaper,Aberration,
+Bog_Tapejara_Character_BP_C,X-Tapejara,Tapejara,Tapejara,Tapejara,tapejara,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aerial
+Snow_Argent_Character_BP_C,X-Argentavis,Argentavis,Argentavis,Argentavis,argentavis,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Aerial
+Snow_Rhino_Character_BP_C,X-Rhino,Woolly Rhino,Woolly_Rhino,Woolly Rhino,woollyrhino,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile",Terrestrial
+Snow_Saber_Character_BP_C,X-Sabertooth,Sabertooth,Sabertooth,Sabertooth,sabertooth,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Subterranean, Terrestrial"
+Snow_Yutyrannus_Character_BP_C,X-Yutyrannus,Yutyrannus,Yutyrannus,Yutyrannus,yutyrannus,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles",Terrestrial
+Volcano_Allo_Character_BP_C,X-Allosaurus,Allosaurus,Allosaurus,Allosaurus,allosaurus,"The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Volcano_Ankylo_Character_BP_C,X-Ankylosaurus,Ankylosaurus,Ankylosaurus,Ankylosaurus,ankylosaurus,"The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+Volcano_Rex_Character_BP_C,X-Rex,Rex,Rex,Rex,rex,"The Island, The Center, Scorched Earth, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile",Terrestrial
+Volcano_Trike_Character_BP_C,X-Triceratops,Triceratops,Triceratops,Triceratops,triceratops,"The Island, The Center, Ragnarok, Aberration, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Mobile","Terrestrial, Subterranean"
+CrystalWyvern_Character_BP_WS_C,Tropical Crystal Wyvern,Tropical Crystal Wyvern,Tropical_Crystal_Wyvern,Crystal Wyvern,crystalwyvern,Crystal Isles,Aerial
+CrystalWyvern_Character_BP_Blood_C,Blood Crystal Wyvern,Blood Crystal Wyvern,Blood_Crystal_Wyvern,Crystal Wyvern,crystalwyvern,Crystal Isles,Aerial
+CrystalWyvern_Character_BP_Ember_C,Ember Crystal Wyvern,Ember Crystal Wyvern,Ember_Crystal_Wyvern,Crystal Wyvern,crystalwyvern,Crystal Isles,Aerial
+Tropeognathus_Character_BP_C,Tropeognathus,Tropeognathus,Tropeognathus,Tropeognathus,tropeognathus,Crystal Isles,Aerial
+TekHoverSkiff_Character_BP_C,Skiff,Unassembled TEK Hover Skiff (Genesis: Part 1),Unassembled_TEK_Hover_Skiff_(Genesis:_Part_1),,,,

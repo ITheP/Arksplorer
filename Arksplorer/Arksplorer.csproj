@@ -4,13 +4,14 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <Version>0.9</Version>
+    <Version>1.0</Version>
     <Authors>Mister B</Authors>
     <Company>I The P</Company>
     <Description>Loads Ark creature/survivor data files from an Ark web server and lets you find them etc. on maps. Has a taming countdown timer. Embeds other Ark web resources for ease of finding them.</Description>
     <PackageProjectUrl>http://facebook.com/arksplorer</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ITheP/Arksplorer</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,10 +24,15 @@
   <ItemGroup>
     <None Remove="ArksplorerData.json" />
     <None Remove="Audio\FeedMe.wav" />
+    <None Remove="Creature Lookup.csv" />
+    <None Remove="Data\Lookup-Dinos.json" />
     <None Remove="Images\Aberration.jpg" />
     <None Remove="Images\ark.png" />
+    <None Remove="Images\Arkpedia.png" />
+    <None Remove="Images\Arksplorer.png" />
     <None Remove="Images\Cryopod.png" />
     <None Remove="Images\Crystal Isles.jpg" />
+    <None Remove="Images\Dododex.png" />
     <None Remove="Images\Extinction.jpg" />
     <None Remove="Images\Female.png" />
     <None Remove="Images\Genesis.jpg" />
@@ -40,13 +46,26 @@
     <None Remove="Images\WiredCat.jpg" />
     <None Remove="Servers.json" />
     <None Remove="temp.json" />
+    <None Remove="temp.xlsx" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Audio\FeedMe.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data\Lookup-Dinos.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Arkpedia.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Arksplorer.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\Cryopod.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Dododex.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Female.png">
@@ -59,9 +78,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Aberration.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\Ark.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Crystal Isles.jpg">

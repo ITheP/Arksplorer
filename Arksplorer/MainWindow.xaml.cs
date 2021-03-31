@@ -48,6 +48,7 @@ using System.Xml.Linq;
 
 namespace Arksplorer
 {
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -83,7 +84,7 @@ namespace Arksplorer
             Marker.Visibility = Visibility.Collapsed;
             ServerLoadedControls.Visibility = Visibility.Collapsed;
             DataVisual.Visibility = Visibility.Collapsed;
-            OverviewMessage.Visibility = Visibility.Collapsed;
+            OverviewInfo.Visibility = Visibility.Collapsed;
 
             // Disable all controls that are reliant on working server connection...
             LoadableControlsEnabled(false);
@@ -99,6 +100,8 @@ namespace Arksplorer
             // Grab config from server that feeds into all this
             try
             {
+                Lookup.LoadDinoData("./Data/Lookup-Dinos.json");
+
                 string lastServer = Settings.Default.LastServer;
 
                 KnownServers = JsonSerializer.Deserialize<List<Server>>(File.ReadAllText("./Servers.json"));
@@ -121,12 +124,12 @@ namespace Arksplorer
 
         //private List<WebTab> WebTabs { get; set; }
         private WebTab ArkpediaWebTab { get; set; }
-        private WebTab DodexWebTab { get; set; }
+        private WebTab DododexWebTab { get; set; }
 
         private void InitWebTabs()
         {
             ArkpediaWebTab = new(ArkpediaBrowser) { LoadingControl = ArkpediaLoadingSpinner };
-            DodexWebTab = new(DodexBrowser) { LoadingControl = DodexLoadingSpinner };
+            DododexWebTab = new(DododexBrowser) { LoadingControl = DododexLoadingSpinner };
         }
 
         public void SaveMapPreference(object sender, RoutedEventArgs e)
@@ -871,11 +874,9 @@ namespace Arksplorer
 
             if (entity == null)
             {
-                SetOverviewMessage(null);
+                SetSelectedInfo(null);
                 return;
             }
-
-            var columns = entity.Row.Table.Columns;
 
             Info info = CreateInfoFromRow(entity.Row);
 
@@ -897,9 +898,9 @@ namespace Arksplorer
 
                 // We move the OverviewMessage to a different point over the map if there is a chance it might cover up the Marker
                 if (xPos > 0)
-                    OverviewMessage.HorizontalAlignment = HorizontalAlignment.Left;
+                    OverviewInfo.HorizontalAlignment = HorizontalAlignment.Left;
                 else
-                    OverviewMessage.HorizontalAlignment = HorizontalAlignment.Right;
+                    OverviewInfo.HorizontalAlignment = HorizontalAlignment.Right;
 
                 //if (yPos > 0)
                 //    OverviewMessage.VerticalAlignment = VerticalAlignment.Top;
@@ -933,7 +934,7 @@ namespace Arksplorer
                 }
             }
 
-            SetOverviewMessage(info);
+            SetSelectedInfo(info);
         }
 
         // Note: at the moment mass markers are based around CreatureId's, but could be used in the future for other purposes (e.g. resources)
@@ -1057,7 +1058,7 @@ namespace Arksplorer
             //info.Add("Location", $"{info.Lat:0.00},{info.Lon:0.00}");
 
             if (CreatureColumn > -1)
-                info.Add("Creature", row[CreatureColumn] as string);
+                info.Creature = row[CreatureColumn] as string;
 
             if (CreatureIdColumn > -1)
                 info.CreatureId = row[CreatureIdColumn] as string;
@@ -1092,14 +1093,14 @@ namespace Arksplorer
             return (info);
         }
 
-        private void SetOverviewMessage(Info info) //string message)
+        private void SetSelectedInfo(Info info) //string message)
         {
             if (info == null)
                 return;
 
-            OverviewMessage.ShowInfo(info);
+            OverviewInfo.ShowInfo(info, true);
 
-            OverviewMessage.Visibility = Visibility.Visible;
+            OverviewInfo.Visibility = Visibility.Visible;
         }
 
         private void ExactFilter_Click(object sender, RoutedEventArgs e)
@@ -1183,7 +1184,7 @@ namespace Arksplorer
                                 PopUpInfoVisual.ShowInfo(info);
                             }
 
-                            updatePopUpPosition = true;
+                            // updatePopUpPosition = true;
                         }
                     }
                     else
@@ -1252,11 +1253,23 @@ namespace Arksplorer
                 browser.GoBack();
         }
 
-        private static void Navigate(Microsoft.Web.WebView2.Wpf.WebView2 browser, string url)
+        public static void Navigate(Microsoft.Web.WebView2.Wpf.WebView2 browser, string url, TabItem tab = null)
         {
             try
             {
-                browser.CoreWebView2.Navigate(url);
+                if (browser.CoreWebView2 == null)
+                {
+                    browser.Source = new Uri(url);
+                    //browser.CoreWebView2InitializationCompleted += Webview_CoreWebView2InitializationCompleted;
+                    //browser.EnsureCoreWebView2Async();
+                }
+                else
+                {
+                    browser.CoreWebView2?.Navigate(url);
+                }
+
+                if (tab != null)
+                    tab.Focus();
             }
             catch (Exception ex)
             {
@@ -1264,20 +1277,21 @@ namespace Arksplorer
             }
         }
 
-        private void DodexNavigate_Click(object sender, RoutedEventArgs e)
+        private void DododexNavigate_Click(object sender, RoutedEventArgs e)
         {
-            Navigate(DodexBrowser, (string)((Button)sender).Tag);
+            Navigate(DododexBrowser, (string)((Button)sender).Tag);
         }
 
-        private void DodexBack_Click(object sender, RoutedEventArgs e)
+        private void DododexBack_Click(object sender, RoutedEventArgs e)
         {
-            GoBack(DodexBrowser);
+            GoBack(DododexBrowser);
         }
 
         private void ArkpediaNavigate_Click(object sender, RoutedEventArgs e)
         {
             Navigate(ArkpediaBrowser, (string)((Button)sender).Tag);
         }
+
 
         private void ArkpediaBack_Click(object sender, RoutedEventArgs e)
         {
@@ -1289,9 +1303,9 @@ namespace Arksplorer
             OpenUrlInExternalBrowser(ArkpediaWebTab.CurrentUrl);
         }
 
-        private void DodexOpenExternal_Click(object sender, RoutedEventArgs e)
+        private void DododexOpenExternal_Click(object sender, RoutedEventArgs e)
         {
-            OpenUrlInExternalBrowser(DodexWebTab.CurrentUrl);
+            OpenUrlInExternalBrowser(DododexWebTab.CurrentUrl);
         }
 
         private void DataVisual_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)

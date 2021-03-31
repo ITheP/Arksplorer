@@ -36,8 +36,8 @@ namespace Arksplorer
                     ((IArkEntity)item).Map = mapName;
 
                     tmpCreature = (IArkEntityWithCreature)item;
-                    if (Lookup.ClassToDinoNames.TryGetValue(tmpCreature.CreatureId, out string creatureName))
-                        tmpCreature.Creature = creatureName;
+                    if (Lookup.Dinos.TryGetValue(tmpCreature.CreatureId, out DinoData dino))
+                        tmpCreature.Creature = dino.ArksplorerName;
                 }
             }
             else

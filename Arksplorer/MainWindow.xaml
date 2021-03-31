@@ -77,9 +77,9 @@
                         <Button x:Name="Exit" Content="Exit" Click="Exit_Click" Margin="0,4,0,8"/>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
-                        <Image Source="/Images/ark.png" />
+                        <Image Source="/Images/Arksplorer.png" />
                         <TextBlock x:Name="Title" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>
-                        <TextBlock x:Name="Version" Text="v0.9 Preview" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
+                        <TextBlock x:Name="Version" Text="v1.0 Preview" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
                         <Separator Margin="0,7,0,8"/>
                         <ComboBox x:Name="ServerList" IsEditable="False" SelectedValuePath="Name" SelectionChanged="ServerList_SelectionChanged">
                             <ComboBox.ItemTemplate>
@@ -207,7 +207,7 @@
                             <LineBreak/>
                             Awesome taming calculator...
                             <LineBreak/>
-                            <Hyperlink NavigateUri="https://www.dododex.com/" RequestNavigate="HandleLinkClick">www.dodex.com</Hyperlink>
+                            <Hyperlink NavigateUri="https://www.doDododex.com/" RequestNavigate="HandleLinkClick">www.Dododex.com</Hyperlink>
                             <LineBreak/>
                             <LineBreak/>
                             My favorite PVE ark servers...
@@ -277,7 +277,7 @@
                                     </Ellipse>
                                 </Grid>
                             </Viewbox>
-                            <local:InfoVisual x:Name="OverviewMessage" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="4" Padding="4" />
+                            <local:InfoVisual x:Name="OverviewInfo" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="4" Padding="4" />
                         </Grid>
                         <Grid Grid.Row="1" VerticalAlignment="Stretch">
                             <DockPanel VerticalAlignment="Stretch">
@@ -345,7 +345,7 @@
                         <GridSplitter Grid.Row="0" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" ShowsPreview="False" Background="Black"/>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Ark-pedia">
+                <TabItem Header="Ark Wikipedia" x:Name="ArkpediaTab">
                     <DockPanel>
                         <Grid DockPanel.Dock="Top">
                             <StackPanel Orientation="Horizontal">
@@ -367,26 +367,26 @@
                         <wv2:WebView2 x:Name="ArkpediaBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki" />
                     </DockPanel>
                 </TabItem>
-                <TabItem Header="Dodex">
+                <TabItem Header="Dododex" x:Name="DododexTab">
                     <DockPanel>
                         <Grid DockPanel.Dock="Top">
                             <StackPanel Orientation="Horizontal">
-                                <Button x:Name="DodexBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="DodexBack_Click"/>
-                                <Button x:Name="DodexHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="https://www.dododex.com/" Click="DodexNavigate_Click"/>
-                                <Button x:Name="DodexCreatures" Content="Creatures" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/dinosaurs" Click="DodexNavigate_Click"/>
-                                <Button x:Name="DodexResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/resources" Click="DodexNavigate_Click"/>
-                                <Button x:Name="DodexKibble" Content="Kibble" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/kibble" Click="DodexNavigate_Click"/>
+                                <Button x:Name="DododexBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="DododexBack_Click"/>
+                                <Button x:Name="DododexHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="https://www.doDododex.com/" Click="DododexNavigate_Click"/>
+                                <Button x:Name="DododexCreatures" Content="Creatures" Style="{StaticResource BrowserButton}" Tag="https://www.doDododex.com/dinosaurs" Click="DododexNavigate_Click"/>
+                                <Button x:Name="DododexResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://www.doDododex.com/resources" Click="DododexNavigate_Click"/>
+                                <Button x:Name="DododexKibble" Content="Kibble" Style="{StaticResource BrowserButton}" Tag="https://www.doDododex.com/kibble" Click="DododexNavigate_Click"/>
                             </StackPanel>
                             <Grid HorizontalAlignment="Right">
                                 <StackPanel Orientation="Horizontal">
-                                    <Viewbox x:Name="DodexLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                    <Viewbox x:Name="DododexLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
                                         <local:Spinner/>
                                     </Viewbox>
-                                    <Button x:Name="DodexOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="DodexOpenExternal_Click"/>
+                                    <Button x:Name="DododexOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="DododexOpenExternal_Click"/>
                                 </StackPanel>
                             </Grid>
                         </Grid>
-                        <wv2:WebView2 x:Name="DodexBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="https://www.dododex.com/" />
+                        <wv2:WebView2 x:Name="DododexBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="https://www.doDododex.com/" />
                     </DockPanel>
                 </TabItem>
                 <!--<TabItem Header="Debug">

@@ -32,7 +32,7 @@ v0.7 Preview - 15/03/2021
 - Code improvements
 - Initial code for auto-refresh of cache
 - Ark.Gamepedia embedding
-- Dodex embedding
+- Dododex embedding
 - Taming countdown timer
 
 v0.8 Preview - 24/03/2021

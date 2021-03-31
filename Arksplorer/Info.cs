@@ -19,6 +19,7 @@ namespace Arksplorer
         public string Name { get; set; }
         public double Lat { get; set; }
         public double Lon { get; set; }
+        public string Creature { get; set; }
         public string CreatureId { get; set; }
         public int Level { get; set; } = -1;
         public string Sex { get; set; }

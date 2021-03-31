@@ -20,12 +20,17 @@ namespace Arksplorer
     /// </summary>
     public partial class InfoVisual : UserControl
     {
+        private static DinoData CurrentDinoData { get; set; }
+
+        private static MainWindow MainWindow { get; set; }
+
         public InfoVisual()
         {
             InitializeComponent();
+            MainWindow = (MainWindow)Application.Current.MainWindow;
         }
 
-        public void ShowInfo(Info info)
+        public void ShowInfo(Info info, bool ShowLinks = false)
         {
             if (info.Name == null)
             {
@@ -44,11 +49,39 @@ namespace Arksplorer
                 Name.Visibility = Visibility.Visible;
             }
 
+            Creature.Text = info.Creature;
+
             Lon.Text = $"{info.Lon:N2}";
             Lat.Text = $"{info.Lat:N2}";
 
             InfoList.ItemsSource = info.Items;
             IconList.ItemsSource = info.Icons;
+
+            Arkpedia.Visibility = Visibility.Collapsed;
+            Dododex.Visibility = Visibility.Collapsed;
+
+            if (ShowLinks)
+            {
+                CurrentDinoData = Lookup.FindDino(info.CreatureId);
+                if (CurrentDinoData != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(CurrentDinoData.ArkpediaUrl))
+                        Arkpedia.Visibility = Visibility.Visible;
+
+                    if (!string.IsNullOrWhiteSpace(CurrentDinoData.DododexUrl))
+                        Dododex.Visibility = Visibility.Visible;
+                }
+            }
+        }
+
+        private void Arkpedia_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.Navigate(MainWindow.ArkpediaBrowser, $"https://ark.fandom.com/wiki/{CurrentDinoData.ArkpediaUrl}", MainWindow.ArkpediaTab);
+        }
+
+        private void Dododex_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.Navigate(MainWindow.DododexBrowser, $"https://www.dododex.com/taming/{CurrentDinoData.DododexUrl}", MainWindow.DododexTab);
         }
     }
 }
