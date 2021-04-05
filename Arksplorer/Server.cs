@@ -1,6 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows;
+using System.Text.Json.Serialization;
 
 namespace Arksplorer
 {
@@ -23,7 +28,20 @@ namespace Arksplorer
         /// <summary>
         /// How often the server refreshes data, in minutes. Used to help e.g. not try and refresh data during periods we know it won't have changed.
         /// </summary>
-        public int RefreshRate { get; set; } = 50;
+        public int RefreshRate { get; set; }
+        public float FoodDrainMultiplier { get; set; }
+        public double HarvestAmountMultiplier { get; set; }
+        public double TamingSpeedMultiplier { get; set; }
+        public double XPMultiplier { get; set; }
+        public double DinoCountMultiplier { get; set; }
+        public double DayTimeSpeedScale { get; set; }
+        public double NightTimeSpeedScale { get; set; }
+        public double HexagonRewardMultiplier { get; set; }
+        public int KickIdlePlayersPeriod { get; set; }
+        public double MatingIntervalMultiplier { get; set; }
+        public double EggHatchSpeedMultiplier { get; set; }
+
+        public ListInfo ServerDetailsOverview { get; private set; }
 
         /// <summary>
         /// Basically we want a dumping ground for URL's to web site data sources. These may differ per server etc.
@@ -43,6 +61,18 @@ namespace Arksplorer
             Website = serverData.Website;
             Message = serverData.Message;
             Status = serverData.Status;
+            RefreshRate = serverData.RefreshRate;
+            FoodDrainMultiplier = serverData.FoodDrainMultiplier;
+            HarvestAmountMultiplier = serverData.HarvestAmountMultiplier;
+            TamingSpeedMultiplier = serverData.TamingSpeedMultiplier;
+            XPMultiplier = serverData.XPMultiplier;
+            DinoCountMultiplier = serverData.DinoCountMultiplier;
+            DayTimeSpeedScale = serverData.DayTimeSpeedScale;
+            NightTimeSpeedScale = serverData.NightTimeSpeedScale;
+            HexagonRewardMultiplier = serverData.HexagonRewardMultiplier;
+            KickIdlePlayersPeriod = serverData.KickIdlePlayersPeriod;
+            MatingIntervalMultiplier = serverData.MatingIntervalMultiplier;
+            EggHatchSpeedMultiplier = serverData.EggHatchSpeedMultiplier;
 
             foreach (RawServerMaps map in serverData.Maps)
             {
@@ -79,6 +109,35 @@ namespace Arksplorer
 
             return null;
         }
+
+        public ListInfo GetServerOverview()
+        {
+            if (ServerDetailsOverview == null)
+            {
+                ListInfo info = new();
+
+                info.Add(Description, "Description");
+                info.Add(Website, "Website");
+                info.Add(Message, "Message");
+                info.Add(Status, "Status", "Not currently used");
+                info.Add($"{RefreshRate}", "Refresh rate", "How often (in minutes) the server refreshes its data. Note that this is approximate.");
+                info.Add($"{FoodDrainMultiplier}x", "Food drain multiplier");
+                info.Add($"{HarvestAmountMultiplier}x", "Harvest amount multiplier");
+                info.Add($"{TamingSpeedMultiplier}x", "Taming speed multiplier");
+                info.Add($"{XPMultiplier}x", "XP Multiplier");
+                info.Add($"{DinoCountMultiplier}x", "Dino count multiplier");
+                info.Add($"{DayTimeSpeedScale}x", "Day time speed scale");
+                info.Add($"{NightTimeSpeedScale}x", "Night time speed scale");
+                info.Add($"{HexagonRewardMultiplier}x", "Hexagon reward multiplier");
+                info.Add($"{KickIdlePlayersPeriod}", "Kick idle players period", "Time before players are kicked for being idle");
+                info.Add($"{MatingIntervalMultiplier}x", "Mating interval multiplier");
+                info.Add($"{EggHatchSpeedMultiplier}x", "Egg hatching speed multiplier");
+
+                ServerDetailsOverview = info;
+            }
+
+            return ServerDetailsOverview;
+        }
     }
 
     public class RawServerData
@@ -103,6 +162,20 @@ namespace Arksplorer
         /// If disabled, then Arksplorer should quit with a warning message. (E.g. server is undergoing maintenance)
         /// </summary>
         public string Status { get; set; }
+        public int RefreshRate { get; set; } = 60;
+
+        public float FoodDrainMultiplier { get; set; }
+        public double HarvestAmountMultiplier { get; set; }
+        public double TamingSpeedMultiplier { get; set; }
+        public double XPMultiplier { get; set; }
+        public double DinoCountMultiplier { get; set; }
+        public double DayTimeSpeedScale { get; set; }
+        public double NightTimeSpeedScale { get; set; }
+        public double HexagonRewardMultiplier { get; set; }
+        public int KickIdlePlayersPeriod { get; set; }
+        public double MatingIntervalMultiplier { get; set; }
+        public double EggHatchSpeedMultiplier { get; set; }
+
         /// <summary>
         /// The different types of data files available, e.g. Dinos, Wild Dinos, Survivors, etc.
         /// </summary>

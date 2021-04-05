@@ -2,15 +2,6 @@
 
 namespace Arksplorer
 {
-    //// temporary class for some reading in of data, not used live but in development
-    //public class KeyValue
-    //{
-    //    [JsonPropertyName("ClassName")]
-    //    public string Key { get; set; }
-    //    [JsonPropertyName("FriendlyName")]
-    //    public string Value { get; set; }
-    //}
-
     public class DinoData
     {
         [JsonPropertyName("Arksplorer")]

@@ -12,7 +12,7 @@ namespace Arksplorer
     /// </summary>
     public class Info
     {
-        public List<InfoEntry> Items { get; } = new();
+        public List<ListInfoItem> Items { get; } = new();
         public List<BitmapImage> Icons { get; } = new();
 
         // Handy for extra processing
@@ -24,21 +24,21 @@ namespace Arksplorer
         public int Level { get; set; } = -1;
         public string Sex { get; set; }
         public bool Cryoed { get; set; }
+        public ArkColor C0 { get; set; }
+        public ArkColor C1 { get; set; }
+        public ArkColor C2 { get; set; }
+        public ArkColor C3 { get; set; }
+        public ArkColor C4 { get; set; }
+        public ArkColor C5 { get; set; }
 
         public void Add(string description, string value = null)
         {
-            Items.Add(new InfoEntry() { Description = description, Value = value });
+            Items.Add(new ListInfoItem() { Description = description, Value = value });
         }
 
         public void AddIcon(BitmapImage image)
         {
             Icons.Add(image);
         }
-    }
-
-    public class InfoEntry
-    {
-        public string Description { get; set; }
-        public string Value { get; set; }
     }
 }

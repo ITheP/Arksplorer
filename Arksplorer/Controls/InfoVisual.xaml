@@ -5,19 +5,32 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Arksplorer"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="150">
+             d:DesignWidth="150"
+             MinWidth="150">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" x:Key="ColorLabel">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style TargetType="Border" x:Key="ColorBorder">
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="Margin" Value="4,2"/>
+        </Style>
+    </UserControl.Resources>
     <Border BorderThickness="1" BorderBrush="Black">
         <Grid Background="#EFFF" >
-            <StackPanel>
-                <TextBlock x:Name="Name" Text="Name" HorizontalAlignment="Center" FontSize="16" />
+            <StackPanel Margin="0,0,0,2">
+                <TextBlock x:Name="CreatureName" Text="Name" HorizontalAlignment="Center" FontSize="16" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock Text="Lat" FontSize="10" VerticalAlignment="Center"  />
                     <TextBlock x:Name="Lat" FontStyle="Italic" FontSize="14" VerticalAlignment="Center" Margin="4,0,0,0" />
                     <TextBlock Text="Lon" FontSize="10"  VerticalAlignment="Center" Margin="12,0,0,0" />
                     <TextBlock x:Name="Lon" FontStyle="Italic" FontSize="14" VerticalAlignment="Center"  Margin="4,0,0,0"/>
                 </StackPanel>
-                <TextBlock x:Name="Creature" Text="Creature" Margin="0,-2,0,0" HorizontalAlignment="Center" FontWeight="Bold" />
-                <ListView x:Name="InfoList" BorderThickness="0" Background="Transparent" Margin="0,2,0,0">
+                <TextBlock x:Name="Creature" Text="Creature" HorizontalAlignment="Center" FontWeight="Bold" />
+                <ListView x:Name="InfoList" BorderThickness="0" Background="Transparent">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid HorizontalAlignment="Stretch" Margin="0" Width="150">
@@ -27,7 +40,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,6">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,4">
                     <Button x:Name="Arkpedia" Margin="2,0" Click="Arkpedia_Click" Background="White">
                         <Image Source="/Images/Arkpedia.png" Width="24" Height="20" />
                     </Button>
@@ -46,6 +59,26 @@
                     <Button x:Name="Dododex" Margin="2,0" Click="Dododex_Click" Background="White">
                         <Image Source="/Images/Dododex.png" Width="24" Height="20" />
                     </Button>
+                </StackPanel>
+                <StackPanel x:Name="ColorList">
+                    <Border x:Name="B0" Style="{StaticResource ColorBorder}">
+                        <TextBlock x:Name="C0" Text="C0" Style="{StaticResource ColorLabel}" />
+                    </Border>
+                    <Border x:Name="B1" Style="{StaticResource ColorBorder}">
+                        <TextBlock x:Name="C1" Text="C0" Style="{StaticResource ColorLabel}" />
+                    </Border>
+                    <Border x:Name="B2" Style="{StaticResource ColorBorder}">
+                        <TextBlock x:Name="C2" Text="C0" Style="{StaticResource ColorLabel}" />
+                    </Border>
+                    <Border x:Name="B3" Style="{StaticResource ColorBorder}">
+                        <TextBlock x:Name="C3" Text="C0" Style="{StaticResource ColorLabel}" />
+                    </Border>
+                    <Border x:Name="B4" Style="{StaticResource ColorBorder}">
+                        <TextBlock x:Name="C4" Text="C0" Style="{StaticResource ColorLabel}" />
+                    </Border>
+                    <Border x:Name="B5" Style="{StaticResource ColorBorder}">
+                        <TextBlock x:Name="C5" Text="C0" Style="{StaticResource ColorLabel}" />
+                    </Border>
                 </StackPanel>
             </StackPanel>
         </Grid>

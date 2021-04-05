@@ -23,6 +23,7 @@ namespace Arksplorer
             image.UriSource = new Uri(filename, UriKind.Relative);
             image.CacheOption = BitmapCacheOption.OnLoad;
             image.EndInit();
+            image.Freeze();
 
             return image;
         }

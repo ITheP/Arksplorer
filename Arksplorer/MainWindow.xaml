@@ -30,6 +30,9 @@
             <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="1.0" To="0.0" Duration="0:0:0.75"/>
             <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="1.0" To="0.0" Duration="0:0:0.75"/>
         </Storyboard>
+        <DataTemplate x:Key="DataGridCellImage">
+            <Image Source="{Binding}"/>
+        </DataTemplate>
     </Window.Resources>
     <Window.Triggers>
         <EventTrigger RoutedEvent="FrameworkElement.Loaded">
@@ -72,13 +75,13 @@
                             </StackPanel>
                         </Grid>
                         <Separator Margin="0,8"/>
-                        <Button x:Name="Resources" Content="Resources and Links" Click="Resources_Click"/>
+                        <Button x:Name="ExternalResources" Content="Resources and Links" Click="ExternalResources_Click"/>
                         <Button x:Name="About" Content="About" Margin="0,4,0,0" Click="About_Click"/>
                         <Button x:Name="Exit" Content="Exit" Click="Exit_Click" Margin="0,4,0,8"/>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
                         <Image Source="/Images/Arksplorer.png" />
-                        <TextBlock x:Name="Title" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>
+                        <TextBlock x:Name="AppTitle" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>
                         <TextBlock x:Name="Version" Text="v1.0 Preview" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
                         <Separator Margin="0,7,0,8"/>
                         <ComboBox x:Name="ServerList" IsEditable="False" SelectedValuePath="Name" SelectionChanged="ServerList_SelectionChanged">
@@ -207,7 +210,7 @@
                             <LineBreak/>
                             Awesome taming calculator...
                             <LineBreak/>
-                            <Hyperlink NavigateUri="https://www.doDododex.com/" RequestNavigate="HandleLinkClick">www.Dododex.com</Hyperlink>
+                            <Hyperlink NavigateUri="https://www.dododex.com/" RequestNavigate="HandleLinkClick">www.Dododex.com</Hyperlink>
                             <LineBreak/>
                             <LineBreak/>
                             My favorite PVE ark servers...
@@ -308,7 +311,7 @@
                                     </Grid>
                                 </StackPanel>
 
-                                <DataGrid x:Name="DataVisual"
+                                <DataGrid x:Name="DataVisual"      
                                     Margin="0,8,0,0"
                                     AutoGenerateColumns="True"
                                     ItemsSource="{Binding}"
@@ -319,6 +322,8 @@
                                     SelectionChanged="DataVisual_SelectionChanged"
                                     AutoGeneratingColumn="DataVisual_AutoGeneratingColumn"
                                     VerticalAlignment="Stretch"
+                                    EnableRowVirtualization="True"
+                                    CanUserResizeColumns="True"
                                 />
                             </DockPanel>
                             <Viewbox>
@@ -327,7 +332,7 @@
                                 <LineBreak/>  
                                 Shout outs go to to...
                                 <LineBreak/>
-                                DuoMog, Scully, Ward who first tried this
+                                DuoMog, Scully, Ward &amp; Rrran who first tried this
                                 <LineBreak/>
                                 Shauna &amp; LemonCake - best darn tribe around!
                                 <LineBreak/>
@@ -336,6 +341,8 @@
                                 Kokow, Ray, EcStAsY,
                                 <LineBreak/>
                                 and the rest of you!
+                                <LineBreak/>
+                                Also danlev for dododex and help linking to it :)
                                 </TextBlock>
                             </Viewbox>
 
@@ -350,6 +357,7 @@
                         <Grid DockPanel.Dock="Top">
                             <StackPanel Orientation="Horizontal">
                                 <Button x:Name="ArkpediaBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="ArkpediaBack_Click"/>
+                                <Button x:Name="ArkpediaForward" Content="&#xE72A;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="ArkpediaForward_Click"/>
                                 <Button x:Name="ArkpediaHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki" Click="ArkpediaNavigate_Click"/>
                                 <Button x:Name="ArkpediaResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/Data_Maps" Click="ArkpediaNavigate_Click"/>
                                 <Button x:Name="ArkpediaMaps" Content="Maps" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/ARKs" Click="ArkpediaNavigate_Click"/>
@@ -372,10 +380,13 @@
                         <Grid DockPanel.Dock="Top">
                             <StackPanel Orientation="Horizontal">
                                 <Button x:Name="DododexBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="DododexBack_Click"/>
-                                <Button x:Name="DododexHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="https://www.doDododex.com/" Click="DododexNavigate_Click"/>
-                                <Button x:Name="DododexCreatures" Content="Creatures" Style="{StaticResource BrowserButton}" Tag="https://www.doDododex.com/dinosaurs" Click="DododexNavigate_Click"/>
-                                <Button x:Name="DododexResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://www.doDododex.com/resources" Click="DododexNavigate_Click"/>
-                                <Button x:Name="DododexKibble" Content="Kibble" Style="{StaticResource BrowserButton}" Tag="https://www.doDododex.com/kibble" Click="DododexNavigate_Click"/>
+                                <Button x:Name="DododexForward" Content="&#xE72A;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="DododexForward_Click"/>
+                                <Button x:Name="DododexHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="https://www.dododex.com/" Click="DododexNavigate_Click"/>
+                                <Button x:Name="DododexCreatures" Content="Creatures" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/dinosaurs" Click="DododexNavigate_Click"/>
+                                <Button x:Name="DododexConsumables" Content="Consume" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/Consumables" Click="DododexNavigate_Click"/>
+                                <Button x:Name="DododexResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/resources" Click="DododexNavigate_Click"/>
+                                <Button x:Name="DododexKibble" Content="Kibble" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/kibble" Click="DododexNavigate_Click"/>
+                                <Button x:Name="DododexSaddles" Content="Saddles" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/saddles" Click="DododexNavigate_Click"/>
                             </StackPanel>
                             <Grid HorizontalAlignment="Right">
                                 <StackPanel Orientation="Horizontal">
@@ -386,8 +397,59 @@
                                 </StackPanel>
                             </Grid>
                         </Grid>
-                        <wv2:WebView2 x:Name="DododexBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="https://www.doDododex.com/" />
+                        <wv2:WebView2 x:Name="DododexBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="https://www.dododex.com/" />
                     </DockPanel>
+                </TabItem>
+                <TabItem Header="Server Website" x:Name="ServerTab">
+                    <DockPanel>
+                        <Grid DockPanel.Dock="Top">
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="ServerBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="ServerBack_Click"/>
+                                <Button x:Name="ServerForward" Content="&#xE72A;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="ServerForward_Click"/>
+                                <Button x:Name="ServerHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="" Click="ServerNavigate_Click"/>
+                            </StackPanel>
+                            <Grid HorizontalAlignment="Right">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox x:Name="ServerLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                        <local:Spinner/>
+                                    </Viewbox>
+                                    <Button x:Name="ServerOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="ServerOpenExternal_Click"/>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                        <wv2:WebView2 x:Name="ServerBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="" />
+                    </DockPanel>
+                </TabItem>
+                <TabItem Header="Server Info" x:Name="ServerInfoTab">
+                    <StackPanel>
+                        <TextBlock x:Name="ServerInfo" FontSize="16" FontWeight="Bold">Server information</TextBlock>
+                        <ListView x:Name="ServerInfoList" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <Grid>
+                                            <TextBlock Text="{Binding Path=Description}" Width="150" HorizontalAlignment="Left" />
+                                            <TextBlock Text="{Binding Value}" FontWeight="Bold" Margin="150,0,0,0" />
+                                        </Grid>
+                                        <TextBlock Text="{Binding Details}" FontStyle="Italic" Margin="150,0,0,0" TextWrapping="Wrap">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="Text" Value="">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </Trigger>
+                                                        <Trigger Property="Text" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
                 </TabItem>
                 <!--<TabItem Header="Debug">
                     <StackPanel>

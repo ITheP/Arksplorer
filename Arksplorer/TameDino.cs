@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Windows.Media.Imaging;
 //using System.Windows.Shapes;
 
 namespace Arksplorer
@@ -16,12 +17,14 @@ namespace Arksplorer
         public string Name { get; set; }
         public string Tribe { get; set; }
         [JsonConverter(typeof(SexConverter))]
-        public string Sex { get; set; }
+        public BitmapImage Sex { get; set; }
         public int Base { get; set; }
         public int Lvl { get; set; }
         public float Lat { get; set; }
         public float Lon { get; set; }
-        public bool Cryo { get; set; }
+        [JsonPropertyName("cryo")]
+        [JsonConverter(typeof(CryoConverter))]
+        public BitmapImage Cryo { get; set; }
         [JsonPropertyName("hp-w")]
         public int HpW { get; set; }
         [JsonPropertyName("stam-w")]
@@ -41,12 +44,18 @@ namespace Arksplorer
         public string Tamer { get; set; }
         public string Imprinter { get; set; }
         public object Imprint { get; set; }
-        public int C0 { get; set; }
-        public int C1 { get; set; }
-        public int C2 { get; set; }
-        public int C3 { get; set; }
-        public int C4 { get; set; }
-        public int C5 { get; set; }
+        [JsonConverter(typeof(ArkColorConverter))]
+        public ArkColor C0 { get; set; }
+        [JsonConverter(typeof(ArkColorConverter))]
+        public ArkColor C1 { get; set; }
+        [JsonConverter(typeof(ArkColorConverter))]
+        public ArkColor C2 { get; set; }
+        [JsonConverter(typeof(ArkColorConverter))]
+        public ArkColor C3 { get; set; }
+        [JsonConverter(typeof(ArkColorConverter))]
+        public ArkColor C4 { get; set; }
+        [JsonConverter(typeof(ArkColorConverter))]
+        public ArkColor C5 { get; set; }
         [JsonPropertyName("mut-f")]
         public int MutF { get; set; }
         [JsonPropertyName("mut-m")]
@@ -54,6 +63,6 @@ namespace Arksplorer
         public bool Viv { get; set; }
         //public string Ccc { get; set; } <-- not bothered about seeing this
         //public long Id { get; set; } <-- not bothered about seeing this
-        // long TribeId { get; set; } <-- not bothered about seeing this
+        //long TribeId { get; set; } <-- not bothered about seeing this
     }
 }

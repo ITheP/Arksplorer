@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
+//using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.IO.Packaging;
@@ -41,6 +41,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 //using System.Windows.Shapes;
 using System.Xaml;
@@ -57,7 +58,7 @@ namespace Arksplorer
         private static Dictionary<string, BitmapImage> MapImages { get; } = new();
         private static string CurrentMapImage { get; set; } = "";
         private static UIElement LoadingSpinner { get; set; }
-        private static ServerConfig ServerConfig { get; set; }
+        public static ServerConfig ServerConfig { get; set; }
 
         private static List<Server> KnownServers { get; set; }
 
@@ -101,6 +102,7 @@ namespace Arksplorer
             try
             {
                 Lookup.LoadDinoData("./Data/Lookup-Dinos.json");
+                Lookup.LoadColorData("./Data/Lookup-Colors.json");
 
                 string lastServer = Settings.Default.LastServer;
 
@@ -123,13 +125,15 @@ namespace Arksplorer
         }
 
         //private List<WebTab> WebTabs { get; set; }
-        private WebTab ArkpediaWebTab { get; set; }
-        private WebTab DododexWebTab { get; set; }
+        public WebTab ArkpediaWebTab { get; set; }
+        public WebTab DododexWebTab { get; set; }
+        public WebTab ServerWebTab { get; set; }
 
         private void InitWebTabs()
         {
-            ArkpediaWebTab = new(ArkpediaBrowser) { LoadingControl = ArkpediaLoadingSpinner };
-            DododexWebTab = new(DododexBrowser) { LoadingControl = DododexLoadingSpinner };
+            ArkpediaWebTab = new(ArkpediaBrowser) { LoadingControl = ArkpediaLoadingSpinner, Browser = ArkpediaBrowser, Tab = ArkpediaTab };
+            DododexWebTab = new(DododexBrowser) { LoadingControl = DododexLoadingSpinner, Browser = DododexBrowser, Tab = DododexTab };
+            ServerWebTab = new(ServerBrowser) { LoadingControl = ServerLoadingSpinner, Browser = ServerBrowser, Tab = ServerTab };
         }
 
         public void SaveMapPreference(object sender, RoutedEventArgs e)
@@ -229,7 +233,7 @@ namespace Arksplorer
                     {
                         // We are reloading what we already have
                         // Load process will flush old data if it exists first
-                        AddToQueue(queue, map.Key, package.Value.Metadata, ForceRefreshOfData); // false);
+                        AddToQueue(queue, map.Key, package.Value.Metadata, ForceRefreshOfData);
                     }
 
                     string difference = $"{(mapPackage.ApproxNextServerUpdateTimestamp - now):mm\\:ss}";
@@ -349,17 +353,17 @@ namespace Arksplorer
             ClearFilter();
         }
 
-        private async void TameDinos_Click(object sender, RoutedEventArgs e)
+        private void TameDinos_Click(object sender, RoutedEventArgs e)
         {
             SetUpQue(Types.TameMetadata);
         }
 
-        private async void SetUpQue(MetaData type)
+        private void SetUpQue(MetaData type)
         {
             if (!IsServerConfigLoaded())
                 return;
 
-            ProcessingQueue = true;
+            //ProcessingQueue = true;
 
             LoadableControlsEnabled(false);
             LoadingVisualEnabled(true);
@@ -376,7 +380,7 @@ namespace Arksplorer
         }
 
 
-        private async void WildDinos_Click(object sender, RoutedEventArgs e)
+        private void WildDinos_Click(object sender, RoutedEventArgs e)
         {
             SetUpQue(Types.WildMetadata);
         }
@@ -391,10 +395,10 @@ namespace Arksplorer
             if (MapImages.ContainsKey(mapName))
                 return MapImages[mapName];
 
-            var path = Path.Combine(Environment.CurrentDirectory, "Images", $"{mapName}.png");
+            var path = System.IO.Path.Combine(Environment.CurrentDirectory, "Images", $"{mapName}.png");
             if (!File.Exists(path))
             {
-                path = Path.Combine(Environment.CurrentDirectory, "Images", $"{mapName}.jpg");
+                path = System.IO.Path.Combine(Environment.CurrentDirectory, "Images", $"{mapName}.jpg");
                 if (!File.Exists(path))
                     return null; // backup image
             }
@@ -422,10 +426,10 @@ namespace Arksplorer
         {
             string criteria = FilterCriteria.Text;
 
-            FilterDataTable(CurrentDataPackage, criteria, exactOnly);
+            FilterDataVisual(CurrentDataPackage, criteria, exactOnly);
         }
 
-        private void FilterDataTable(DataPackage dataPackage, string criteria, bool exactOnly)
+        private void FilterDataVisual(DataPackage dataPackage, string criteria, bool exactOnly)
         {
             string levelFilter = FilterLevelType.SelectedValue?.ToString();
 
@@ -505,7 +509,8 @@ namespace Arksplorer
         private static Dictionary<string, DataPackage> DataPackages { get; set; } = new Dictionary<string, DataPackage>();
 
         private static DataPackage CurrentDataPackage { get; set; }
-        private static async void AddToQueue(List<QueueDataItem> queue, string map, MetaData metaData, bool forceRefresh)
+
+        private static void AddToQueue(List<QueueDataItem> queue, string map, MetaData metaData, bool forceRefresh)
         {
             queue.Add(new QueueDataItem()
             {
@@ -518,7 +523,7 @@ namespace Arksplorer
         }
 
         private Cursor PrevCursor { get; set; }
-        private bool ProcessingQueue { get; set; }
+        //private bool ProcessingQueue { get; set; }
 
         // When a queue is loading, no others should load as controls that could trigger another load are disabled.
         private async void LoadQueue(List<QueueDataItem> queue, bool autoUpdateDataGrid)
@@ -604,7 +609,7 @@ namespace Arksplorer
             }
 
             DataVisual.DataContext = data;
-            InitColumnPositions(data);
+            InitColumnIndexPositions(data);
             DataVisualCount.Text = $"{data.Rows.Count} entries";
             HideFlashMessage();
         }
@@ -642,6 +647,12 @@ namespace Arksplorer
                     LoadableControlsEnabled(true);
                     LoadingVisualEnabled(false);
                     ServerLoadedControls.Visibility = Visibility.Visible;
+
+                    ServerBrowser.Source = new Uri(ServerConfig.Website);
+                    ServerHome.Tag = ServerConfig.Website;
+
+                    ServerInfoList.ItemsSource = ServerConfig.GetServerOverview().Items;
+
                     GeneralLoadingSpinner.Child = null;
                 });
 
@@ -757,7 +768,7 @@ namespace Arksplorer
                 //   Mouse.OverrideCursor = PrevCursor;
             });
 
-            ProcessingQueue = false;
+            //ProcessingQueue = false;
 
             return count;
         }
@@ -957,6 +968,14 @@ namespace Arksplorer
         private int NameColumn { get; set; }
         private int SexColumn { get; set; }
         private int CryoColumn { get; set; }
+        private int C0Column { get; set; }
+        private int C1Column { get; set; }
+        private int C2Column { get; set; }
+        private int C3Column { get; set; }
+        private int C4Column { get; set; }
+        private int C5Column { get; set; }
+        private int CCCColumn { get; set; }
+
 
         /// <summary>
         /// Column positions are all assumed to be dynamic (even if they are actually pretty static)
@@ -965,7 +984,7 @@ namespace Arksplorer
         /// the job nicely.
         /// </summary>
         /// <param name="data"></param>
-        private void InitColumnPositions(DataTable data)
+        private void InitColumnIndexPositions(DataTable data)
         {
             MapColumn = data.Columns["Map"]?.Ordinal ?? -1;
             LatColumn = data.Columns["Lat"]?.Ordinal ?? -1;
@@ -977,6 +996,13 @@ namespace Arksplorer
             NameColumn = data.Columns["Name"]?.Ordinal ?? -1;
             SexColumn = data.Columns["Sex"]?.Ordinal ?? -1;
             CryoColumn = data.Columns["Cryo"]?.Ordinal ?? -1;
+            C0Column = data.Columns["C0"]?.Ordinal ?? -1;
+            C1Column = data.Columns["C1"]?.Ordinal ?? -1;
+            C2Column = data.Columns["C2"]?.Ordinal ?? -1;
+            C3Column = data.Columns["C3"]?.Ordinal ?? -1;
+            C4Column = data.Columns["C4"]?.Ordinal ?? -1;
+            C5Column = data.Columns["C5"]?.Ordinal ?? -1;
+            CCCColumn = data.Columns["CCC"]?.Ordinal ?? -1;
         }
 
 
@@ -1065,13 +1091,9 @@ namespace Arksplorer
 
             if (SexColumn > -1)
             {
-                string sex = row[SexColumn] as string;
-                info.Add("Sex", sex);
-                info.Sex = sex;
-                if (sex == "M")
-                    info.AddIcon(Icons.Male);
-                else
-                    info.AddIcon(Icons.Female);
+                BitmapImage sex = row[SexColumn] as BitmapImage;
+                info.Sex = (sex == Icons.Male ? "M" : "F");
+                info.AddIcon(sex);
             }
 
             if (BaseColumn > -1)
@@ -1081,19 +1103,35 @@ namespace Arksplorer
             info.Add("Level", $"{level}");
             info.Level = level;
 
+            if (CCCColumn > -1)
+                info.Add("3D Coordinates", $"{row[CCCColumn] as string}");
+
             if (CryoColumn > -1)
             {
-                if ((bool)row[CryoColumn] == true)
+                if (row[CryoColumn] != System.DBNull.Value)
                 {
-                    info.AddIcon(Icons.Cryopod);
+                    info.AddIcon((BitmapImage)row[CryoColumn]);
                     info.Cryoed = true;
                 }
             }
 
+            if (C0Column > -1)
+                info.C0 = row[C0Column] as ArkColor;
+            if (C1Column > -1)
+                info.C1 = row[C1Column] as ArkColor;
+            if (C2Column > -1)
+                info.C2 = row[C2Column] as ArkColor;
+            if (C3Column > -1)
+                info.C3 = row[C3Column] as ArkColor;
+            if (C4Column > -1)
+                info.C4 = row[C4Column] as ArkColor;
+            if (C5Column > -1)
+                info.C5 = row[C5Column] as ArkColor;
+
             return (info);
         }
 
-        private void SetSelectedInfo(Info info) //string message)
+        private void SetSelectedInfo(Info info)
         {
             if (info == null)
                 return;
@@ -1132,7 +1170,7 @@ namespace Arksplorer
                 ApplyFilterCriteria();
         }
 
-        private void Resources_Click(object sender, RoutedEventArgs e)
+        private void ExternalResources_Click(object sender, RoutedEventArgs e)
         {
             ShowExtraInfo(ResourcesAndLinksExtraInfo);
         }
@@ -1159,11 +1197,11 @@ namespace Arksplorer
         // over a rectangle or not with a tag of type Info.
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
-            bool updatePopUpPosition = false;
+            bool showPopUpInfo = false;
 
             // MouseOver on the DataGrid results list
-            System.Windows.Point pos = e.GetPosition(Root); // DataVisual);
-            HitTestResult hitTestResult = VisualTreeHelper.HitTest(Root, pos); // DataVisual, pos);
+            System.Windows.Point pos = e.GetPosition(Root);
+            HitTestResult hitTestResult = VisualTreeHelper.HitTest(Root, pos);
             var hitElement = hitTestResult?.VisualHit;
             if (hitElement != null)
             {
@@ -1184,7 +1222,7 @@ namespace Arksplorer
                                 PopUpInfoVisual.ShowInfo(info);
                             }
 
-                            // updatePopUpPosition = true;
+                            showPopUpInfo = true;
                         }
                     }
                     else
@@ -1198,19 +1236,19 @@ namespace Arksplorer
                             DataRowView dataRowView = (System.Data.DataRowView)gridRow.Item;
                             PopUpInfoVisual.ShowInfo(CreateInfoFromRow(dataRowView.Row));
                         }
+
+                        // Even if we don't change how this looks, we want to make sure its position is updated
+                        showPopUpInfo = true;
                     }
 
-                    // Even if we don't change how this looks, we want to make sure its position is updated
-                    updatePopUpPosition = true;
+
                 }
             }
 
-            PopUpInfo.IsOpen = updatePopUpPosition;
-            if (updatePopUpPosition)
-            {
-                PopUpInfo.HorizontalOffset = pos.X + 25;
-                PopUpInfo.VerticalOffset = pos.Y + 25;
-            }
+            PopUpInfo.IsOpen = showPopUpInfo;
+
+            PopUpInfo.HorizontalOffset = pos.X + 25;
+            PopUpInfo.VerticalOffset = pos.Y + 25;
 
             if (FlashMessage.Visibility != Visibility.Visible)
                 return;
@@ -1253,10 +1291,62 @@ namespace Arksplorer
                 browser.GoBack();
         }
 
-        public static void Navigate(Microsoft.Web.WebView2.Wpf.WebView2 browser, string url, TabItem tab = null)
+        private static void GoForward(Microsoft.Web.WebView2.Wpf.WebView2 browser)
+        {
+            if (browser.CanGoForward)
+                browser.GoForward();
+        }
+
+        //public void Navigate_DododexTaming(string url, Info dinoInfo)
+        //{
+        //    Dododex_FillServerStuff = true;
+        //    Dododex_DinoInfo = dinoInfo;
+
+        //    Navigate(DododexBrowser, url, DododexTab);
+        //}
+
+        //private bool Dododex_FillServerStuff { get; set; }
+        //private Info Dododex_DinoInfo { get; set; }
+
+        //private async void DododexBrowser_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs args)
+        //{
+        //    return;
+
+        //    // Trying to get Dododex to fill values based on server/dino etc.
+        //    // Values are passed ok - but dododex doesn't pick up changes to fields. Trying to track down how to trigger it!
+
+        //    if (Dododex_FillServerStuff)
+        //    {
+        //        // Inject server values directly into Dododex web page
+        //        await DododexBrowser.ExecuteScriptAsync("setTimeout(function() {" +
+        //            $"document.getElementById('level').value = '{Dododex_DinoInfo.Level}';" +
+        //            $"document.getElementById('tamingMultiplier').value = '{ServerConfig.TamingSpeedMultiplier}';" +
+        //            $"document.getElementById('consumptionMultiplier').value = '{ServerConfig.FoodDrainMultiplier}';" +
+        //        //    $"Settings.set('level',{ Dododex_DinoInfo.Level})';" +
+        //        //    $"Settings.set('tamingMultiplier',{ServerConfig.TamingSpeedMultiplier})';" +
+        //        //    $"Settings.set('consumptionMultiplier',{ServerConfig.FoodDrainMultiplier}';" +
+        //            "processTameInput();" +
+        //            "}, 1000);");
+
+        //        ////            await DododexBrowser.ExecuteScriptAsync("setTimeout(function() {" +
+        //        ////$"Settings.set('level',{ Dododex_DinoInfo.Level})';" +
+        //        ////$"Settings.set('tamingMultiplier',{ServerConfig.TamingSpeedMultiplier})';" +
+        //        ////$"Settings.set('consumptionMultiplier',{ServerConfig.FoodDrainMultiplier}';" +
+        //        ////"processTamingTable(); processTameInput(); updateAllWeapons();" +
+        //        ////"}, 1000);");
+
+        //        Dododex_FillServerStuff = false;
+        //        Dododex_DinoInfo = null;
+        //    }
+
+        //}
+
+        public static void Navigate(WebTab webTab, string url, bool jumpToTab = true)
         {
             try
             {
+                var browser = webTab.Browser;
+
                 if (browser.CoreWebView2 == null)
                 {
                     browser.Source = new Uri(url);
@@ -1268,8 +1358,8 @@ namespace Arksplorer
                     browser.CoreWebView2?.Navigate(url);
                 }
 
-                if (tab != null)
-                    tab.Focus();
+                if (jumpToTab && webTab.Tab != null)
+                    webTab.Tab.Focus();
             }
             catch (Exception ex)
             {
@@ -1279,23 +1369,23 @@ namespace Arksplorer
 
         private void DododexNavigate_Click(object sender, RoutedEventArgs e)
         {
-            Navigate(DododexBrowser, (string)((Button)sender).Tag);
+            Navigate(DododexWebTab, (string)((Button)sender).Tag);
         }
 
         private void DododexBack_Click(object sender, RoutedEventArgs e)
         {
-            GoBack(DododexBrowser);
+            GoBack(DododexWebTab.Browser);
         }
 
         private void ArkpediaNavigate_Click(object sender, RoutedEventArgs e)
         {
-            Navigate(ArkpediaBrowser, (string)((Button)sender).Tag);
+            Navigate(ArkpediaWebTab, (string)((Button)sender).Tag);
         }
 
 
         private void ArkpediaBack_Click(object sender, RoutedEventArgs e)
         {
-            GoBack(ArkpediaBrowser);
+            GoBack(ArkpediaWebTab.Browser);
         }
 
         private void ArkpediaOpenExternal_Click(object sender, RoutedEventArgs e)
@@ -1312,11 +1402,51 @@ namespace Arksplorer
         {
             if (e.Column is DataGridTextColumn column)
             {
-                //      if (column.Header == "Index")
-                //        column.Visibility = Visibility.Collapsed;
-
                 if (e.PropertyType == typeof(Single))
                     column.Binding = new Binding(e.PropertyName) { StringFormat = "N2" };
+                else if (e.PropertyType == typeof(ArkColor))
+                {
+                    DataGridTemplateColumn template = new();
+                    template.Header = column.Header;
+
+                    DataTemplate dataTemplate = new();
+                    dataTemplate.DataType = typeof(Rectangle);
+
+                    FrameworkElementFactory factory = new(typeof(Rectangle));
+                    factory.SetValue(Rectangle.WidthProperty, 32.0d);
+                    factory.SetValue(Rectangle.HeightProperty, 16.0d);
+                    Binding binding = new($"{e.PropertyName}"); //.Color");
+                   binding.Converter = new ArkColorDBNullConverter();
+                    factory.SetBinding(Rectangle.FillProperty, binding);
+
+                    dataTemplate.VisualTree = factory;
+
+                    template.CellTemplate = dataTemplate;
+                    template.CanUserResize = false;
+                    template.CanUserSort = true;
+                    template.SortMemberPath = $"{e.PropertyName}";      // ToDo: Actually sort properly on colours
+                    e.Column = template;
+                }
+                else if (e.PropertyType == typeof(BitmapImage))
+                {
+                    DataGridTemplateColumn template = new() { Header = column.Header };
+
+                    DataTemplate dataTemplate = new();
+                    dataTemplate.DataType = typeof(BitmapImage);
+
+                    FrameworkElementFactory factory = new(typeof(Image));
+                    factory.SetValue(Image.WidthProperty, 16.0d);
+                    factory.SetValue(Image.HeightProperty, 16.0d);
+                    Binding binding = new(e.PropertyName);
+                    factory.SetBinding(Image.SourceProperty, new Binding(e.PropertyName));
+                    dataTemplate.VisualTree = factory;
+
+                    template.CellTemplate = dataTemplate;
+                    template.CanUserResize = false;
+                    template.CanUserSort = true;
+                    template.SortMemberPath = e.PropertyName;
+                    e.Column = template;
+                }
             }
 
         }
@@ -1375,6 +1505,36 @@ namespace Arksplorer
         private void FilterLevelType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ApplyFilterCriteria();
+        }
+
+        private void ServerBack_Click(object sender, RoutedEventArgs e)
+        {
+            GoBack(ServerWebTab.Browser);
+        }
+
+        private void ServerNavigate_Click(object sender, RoutedEventArgs e)
+        {
+            Navigate(ServerWebTab, (string)((Button)sender).Tag);
+        }
+
+        private void ServerOpenExternal_Click(object sender, RoutedEventArgs e)
+        {
+            OpenUrlInExternalBrowser(ServerWebTab.CurrentUrl);
+        }
+
+        private void ArkpediaForward_Click(object sender, RoutedEventArgs e)
+        {
+            GoForward(ArkpediaWebTab.Browser);
+        }
+
+        private void DododexForward_Click(object sender, RoutedEventArgs e)
+        {
+            GoForward(DododexWebTab.Browser);
+        }
+
+        private void ServerForward_Click(object sender, RoutedEventArgs e)
+        {
+            GoForward(ServerWebTab.Browser);
         }
 
         //private bool DebugEnabled { get; set; } = true;

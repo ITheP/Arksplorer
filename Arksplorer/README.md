@@ -54,3 +54,13 @@ v0.9 Preview - 28/03/2021
 - Colouration changes to mass marker
 - Optimisations
 - Other UI changes
+
+v1.0 - 05/04/2021
+- Huge data translation lookup table for Ark <-> Arksplorer <-> Ark wiki <-> Dododex
+- Icons in DataGrid results view
+- Corrected spelling of Dodex to Dododex :)
+- Direct link to Ark wiki creature page and Dododex taming page for selected creature (including passing of server and dino data)
+- Funky new logo
+- Extra server details (such as taming rates etc.)
+- Extra browser tab to server website
+- Visualisation of server configuration data

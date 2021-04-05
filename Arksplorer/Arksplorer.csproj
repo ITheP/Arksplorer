@@ -25,6 +25,10 @@
     <None Remove="ArksplorerData.json" />
     <None Remove="Audio\FeedMe.wav" />
     <None Remove="Creature Lookup.csv" />
+    <None Remove="Data\Colors.txt" />
+    <None Remove="Data\Creature Lookup prepped.csv" />
+    <None Remove="Data\Creature Lookup.csv" />
+    <None Remove="Data\Creature Lookup.xlsx" />
     <None Remove="Data\Lookup-Dinos.json" />
     <None Remove="Images\Aberration.jpg" />
     <None Remove="Images\ark.png" />
@@ -47,6 +51,12 @@
     <None Remove="Servers.json" />
     <None Remove="temp.json" />
     <None Remove="temp.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Data\Lookup-Colors.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
