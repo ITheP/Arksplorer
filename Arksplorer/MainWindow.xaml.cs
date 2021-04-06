@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 //using System.Drawing;
@@ -28,6 +29,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Security.Policy;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -65,6 +67,7 @@ namespace Arksplorer
         private static DispatcherTimer Timer { get; set; }
 
         public static ObservableCollection<MapSelection> MapList { get; set; } = new();
+        public static bool DetailInPopUps { get; set; }
 
         /// <summary>
         /// Forces use of local temp.json file as a data file. Used for debugging (rather than having to make a server trip for data we can't control)
@@ -96,6 +99,9 @@ namespace Arksplorer
             // so it's not being calculated while hidden/collapsed (have seen overhead happen even when not visible if its linked into the page)
             LoadingSpinner = GeneralLoadingSpinner.Child;
 
+            DetailInPopUps = Settings.Default.IncludeDetailsInPopUps;
+            IncludeDetailsInPopUps.IsChecked = DetailInPopUps;
+
             InitWebTabs();
 
             // Grab config from server that feeds into all this
@@ -105,6 +111,7 @@ namespace Arksplorer
                 Lookup.LoadColorData("./Data/Lookup-Colors.json");
 
                 string lastServer = Settings.Default.LastServer;
+
 
                 KnownServers = JsonSerializer.Deserialize<List<Server>>(File.ReadAllText("./Servers.json"));
                 ServerList.ItemsSource = KnownServers;
@@ -975,7 +982,19 @@ namespace Arksplorer
         private int C4Column { get; set; }
         private int C5Column { get; set; }
         private int CCCColumn { get; set; }
-
+        private int HpColumn { get; set; }
+        private int StamColumn { get; set; }
+        private int MeleeColumn { get; set; }
+        private int WeightColumn { get; set; }
+        private int SpeedColumn { get; set; }
+        private int FoodColumn { get; set; }
+        private int OxyColumn { get; set; }
+        private int CraftColumn { get; set; }
+        private int TamerColumn { get; set; }
+        private int ImprinterColumn { get; set; }
+        private int ImprintColumn { get; set; }
+        private int MutFColumn { get; set; }
+        private int MutMColumn { get; set; }
 
         /// <summary>
         /// Column positions are all assumed to be dynamic (even if they are actually pretty static)
@@ -1002,9 +1021,131 @@ namespace Arksplorer
             C3Column = data.Columns["C3"]?.Ordinal ?? -1;
             C4Column = data.Columns["C4"]?.Ordinal ?? -1;
             C5Column = data.Columns["C5"]?.Ordinal ?? -1;
+            // Ark has some W variants of columns in wild vs tame. We just re-use below for either as we dont care
+            HpColumn = data.Columns["Hp"]?.Ordinal ?? data.Columns["HpW"]?.Ordinal ?? -1;
+            StamColumn = data.Columns["Stam"]?.Ordinal ?? data.Columns["StamW"]?.Ordinal ?? -1;
+            MeleeColumn = data.Columns["Melee"]?.Ordinal ?? data.Columns["MeleeW"]?.Ordinal ?? -1;
+            WeightColumn = data.Columns["Weight"]?.Ordinal ?? data.Columns["WeightW"]?.Ordinal ?? -1;
+            SpeedColumn = data.Columns["Speed"]?.Ordinal ?? data.Columns["SpeedW"]?.Ordinal ?? -1;
+            FoodColumn = data.Columns["Food"]?.Ordinal ?? data.Columns["FoodW"]?.Ordinal ?? -1;
+            OxyColumn = data.Columns["Oxy"]?.Ordinal ?? data.Columns["OxyW"]?.Ordinal ?? -1;
+            CraftColumn = data.Columns["Craft"]?.Ordinal ?? data.Columns["CraftT"]?.Ordinal ?? -1;
+            TamerColumn = data.Columns["Tamer"]?.Ordinal ?? -1;
+            ImprinterColumn = data.Columns["Imprinter"]?.Ordinal ?? -1;
+            ImprintColumn = data.Columns["Imprint"]?.Ordinal ?? -1;
+            MutFColumn = data.Columns["MutF"]?.Ordinal ?? -1;
+            MutMColumn = data.Columns["MutM"]?.Ordinal ?? -1;
             CCCColumn = data.Columns["CCC"]?.Ordinal ?? -1;
         }
 
+        private Info CreateInfoFromRow(DataRow row)
+        {
+            Info info = new();
+
+            info.Lat = (float)row[LatColumn];
+            info.Lon = (float)row[LonColumn];
+
+            if (NameColumn > -1)
+                info.Name = row[NameColumn] as string;
+
+            //info.Add("Location", $"{info.Lat:0.00},{info.Lon:0.00}");
+
+            if (CreatureColumn > -1)
+                info.Creature = row[CreatureColumn] as string;
+
+            if (CreatureIdColumn > -1)
+                info.CreatureId = row[CreatureIdColumn] as string;
+
+            if (SexColumn > -1)
+            {
+                BitmapImage sex = row[SexColumn] as BitmapImage;
+                info.Sex = (sex == Icons.Male ? "M" : "F");
+                info.AddIcon(sex);
+            }
+
+            if (BaseColumn > -1)
+            {
+                int baseLevel = (row[BaseColumn] as int? ?? -1);
+                if (baseLevel > 0)
+                {
+                    info.BaseLevel = baseLevel;
+                    info.Add("Base level", $"{row[BaseColumn] as int?}");
+                }
+            }
+
+            int level = (int)row[LvlColumn];
+            info.Add("Level", $"{level}");
+            info.Level = level;
+
+            if (HpColumn > -1)
+                info.Add("Health", $"{row[WeightColumn]}");
+
+            if (StamColumn > -1)
+                info.Add("Stamina", $"{row[StamColumn]}");
+            if (MeleeColumn > -1)
+                info.Add("Melee", $"{row[MeleeColumn]}");
+            if (WeightColumn > -1)
+                info.Add("Weight", $"{row[WeightColumn]}");
+            if (SpeedColumn > -1)
+                info.Add("Speed", $"{row[SpeedColumn]}");
+            if (FoodColumn > -1)
+                info.Add("Food", $"{row[FoodColumn]}");
+            if (OxyColumn > -1)
+                info.Add("Oxygen", $"{row[OxyColumn]}");
+            if (CraftColumn > -1)
+                info.Add("Crafting", $"{row[CraftColumn]}");
+            if (StamColumn > -1)
+                info.Add("Stamina", $"{row[StamColumn]}");
+
+            if (TamerColumn > -1)
+                info.Add("Tamer (Tribe)", $"{row[TamerColumn] as string}");
+            if (ImprinterColumn > -1)
+                info.Add("Imprinter", $"{row[ImprinterColumn] as string}");
+            if (ImprintColumn > -1)
+                info.Add("Imprint", $"{row[ImprintColumn]}");
+
+            if (MutFColumn > -1)
+                info.Add("Mutations F", $"{row[MutFColumn]}");
+            if (MutMColumn > -1)
+                info.Add("Mutations M", $"{row[MutMColumn]}");
+
+            if (CCCColumn > -1)
+                info.Add("3D Coordinates", $"{row[CCCColumn] as string}");
+
+            if (CryoColumn > -1)
+            {
+                if (row[CryoColumn] != System.DBNull.Value)
+                {
+                    info.AddIcon((BitmapImage)row[CryoColumn]);
+                    info.Cryoed = true;
+                }
+            }
+
+            if (C0Column > -1)
+                info.C0 = row[C0Column] as ArkColor;
+            if (C1Column > -1)
+                info.C1 = row[C1Column] as ArkColor;
+            if (C2Column > -1)
+                info.C2 = row[C2Column] as ArkColor;
+            if (C3Column > -1)
+                info.C3 = row[C3Column] as ArkColor;
+            if (C4Column > -1)
+                info.C4 = row[C4Column] as ArkColor;
+            if (C5Column > -1)
+                info.C5 = row[C5Column] as ArkColor;
+
+            return (info);
+        }
+
+        private void SetSelectedInfo(Info info)
+        {
+            if (info == null)
+                return;
+
+            OverviewInfo.ShowInfo(info, true);
+
+            OverviewInfo.Visibility = Visibility.Visible;
+        }
 
         // ToDo: Regeneration of extra info all the time is a needless overhead. Cache once generate and reuse!
         private void ShowMassMarkers(string creatureId, string mapName)
@@ -1071,76 +1212,6 @@ namespace Arksplorer
             }
         }
 
-        private Info CreateInfoFromRow(DataRow row)
-        {
-            Info info = new();
-
-            info.Lat = (float)row[LatColumn];
-            info.Lon = (float)row[LonColumn];
-
-            if (NameColumn > -1)
-                info.Name = row[NameColumn] as string;
-
-            //info.Add("Location", $"{info.Lat:0.00},{info.Lon:0.00}");
-
-            if (CreatureColumn > -1)
-                info.Creature = row[CreatureColumn] as string;
-
-            if (CreatureIdColumn > -1)
-                info.CreatureId = row[CreatureIdColumn] as string;
-
-            if (SexColumn > -1)
-            {
-                BitmapImage sex = row[SexColumn] as BitmapImage;
-                info.Sex = (sex == Icons.Male ? "M" : "F");
-                info.AddIcon(sex);
-            }
-
-            if (BaseColumn > -1)
-                info.Add("Base level", $"{row[BaseColumn] as int?}");
-
-            int level = (int)row[LvlColumn];
-            info.Add("Level", $"{level}");
-            info.Level = level;
-
-            if (CCCColumn > -1)
-                info.Add("3D Coordinates", $"{row[CCCColumn] as string}");
-
-            if (CryoColumn > -1)
-            {
-                if (row[CryoColumn] != System.DBNull.Value)
-                {
-                    info.AddIcon((BitmapImage)row[CryoColumn]);
-                    info.Cryoed = true;
-                }
-            }
-
-            if (C0Column > -1)
-                info.C0 = row[C0Column] as ArkColor;
-            if (C1Column > -1)
-                info.C1 = row[C1Column] as ArkColor;
-            if (C2Column > -1)
-                info.C2 = row[C2Column] as ArkColor;
-            if (C3Column > -1)
-                info.C3 = row[C3Column] as ArkColor;
-            if (C4Column > -1)
-                info.C4 = row[C4Column] as ArkColor;
-            if (C5Column > -1)
-                info.C5 = row[C5Column] as ArkColor;
-
-            return (info);
-        }
-
-        private void SetSelectedInfo(Info info)
-        {
-            if (info == null)
-                return;
-
-            OverviewInfo.ShowInfo(info, true);
-
-            OverviewInfo.Visibility = Visibility.Visible;
-        }
-
         private void ExactFilter_Click(object sender, RoutedEventArgs e)
         {
             ApplyFilterCriteria(true);
@@ -1190,6 +1261,7 @@ namespace Arksplorer
         }
 
         private DataGridRow LastDataGridRow { get; set; }
+        private Info CurrentRectanglePopUpInfo { get; set; }
         private System.Windows.Shapes.Rectangle LastRectangle { get; set; }
         // Note that we COULD attach mouse enter/leave events to all rectangles we have created (mass markers) along with
         // other entities, but then we have to keep track of all the events and remove on rectangle disposal as well (else
@@ -1198,6 +1270,7 @@ namespace Arksplorer
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
             bool showPopUpInfo = false;
+            CurrentRectanglePopUpInfo = null;
 
             // MouseOver on the DataGrid results list
             System.Windows.Point pos = e.GetPosition(Root);
@@ -1211,7 +1284,7 @@ namespace Arksplorer
 
                 if (element != null)
                 {
-                    if (element is System.Windows.Shapes.Rectangle rectangle)
+                    if (element is Rectangle rectangle)
                     {
                         // Only interested in rectangles that have an Info in their tag - otherwise we assume its some random other rectangle
                         if (rectangle.Tag is Info info)
@@ -1219,9 +1292,12 @@ namespace Arksplorer
                             if (rectangle != LastRectangle)
                             {
                                 LastRectangle = rectangle;
+
                                 PopUpInfoVisual.ShowInfo(info);
                             }
 
+                            // Make sure we remember what we are looking at, then if we mouse_up over a rectangle, this will exist and we know what to show in the main static pop up
+                            CurrentRectanglePopUpInfo = info;
                             showPopUpInfo = true;
                         }
                     }
@@ -1297,50 +1373,6 @@ namespace Arksplorer
                 browser.GoForward();
         }
 
-        //public void Navigate_DododexTaming(string url, Info dinoInfo)
-        //{
-        //    Dododex_FillServerStuff = true;
-        //    Dododex_DinoInfo = dinoInfo;
-
-        //    Navigate(DododexBrowser, url, DododexTab);
-        //}
-
-        //private bool Dododex_FillServerStuff { get; set; }
-        //private Info Dododex_DinoInfo { get; set; }
-
-        //private async void DododexBrowser_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs args)
-        //{
-        //    return;
-
-        //    // Trying to get Dododex to fill values based on server/dino etc.
-        //    // Values are passed ok - but dododex doesn't pick up changes to fields. Trying to track down how to trigger it!
-
-        //    if (Dododex_FillServerStuff)
-        //    {
-        //        // Inject server values directly into Dododex web page
-        //        await DododexBrowser.ExecuteScriptAsync("setTimeout(function() {" +
-        //            $"document.getElementById('level').value = '{Dododex_DinoInfo.Level}';" +
-        //            $"document.getElementById('tamingMultiplier').value = '{ServerConfig.TamingSpeedMultiplier}';" +
-        //            $"document.getElementById('consumptionMultiplier').value = '{ServerConfig.FoodDrainMultiplier}';" +
-        //        //    $"Settings.set('level',{ Dododex_DinoInfo.Level})';" +
-        //        //    $"Settings.set('tamingMultiplier',{ServerConfig.TamingSpeedMultiplier})';" +
-        //        //    $"Settings.set('consumptionMultiplier',{ServerConfig.FoodDrainMultiplier}';" +
-        //            "processTameInput();" +
-        //            "}, 1000);");
-
-        //        ////            await DododexBrowser.ExecuteScriptAsync("setTimeout(function() {" +
-        //        ////$"Settings.set('level',{ Dododex_DinoInfo.Level})';" +
-        //        ////$"Settings.set('tamingMultiplier',{ServerConfig.TamingSpeedMultiplier})';" +
-        //        ////$"Settings.set('consumptionMultiplier',{ServerConfig.FoodDrainMultiplier}';" +
-        //        ////"processTamingTable(); processTameInput(); updateAllWeapons();" +
-        //        ////"}, 1000);");
-
-        //        Dododex_FillServerStuff = false;
-        //        Dododex_DinoInfo = null;
-        //    }
-
-        //}
-
         public static void Navigate(WebTab webTab, string url, bool jumpToTab = true)
         {
             try
@@ -1348,15 +1380,9 @@ namespace Arksplorer
                 var browser = webTab.Browser;
 
                 if (browser.CoreWebView2 == null)
-                {
                     browser.Source = new Uri(url);
-                    //browser.CoreWebView2InitializationCompleted += Webview_CoreWebView2InitializationCompleted;
-                    //browser.EnsureCoreWebView2Async();
-                }
                 else
-                {
                     browser.CoreWebView2?.Navigate(url);
-                }
 
                 if (jumpToTab && webTab.Tab != null)
                     webTab.Tab.Focus();
@@ -1535,6 +1561,19 @@ namespace Arksplorer
         private void ServerForward_Click(object sender, RoutedEventArgs e)
         {
             GoForward(ServerWebTab.Browser);
+        }
+
+        private void Window_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (CurrentRectanglePopUpInfo != null)
+                SetSelectedInfo(CurrentRectanglePopUpInfo);
+        }
+
+
+        private void IncludeDetailsInPopUps_Click(object sender, RoutedEventArgs e)
+        {
+            DetailInPopUps = IncludeDetailsInPopUps.IsChecked ?? false;
+            Properties.Settings.Default.IncludeDetailsInPopUps = DetailInPopUps;
         }
 
         //private bool DebugEnabled { get; set; } = true;

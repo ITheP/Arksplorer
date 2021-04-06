@@ -12,6 +12,7 @@
     <RepositoryUrl>https://github.com/ITheP/Arksplorer</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <ApplicationIcon>arksplorer.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="arksplorer.ico" />
     <None Remove="ArksplorerData.json" />
     <None Remove="Audio\FeedMe.wav" />
     <None Remove="Creature Lookup.csv" />

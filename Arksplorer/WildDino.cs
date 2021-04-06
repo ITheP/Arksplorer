@@ -38,7 +38,7 @@ namespace Arksplorer
         public ArkColor C4 { get; set; }
         [JsonConverter(typeof(ArkColorConverter))]
         public ArkColor C5 { get; set; }
-        //public string Ccc { get; set; } <-- not bothered about seeing this
+        public string Ccc { get; set; }
         //public long Id { get; set; } <-- not bothered about seeing this
     }
 }

@@ -29,6 +29,6 @@ namespace Arksplorer
         public int Craft { get; set; }
         public int Fort { get; set; }
         public string Active { get; set; }
-        //public string Ccc { get; set; } <-- not bothered about seeing this
+        public string Ccc { get; set; }
     }
 }

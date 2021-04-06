@@ -58,5 +58,17 @@ namespace Arksplorer.Properties {
                 this["LastMaps"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IncludeDetailsInPopUps {
+            get {
+                return ((bool)(this["IncludeDetailsInPopUps"]));
+            }
+            set {
+                this["IncludeDetailsInPopUps"] = value;
+            }
+        }
     }
 }

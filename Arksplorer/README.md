@@ -55,7 +55,8 @@ v0.9 Preview - 28/03/2021
 - Optimisations
 - Other UI changes
 
-v1.0 - 05/04/2021
+v1.0 The First Bite - 06/04/2021
+- First `more public` release!
 - Huge data translation lookup table for Ark <-> Arksplorer <-> Ark wiki <-> Dododex
 - Icons in DataGrid results view
 - Corrected spelling of Dodex to Dododex :)
@@ -64,3 +65,7 @@ v1.0 - 05/04/2021
 - Extra server details (such as taming rates etc.)
 - Extra browser tab to server website
 - Visualisation of server configuration data
+- Added extra data in info pop ups
+- Show `main info` from selected mass marker
+- Added option to turn on/off extra details in pop up info
+- Added .ico icon file

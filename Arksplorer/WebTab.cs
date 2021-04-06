@@ -18,6 +18,9 @@ namespace Arksplorer
         public Viewbox LoadingControl { get; set; }
         public string CurrentUrl { get; set; }
 
+        public TabItem Tab { get; set; }
+        public WebView2 Browser { get; set; }
+
         public WebTab(WebView2 browser)
         {
             AttachWebEvents(browser);

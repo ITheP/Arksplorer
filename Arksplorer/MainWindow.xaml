@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:Arksplorer"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
-        Title="Arksplorer" Height="1100" Width="800"
-        MouseMove="Window_MouseMove">
+        Title="Arksplorer" Height="1100" Width="800" MinWidth="600" MinHeight="900"
+        MouseMove="Window_MouseMove"
+        MouseUp="Window_MouseUp">
     <Window.Resources>
         <Style TargetType="Button" x:Key="BrowserButton">
             <Setter Property="Margin" Value="3" />
@@ -82,7 +83,7 @@
                     <StackPanel DockPanel.Dock="Top">
                         <Image Source="/Images/Arksplorer.png" />
                         <TextBlock x:Name="AppTitle" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>
-                        <TextBlock x:Name="Version" Text="v1.0 Preview" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
+                        <TextBlock x:Name="Version" Text="v1.0 - The first bite" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
                         <Separator Margin="0,7,0,8"/>
                         <ComboBox x:Name="ServerList" IsEditable="False" SelectedValuePath="Name" SelectionChanged="ServerList_SelectionChanged">
                             <ComboBox.ItemTemplate>
@@ -102,7 +103,7 @@
                                 <Viewbox x:Name="GeneralLoadingSpinner" Height="32" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right">
                                     <local:Spinner/>
                                 </Viewbox>
-                                <TextBlock x:Name="Status" FontWeight="Bold" Foreground="Red" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <TextBlock x:Name="Status" FontWeight="Bold" Foreground="Red" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap">
                                     Please select a server from<LineBreak/>
                                     the drop down list above
                                 </TextBlock>
@@ -296,18 +297,21 @@
                                         <TextBox x:Name="FilterCriteria" HorizontalAlignment="Stretch" KeyDown="FilterCriteria_KeyDown"/>
                                     </DockPanel>
                                     <Grid>
-                                        <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
-                                            <ComboBox x:Name="FilterLevelType" Margin="35,0,4,0" Width="130" SelectedValuePath="Tag" SelectionChanged="FilterLevelType_SelectionChanged">
+                                        <DockPanel>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,2" DockPanel.Dock="Right">
+                                            <TextBlock x:Name="DataVisualCount" Text="TESTING"/>
+                                        </StackPanel>
+                                        <WrapPanel Margin="35,4,4,0" Orientation="Horizontal">
+                                            <ComboBox x:Name="FilterLevelType" Width="130" SelectedValuePath="Tag" SelectionChanged="FilterLevelType_SelectionChanged">
                                                 <ComboBoxItem Content="Include all levels" IsSelected="True" Tag="All"/>
                                                 <ComboBoxItem Content="Ignore below level" Tag="Below"/>
                                                 <ComboBoxItem Content="Ignore above level" Tag="Above"/>
                                             </ComboBox>
                                             <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
-                                            <CheckBox x:Name="ShowSameType" Content="Show matching type dinos" Margin="8,0,0,0" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" />
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                                            <TextBlock x:Name="DataVisualCount" Text=""/>
-                                        </StackPanel>
+                                            <CheckBox x:Name="ShowSameType" Content="Show matching type" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" />
+                                            <CheckBox x:Name="IncludeDetailsInPopUps" Content="Include details in popups" Margin="8,2,0,2" VerticalAlignment="Center" Click="IncludeDetailsInPopUps_Click"/>
+                                        </WrapPanel>
+                                        </DockPanel>
                                     </Grid>
                                 </StackPanel>
 
@@ -326,23 +330,30 @@
                                     CanUserResizeColumns="True"
                                 />
                             </DockPanel>
-                            <Viewbox>
-                                <TextBlock x:Name="FlashMessage" FontSize="8" HorizontalAlignment="Center" Foreground="White" Margin="5" FontWeight="Black" VerticalAlignment="Center" TextAlignment="Center">
-                                <Run FontSize="16">wiredcat.hopto.org</Run>
+                            <Viewbox Margin="5,65,5,15" >
+                                <TextBlock x:Name="FlashMessage" FontSize="8" HorizontalAlignment="Center" Foreground="White" VerticalAlignment="Center" TextAlignment="Center">
+                                <Run FontSize="16" FontWeight="Black">wiredcat.hopto.org</Run>
                                 <LineBreak/>  
-                                Shout outs go to to...
+                                <LineBreak/>  
+                                <Run FontStyle="Italic">Shout outs go to to...</Run>
                                 <LineBreak/>
-                                DuoMog, Scully, Ward &amp; Rrran who first tried this
                                 <LineBreak/>
-                                Shauna &amp; LemonCake - best darn tribe around!
+                                <Run FontWeight="Bold">DuoMog</Run> for helping with the server side
                                 <LineBreak/>
-                                Caulkinator, Kurt, Joanna,
                                 <LineBreak/>
-                                Kokow, Ray, EcStAsY,
+                                <Run FontWeight="Bold">Scully</Run>, <Run FontWeight="Bold">Ward</Run> and <Run FontWeight="Bold">Rrran</Run> who first tried this out
+                                <LineBreak/>
+                                <Run FontWeight="Bold">Shauna</Run> &amp; <Run FontWeight="Bold">LemonCake</Run> - best darn tribe around!
+                                <LineBreak/>
+                                <LineBreak/>
+                                <Run FontWeight="Bold">Caulkinator</Run>, <Run FontWeight="Bold">Kurt</Run>, <Run FontWeight="Bold">Joanna</Run>,
+                                <LineBreak/>
+                                <Run FontWeight="Bold">Kokow</Run>, <Run FontWeight="Bold">Ray</Run>, <Run FontWeight="Bold">EcStAsY</Run>,
                                 <LineBreak/>
                                 and the rest of you!
                                 <LineBreak/>
-                                Also danlev for dododex and help linking to it :)
+                                <LineBreak/>
+                                Also <Run FontWeight="Bold">danlev</Run> for help linking to his awesome Dododex :)
                                 </TextBlock>
                             </Viewbox>
 
@@ -428,10 +439,10 @@
                                 <DataTemplate>
                                     <StackPanel>
                                         <Grid>
-                                            <TextBlock Text="{Binding Path=Description}" Width="150" HorizontalAlignment="Left" />
-                                            <TextBlock Text="{Binding Value}" FontWeight="Bold" Margin="150,0,0,0" />
+                                            <TextBlock Text="{Binding Path=Description}" Width="170" HorizontalAlignment="Left" />
+                                            <TextBlock Text="{Binding Value}" FontWeight="Bold" Margin="170,0,0,0" />
                                         </Grid>
-                                        <TextBlock Text="{Binding Details}" FontStyle="Italic" Margin="150,0,0,0" TextWrapping="Wrap">
+                                        <TextBlock Text="{Binding Details}" FontStyle="Italic" Margin="170,0,0,0" TextWrapping="Wrap">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Style.Triggers>

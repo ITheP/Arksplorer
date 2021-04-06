@@ -22,6 +22,7 @@ namespace Arksplorer
         public string Creature { get; set; }
         public string CreatureId { get; set; }
         public int Level { get; set; } = -1;
+        public int BaseLevel { get; set; } = -1;
         public string Sex { get; set; }
         public bool Cryoed { get; set; }
         public ArkColor C0 { get; set; }

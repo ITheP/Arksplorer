@@ -23,7 +23,7 @@ namespace Arksplorer
     {
         private DinoData CurrentDinoData { get; set; }
 
-        private MainWindow MainWindow { get; set; }
+        public MainWindow MainWindow { get; set; }
         private Info CurrentDino { get; set; }
 
         public InfoVisual()
@@ -58,7 +58,31 @@ namespace Arksplorer
             Lon.Text = $"{info.Lon:N2}";
             Lat.Text = $"{info.Lat:N2}";
 
-            InfoList.ItemsSource = info.Items;
+            Level.Text = $"{info.Level}";
+            if (info.BaseLevel > 0)
+            {
+                BaseLevel.Text = $"{info.BaseLevel}";
+                BaseLevel.Visibility = Visibility.Visible;
+                LevelArrow.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                BaseLevel.Visibility = Visibility.Collapsed;
+                LevelArrow.Visibility = Visibility.Collapsed;
+            }
+
+            // ToDo: Make this proper binding for live update on option changes. Remember to always have a bound list if this is the case
+            if (MainWindow.DetailInPopUps)
+            {
+                InfoList.Visibility = Visibility.Visible;
+                InfoList.ItemsSource = info.Items;
+            }
+            else
+            {
+                InfoList.Visibility = Visibility.Collapsed;
+                InfoList.ItemsSource = null;
+            }
+
             IconList.ItemsSource = info.Icons;
 
             Arkpedia.Visibility = Visibility.Collapsed;
@@ -90,6 +114,10 @@ namespace Arksplorer
 
                 ColorList.Visibility = Visibility.Visible;
             }
+
+            this.InvalidateVisual();
+            this.InvalidateArrange();
+            this.InvalidateMeasure();
         }
 
         private static void ShowColor(TextBlock control, Border border, ArkColor color)

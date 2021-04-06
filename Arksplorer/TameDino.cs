@@ -61,7 +61,7 @@ namespace Arksplorer
         [JsonPropertyName("mut-m")]
         public int MutM { get; set; }
         public bool Viv { get; set; }
-        //public string Ccc { get; set; } <-- not bothered about seeing this
+        public string Ccc { get; set; }
         //public long Id { get; set; } <-- not bothered about seeing this
         //long TribeId { get; set; } <-- not bothered about seeing this
     }
