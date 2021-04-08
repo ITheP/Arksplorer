@@ -83,7 +83,7 @@
                     <StackPanel DockPanel.Dock="Top">
                         <Image Source="/Images/Arksplorer.png" />
                         <TextBlock x:Name="AppTitle" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>
-                        <TextBlock x:Name="Version" Text="v1.0 - The first bite" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
+                        <TextBlock x:Name="Version" Text="Version" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
                         <Separator Margin="0,7,0,8"/>
                         <ComboBox x:Name="ServerList" IsEditable="False" SelectedValuePath="Name" SelectionChanged="ServerList_SelectionChanged">
                             <ComboBox.ItemTemplate>
@@ -296,25 +296,29 @@
                                         <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" Width="35">Filter</TextBlock>
                                         <TextBox x:Name="FilterCriteria" HorizontalAlignment="Stretch" KeyDown="FilterCriteria_KeyDown"/>
                                     </DockPanel>
-                                    <Grid>
-                                        <DockPanel>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,2" DockPanel.Dock="Right">
-                                            <TextBlock x:Name="DataVisualCount" Text="TESTING"/>
-                                        </StackPanel>
-                                        <WrapPanel Margin="35,4,4,0" Orientation="Horizontal">
-                                            <ComboBox x:Name="FilterLevelType" Width="130" SelectedValuePath="Tag" SelectionChanged="FilterLevelType_SelectionChanged">
-                                                <ComboBoxItem Content="Include all levels" IsSelected="True" Tag="All"/>
-                                                <ComboBoxItem Content="Ignore below level" Tag="Below"/>
-                                                <ComboBoxItem Content="Ignore above level" Tag="Above"/>
-                                            </ComboBox>
-                                            <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
+                                    <WrapPanel Margin="35,4,4,0" Orientation="Horizontal">
+                                        <ComboBox x:Name="FilterLevelType" Width="130" SelectedValuePath="Tag" SelectionChanged="FilterLevelType_SelectionChanged">
+                                            <ComboBoxItem Content="Include all levels" IsSelected="True" Tag="All"/>
+                                            <ComboBoxItem Content="Ignore below level" Tag="Below"/>
+                                            <ComboBoxItem Content="Ignore above level" Tag="Above"/>
+                                        </ComboBox>
+                                        <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
+                                        <StackPanel Orientation="Horizontal">
                                             <CheckBox x:Name="ShowSameType" Content="Show matching type" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" />
                                             <CheckBox x:Name="IncludeDetailsInPopUps" Content="Include details in popups" Margin="8,2,0,2" VerticalAlignment="Center" Click="IncludeDetailsInPopUps_Click"/>
-                                        </WrapPanel>
-                                        </DockPanel>
-                                    </Grid>
+                                        </StackPanel>
+                                    </WrapPanel>
+                                    <StackPanel Margin="35,4,4,0" Orientation="Horizontal">
+                                        <Button x:Name="FilterMap" Content="Map" Padding="8,0" Click="ButtonFilter_Click"/>
+                                        <Button x:Name="FilterTribe" Content="Tribe" Padding="8,0" Margin="8,0,0,0" Click="ButtonFilter_Click"/>
+                                        <Button x:Name="FilterCreature" Content="Creature" Margin="8,0,0,0" Padding="8,0" Click="ButtonFilter_Click"/>
+                                    </StackPanel>
                                 </StackPanel>
 
+                                <Grid DockPanel.Dock="Bottom" Margin="0,4,0,0">
+                                    <TextBlock x:Name="DataVisualCount" HorizontalAlignment="Right"/>
+                                </Grid>
+                                
                                 <DataGrid x:Name="DataVisual"      
                                     Margin="0,8,0,0"
                                     AutoGenerateColumns="True"
@@ -325,12 +329,14 @@
                                     SelectionUnit="FullRow"
                                     SelectionChanged="DataVisual_SelectionChanged"
                                     AutoGeneratingColumn="DataVisual_AutoGeneratingColumn"
+                                    Sorting="DataVisual_Sorting"
                                     VerticalAlignment="Stretch"
                                     EnableRowVirtualization="True"
                                     CanUserResizeColumns="True"
                                 />
                             </DockPanel>
-                            <Viewbox Margin="5,65,5,15" >
+
+                            <Viewbox Margin="5,85,5,15" >
                                 <TextBlock x:Name="FlashMessage" FontSize="8" HorizontalAlignment="Center" Foreground="White" VerticalAlignment="Center" TextAlignment="Center">
                                 <Run FontSize="16" FontWeight="Black">wiredcat.hopto.org</Run>
                                 <LineBreak/>  
@@ -365,69 +371,68 @@
                 </TabItem>
                 <TabItem Header="Ark Wikipedia" x:Name="ArkpediaTab">
                     <DockPanel>
-                        <Grid DockPanel.Dock="Top">
-                            <StackPanel Orientation="Horizontal">
+                        <DockPanel DockPanel.Dock="Top">
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,0,0,0">
+                                <Viewbox x:Name="ArkpediaLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                    <local:Spinner/>
+                                </Viewbox>
+                                <Button x:Name="ArkpediaOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="ArkpediaOpenExternal_Click"/>
+                            </StackPanel>
+                            <WrapPanel>
                                 <Button x:Name="ArkpediaBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="ArkpediaBack_Click"/>
                                 <Button x:Name="ArkpediaForward" Content="&#xE72A;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="ArkpediaForward_Click"/>
                                 <Button x:Name="ArkpediaHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki" Click="ArkpediaNavigate_Click"/>
-                                <Button x:Name="ArkpediaResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/Data_Maps" Click="ArkpediaNavigate_Click"/>
-                                <Button x:Name="ArkpediaMaps" Content="Maps" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/ARKs" Click="ArkpediaNavigate_Click"/>
-                                <Button x:Name="ArkpediaLoot" Content="Loot" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/Loot_Tables" Click="ArkpediaNavigate_Click"/>
-                            </StackPanel>
-                            <Grid HorizontalAlignment="Right">
-                                <StackPanel Orientation="Horizontal">
-                                    <Viewbox x:Name="ArkpediaLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                        <local:Spinner/>
-                                    </Viewbox>
-                                    <Button x:Name="ArkpediaOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="ArkpediaOpenExternal_Click"/>
-                                </StackPanel>
-                            </Grid>
-                        </Grid>
+                                <WrapPanel>
+                                    <Button x:Name="ArkpediaResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/Data_Maps" Click="ArkpediaNavigate_Click"/>
+                                    <Button x:Name="ArkpediaMaps" Content="Maps" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/ARKs" Click="ArkpediaNavigate_Click"/>
+                                    <Button x:Name="ArkpediaLoot" Content="Loot" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/Loot_Tables" Click="ArkpediaNavigate_Click"/>
+                                </WrapPanel>
+                            </WrapPanel>
+                        </DockPanel>
                         <wv2:WebView2 x:Name="ArkpediaBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki" />
                     </DockPanel>
                 </TabItem>
                 <TabItem Header="Dododex" x:Name="DododexTab">
                     <DockPanel>
-                        <Grid DockPanel.Dock="Top">
-                            <StackPanel Orientation="Horizontal">
+                        <DockPanel DockPanel.Dock="Top">
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,0,0,0">
+                                <Viewbox x:Name="DododexLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                    <local:Spinner/>
+                                </Viewbox>
+                                <Button x:Name="DododexOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="DododexOpenExternal_Click"/>
+                            </StackPanel>
+                            <WrapPanel>
                                 <Button x:Name="DododexBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="DododexBack_Click"/>
                                 <Button x:Name="DododexForward" Content="&#xE72A;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="DododexForward_Click"/>
                                 <Button x:Name="DododexHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="https://www.dododex.com/" Click="DododexNavigate_Click"/>
-                                <Button x:Name="DododexCreatures" Content="Creatures" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/dinosaurs" Click="DododexNavigate_Click"/>
-                                <Button x:Name="DododexConsumables" Content="Consume" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/Consumables" Click="DododexNavigate_Click"/>
-                                <Button x:Name="DododexResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/resources" Click="DododexNavigate_Click"/>
-                                <Button x:Name="DododexKibble" Content="Kibble" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/kibble" Click="DododexNavigate_Click"/>
-                                <Button x:Name="DododexSaddles" Content="Saddles" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/saddles" Click="DododexNavigate_Click"/>
-                            </StackPanel>
-                            <Grid HorizontalAlignment="Right">
-                                <StackPanel Orientation="Horizontal">
-                                    <Viewbox x:Name="DododexLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                        <local:Spinner/>
-                                    </Viewbox>
-                                    <Button x:Name="DododexOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="DododexOpenExternal_Click"/>
-                                </StackPanel>
-                            </Grid>
-                        </Grid>
+                                <WrapPanel>
+                                    <Button x:Name="DododexCreatures" Content="Creatures" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/dinosaurs" Click="DododexNavigate_Click"/>
+                                    <Button x:Name="DododexConsumables" Content="Consume" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/Consumables" Click="DododexNavigate_Click"/>
+                                    <Button x:Name="DododexResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/resources" Click="DododexNavigate_Click"/>
+                                    <Button x:Name="DododexKibble" Content="Kibble" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/kibble" Click="DododexNavigate_Click"/>
+                                    <Button x:Name="DododexSaddles" Content="Saddles" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/saddles" Click="DododexNavigate_Click"/>
+                                </WrapPanel>
+                            </WrapPanel>
+                        </DockPanel>
                         <wv2:WebView2 x:Name="DododexBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="https://www.dododex.com/" />
                     </DockPanel>
                 </TabItem>
                 <TabItem Header="Server Website" x:Name="ServerTab">
                     <DockPanel>
-                        <Grid DockPanel.Dock="Top">
+                        <DockPanel DockPanel.Dock="Top">
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,0,0,0">
+                                <Viewbox x:Name="ServerLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                    <local:Spinner/>
+                                </Viewbox>
+                                <Button x:Name="ServerOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="ServerOpenExternal_Click"/>
+                            </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Button x:Name="ServerBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="ServerBack_Click"/>
                                 <Button x:Name="ServerForward" Content="&#xE72A;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="ServerForward_Click"/>
                                 <Button x:Name="ServerHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="" Click="ServerNavigate_Click"/>
                             </StackPanel>
-                            <Grid HorizontalAlignment="Right">
-                                <StackPanel Orientation="Horizontal">
-                                    <Viewbox x:Name="ServerLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                        <local:Spinner/>
-                                    </Viewbox>
-                                    <Button x:Name="ServerOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="ServerOpenExternal_Click"/>
-                                </StackPanel>
-                            </Grid>
-                        </Grid>
+
+                        </DockPanel>
                         <wv2:WebView2 x:Name="ServerBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="" />
                     </DockPanel>
                 </TabItem>

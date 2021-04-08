@@ -23,16 +23,14 @@ namespace Arksplorer
     {
         private DinoData CurrentDinoData { get; set; }
 
-        public MainWindow MainWindow { get; set; }
         private Info CurrentDino { get; set; }
 
         public InfoVisual()
         {
             InitializeComponent();
-            MainWindow = (MainWindow)Application.Current.MainWindow;
         }
 
-        public void ShowInfo(Info info, bool ShowLinks = false)
+        public void ShowInfo(Info info, bool ShowLinks, bool showDetails = false)
         {
             CurrentDino = info;
 
@@ -53,7 +51,15 @@ namespace Arksplorer
                 CreatureName.Visibility = Visibility.Visible;
             }
 
-            Creature.Text = info.Creature;
+            if (string.IsNullOrWhiteSpace(info.Creature))
+            {
+                Creature.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                Creature.Text = info.Creature;
+                Creature.Visibility = Visibility.Visible;
+            }
 
             Lon.Text = $"{info.Lon:N2}";
             Lat.Text = $"{info.Lat:N2}";
@@ -62,17 +68,18 @@ namespace Arksplorer
             if (info.BaseLevel > 0)
             {
                 BaseLevel.Text = $"{info.BaseLevel}";
-                BaseLevel.Visibility = Visibility.Visible;
+                //BaseLevel.Visibility = Visibility.Visible;
                 LevelArrow.Visibility = Visibility.Visible;
             }
             else
             {
-                BaseLevel.Visibility = Visibility.Collapsed;
+                BaseLevel.Text = "Level ";
+                //BaseLevel.Visibility = Visibility.Collapsed;
                 LevelArrow.Visibility = Visibility.Collapsed;
             }
 
             // ToDo: Make this proper binding for live update on option changes. Remember to always have a bound list if this is the case
-            if (MainWindow.DetailInPopUps)
+            if (showDetails)
             {
                 InfoList.Visibility = Visibility.Visible;
                 InfoList.ItemsSource = info.Items;
@@ -88,7 +95,7 @@ namespace Arksplorer
             Arkpedia.Visibility = Visibility.Collapsed;
             Dododex.Visibility = Visibility.Collapsed;
 
-            if (ShowLinks)
+            if (ShowLinks && info.CreatureId != null)
             {
                 CurrentDinoData = Lookup.FindDino(info.CreatureId);
                 if (CurrentDinoData != null)
@@ -114,10 +121,6 @@ namespace Arksplorer
 
                 ColorList.Visibility = Visibility.Visible;
             }
-
-            this.InvalidateVisual();
-            this.InvalidateArrange();
-            this.InvalidateMeasure();
         }
 
         private static void ShowColor(TextBlock control, Border border, ArkColor color)
@@ -143,13 +146,13 @@ namespace Arksplorer
 
         private void Arkpedia_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.Navigate(MainWindow.ArkpediaWebTab, $"https://ark.fandom.com/wiki/{CurrentDinoData.ArkpediaUrl}");
+            MainWindow.Navigate(Globals.MainWindow.ArkpediaWebTab, $"https://ark.fandom.com/wiki/{CurrentDinoData.ArkpediaUrl}");
         }
 
         private void Dododex_Click(object sender, RoutedEventArgs e)
         {
             var serverConfig = MainWindow.ServerConfig;
-            MainWindow.Navigate(MainWindow.DododexWebTab, $"https://www.dododex.com/taming/{CurrentDinoData.DododexUrl}#level={CurrentDino.Level}&taming={serverConfig.TamingSpeedMultiplier}&consumption={serverConfig.FoodDrainMultiplier}");
+            MainWindow.Navigate(Globals.MainWindow.DododexWebTab, $"https://www.dododex.com/taming/{CurrentDinoData.DododexUrl}#level={CurrentDino.Level}&taming={serverConfig.TamingSpeedMultiplier}&consumption={serverConfig.FoodDrainMultiplier}");
         }
     }
 }

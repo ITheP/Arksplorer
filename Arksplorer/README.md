@@ -69,3 +69,13 @@ v1.0 The First Bite - 06/04/2021
 - Show `main info` from selected mass marker
 - Added option to turn on/off extra details in pop up info
 - Added .ico icon file
+
+v1.0.1 
+- Added a splash screen
+- Added error/crash log
+- Enabled async startup of app (for future expansion)
+- Reworked browser tab layout to work better with resizing
+- Included Map/Tribe/Dino quick filter buttons
+- Minor reworking of pop up info layout
+- Minor reworking of other parts of interface
+- Misc. fixes and improvements

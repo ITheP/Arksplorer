@@ -82,6 +82,12 @@ namespace Arksplorer
         {
             InitializeComponent();
 
+            Init();
+        }
+
+        private void Init()
+        {
+
             DataContext = this;
             // These are visible at design time to aid design, but want to hide them when window first opens
             MapImage.Visibility = Visibility.Collapsed;
@@ -89,11 +95,17 @@ namespace Arksplorer
             ServerLoadedControls.Visibility = Visibility.Collapsed;
             DataVisual.Visibility = Visibility.Collapsed;
             OverviewInfo.Visibility = Visibility.Collapsed;
+            FilterMap.Visibility = Visibility.Collapsed;
+            FilterTribe.Visibility = Visibility.Collapsed;
+            FilterCreature.Visibility = Visibility.Collapsed;
 
             // Disable all controls that are reliant on working server connection...
             LoadableControlsEnabled(false);
+
             // ...except we re-enable the one control that will let us specify a server location :)
             ServerList.IsEnabled = true;
+
+            Version.Text = Globals.Version;
 
             // We drag the loading effect out the page when not visible,
             // so it's not being calculated while hidden/collapsed (have seen overhead happen even when not visible if its linked into the page)
@@ -825,6 +837,16 @@ namespace Arksplorer
 #endif
                     result = (IEnumerable<IArkEntity>)await httpClient.GetFromJsonAsync(item.DataUri, typeof(List<>).MakeGenericType(item.MetaData.JsonClassType));
 
+                // Extra processing of data goes here - e.g. calculating extra data values not in JSON and not part of JSON import translations
+                // E.g. colour sort data, as we can't easily read single json colour values into 2 properties at once during import
+                if (typeof(IArkEntityWithCreature).IsAssignableFrom(result.GetType().GetGenericArguments()[0]))
+                {
+                    // It's a creature! it has colours :)
+                    foreach (var creature in result)
+                        Lookup.SetArkColorSortCode((IArkEntityWithCreature)creature);
+                }
+
+
                 DataTable newData = DataTableExtensions.AddToDataTable(result, item.MetaData.JsonClassType, mapName, item.MetaData, null);
                 MapPackage newMapPackage = new();
                 newMapPackage.Data = newData;
@@ -953,6 +975,40 @@ namespace Arksplorer
             }
 
             SetSelectedInfo(info);
+
+            if (string.IsNullOrWhiteSpace(info.CreatureId))
+            {
+                FilterCreature.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                FilterCreature.Content = info.Creature;
+                FilterCreature.Tag = info.CreatureId;
+                FilterCreature.Visibility = Visibility.Visible;
+            }
+
+            if (string.IsNullOrWhiteSpace(info.Tribe))
+            {
+                FilterTribe.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                FilterTribe.Content = info.Tribe;
+                FilterTribe.Tag = info.Tribe;
+                FilterTribe.Visibility = Visibility.Visible;
+            }
+
+            if (string.IsNullOrWhiteSpace(mapName))
+            {
+                FilterMap.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                FilterMap.Content = mapName;
+                FilterMap.Tag = mapName;
+                FilterMap.Visibility = Visibility.Visible;
+            }
+
         }
 
         // Note: at the moment mass markers are based around CreatureId's, but could be used in the future for other purposes (e.g. resources)
@@ -1079,7 +1135,6 @@ namespace Arksplorer
 
             if (HpColumn > -1)
                 info.Add("Health", $"{row[WeightColumn]}");
-
             if (StamColumn > -1)
                 info.Add("Stamina", $"{row[StamColumn]}");
             if (MeleeColumn > -1)
@@ -1098,7 +1153,11 @@ namespace Arksplorer
                 info.Add("Stamina", $"{row[StamColumn]}");
 
             if (TamerColumn > -1)
-                info.Add("Tamer (Tribe)", $"{row[TamerColumn] as string}");
+            {
+                string tribe = $"{row[TamerColumn] as string}";
+                info.Add("Tamer (Tribe)", tribe);
+                info.Tribe = tribe;
+            }
             if (ImprinterColumn > -1)
                 info.Add("Imprinter", $"{row[ImprinterColumn] as string}");
             if (ImprintColumn > -1)
@@ -1142,7 +1201,7 @@ namespace Arksplorer
             if (info == null)
                 return;
 
-            OverviewInfo.ShowInfo(info, true);
+            OverviewInfo.ShowInfo(info, true, DetailInPopUps);
 
             OverviewInfo.Visibility = Visibility.Visible;
         }
@@ -1293,7 +1352,7 @@ namespace Arksplorer
                             {
                                 LastRectangle = rectangle;
 
-                                PopUpInfoVisual.ShowInfo(info);
+                                PopUpInfoVisual.ShowInfo(info, false, DetailInPopUps);
                             }
 
                             // Make sure we remember what we are looking at, then if we mouse_up over a rectangle, this will exist and we know what to show in the main static pop up
@@ -1310,7 +1369,7 @@ namespace Arksplorer
                             LastDataGridRow = gridRow;
 
                             DataRowView dataRowView = (System.Data.DataRowView)gridRow.Item;
-                            PopUpInfoVisual.ShowInfo(CreateInfoFromRow(dataRowView.Row));
+                            PopUpInfoVisual.ShowInfo(CreateInfoFromRow(dataRowView.Row), false, DetailInPopUps);
                         }
 
                         // Even if we don't change how this looks, we want to make sure its position is updated
@@ -1430,6 +1489,8 @@ namespace Arksplorer
             {
                 if (e.PropertyType == typeof(Single))
                     column.Binding = new Binding(e.PropertyName) { StringFormat = "N2" };
+                else if (e.PropertyType == typeof(DateTime))
+                    column.Binding = new Binding(e.PropertyName) { StringFormat = "dd/MM/yyyy hh:mm:ss" };
                 else if (e.PropertyType == typeof(ArkColor))
                 {
                     DataGridTemplateColumn template = new();
@@ -1442,7 +1503,7 @@ namespace Arksplorer
                     factory.SetValue(Rectangle.WidthProperty, 32.0d);
                     factory.SetValue(Rectangle.HeightProperty, 16.0d);
                     Binding binding = new($"{e.PropertyName}"); //.Color");
-                   binding.Converter = new ArkColorDBNullConverter();
+                    binding.Converter = new ArkColorDBNullConverter();
                     factory.SetBinding(Rectangle.FillProperty, binding);
 
                     dataTemplate.VisualTree = factory;
@@ -1464,7 +1525,7 @@ namespace Arksplorer
                     factory.SetValue(Image.WidthProperty, 16.0d);
                     factory.SetValue(Image.HeightProperty, 16.0d);
                     Binding binding = new(e.PropertyName);
-                    factory.SetBinding(Image.SourceProperty, new Binding(e.PropertyName));
+                    factory.SetBinding(Image.SourceProperty, binding);
                     dataTemplate.VisualTree = factory;
 
                     template.CellTemplate = dataTemplate;
@@ -1472,6 +1533,11 @@ namespace Arksplorer
                     template.CanUserSort = true;
                     template.SortMemberPath = e.PropertyName;
                     e.Column = template;
+                }
+                else if (e.PropertyName == "Ccc" || e.PropertyName.EndsWith("_Sortt"))
+                {
+                    // Don't want to see the ccc column or any hidden ..._sort columns
+                    e.Column.Visibility = Visibility.Collapsed;
                 }
             }
 
@@ -1569,11 +1635,47 @@ namespace Arksplorer
                 SetSelectedInfo(CurrentRectanglePopUpInfo);
         }
 
+        private void ButtonFilter_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            FilterCriteria.Text = button.Tag as string;
+            ApplyFilterCriteria(true);
+        }
 
         private void IncludeDetailsInPopUps_Click(object sender, RoutedEventArgs e)
         {
             DetailInPopUps = IncludeDetailsInPopUps.IsChecked ?? false;
             Properties.Settings.Default.IncludeDetailsInPopUps = DetailInPopUps;
+        }
+
+        //private static IComparer SortArkColorAscending()
+        //{
+        //    return (IComparer)new SortArkColorAscendingHelper();
+        //}
+        //private static IComparer SortArkColorDescending()
+        //{
+        //    return (IComparer)new SortArkColorDescendingHelper();
+        //}
+
+        private void DataVisual_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            DataGridColumn column = e.Column;
+            DataTable data = (DataTable)DataVisual.DataContext;
+            var columnType = data.Columns[column.DisplayIndex].DataType;
+            if (columnType == typeof(ArkColor))
+            {
+                // Sorting on our own custom colours is an absolute pain in the rear
+                // Also - colours - how do you sort on a colour? Namne? Id? RGB value?
+                // So we have custom sort columns for just this purpose
+                // and intercept the sorting so we can put them in place here!
+                ICollectionView dataView = CollectionViewSource.GetDefaultView(DataVisual.ItemsSource);
+                dataView.SortDescriptions.Clear();
+                dataView.SortDescriptions.Add(new SortDescription($"{column.Header}_Sort", ListSortDirection.Ascending));
+
+                e.Handled = true;
+            }
+            else
+                return;
         }
 
         //private bool DebugEnabled { get; set; } = true;

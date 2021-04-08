@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Shell;
@@ -59,14 +58,15 @@ namespace Arksplorer
         }
 
         public static Dictionary<int, ArkColor> ArkColors { get; set; }
-    }
 
-    public class ArkColor
-    {
-        public int Id { get; set; }
-        public string Hex { get; set; }
-        public string Name { get; set; }
-        [JsonIgnore]
-        public Brush Color { get; set; }
+        public static void SetArkColorSortCode(IArkEntityWithCreature creature)
+        {
+            creature.C0_Sort = creature.C0?.Id ?? -1;
+            creature.C1_Sort = creature.C1?.Id ?? -1;
+            creature.C2_Sort = creature.C2?.Id ?? -1;
+            creature.C3_Sort = creature.C3?.Id ?? -1;
+            creature.C4_Sort = creature.C4?.Id ?? -1;
+            creature.C5_Sort = creature.C5?.Id ?? -1;
+        }
     }
 }
