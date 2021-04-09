@@ -98,8 +98,11 @@ namespace Arksplorer
 
                 string lastServer = Settings.Default.LastServer;
 
-                KnownServers = JsonSerializer.Deserialize<List<Server>>(File.ReadAllText("./Servers.json"));
-                ServerList.ItemsSource = KnownServers;
+                List<Server> KnownServers = new();
+                foreach (var file in Directory.GetFiles("./Servers/", "*.json"))
+                    KnownServers.AddRange(JsonSerializer.Deserialize<List<Server>>(File.ReadAllText(file)));
+
+                ServerList.ItemsSource = KnownServers.OrderBy(s => s.Name).ToList();
 
                 // If we have a previous server, then setting the ServerList will trigger loading of the server on its SelectionChanged event
                 ServerList.SelectedValue = lastServer;

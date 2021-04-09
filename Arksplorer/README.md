@@ -70,7 +70,7 @@ v1.0 The First Bite - 06/04/2021
 - Added option to turn on/off extra details in pop up info
 - Added .ico icon file
 
-v1.1.0 The bigger bite - 09/04/2021
+v1.1.0 The Bigger Bite - 09/04/2021
 - Added a splash screen
 - Added error/crash log
 - Enabled async startup of app (for future expansion)
@@ -82,3 +82,4 @@ v1.1.0 The bigger bite - 09/04/2021
 - Major restructuring of files
 - Ordering by colour now possible!
 - Misc. fixes and improvements
+- Multiple server.json files can be specified in /Servers/ (so server owners can just drop in their own)
