@@ -70,7 +70,7 @@ v1.0 The First Bite - 06/04/2021
 - Added option to turn on/off extra details in pop up info
 - Added .ico icon file
 
-v1.0.1 
+v1.1.0 The bigger bite - 09/04/2021
 - Added a splash screen
 - Added error/crash log
 - Enabled async startup of app (for future expansion)
@@ -78,4 +78,7 @@ v1.0.1
 - Included Map/Tribe/Dino quick filter buttons
 - Minor reworking of pop up info layout
 - Minor reworking of other parts of interface
+- Major refactoring of code into proper classes etc.
+- Major restructuring of files
+- Ordering by colour now possible!
 - Misc. fixes and improvements

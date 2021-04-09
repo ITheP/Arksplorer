@@ -1,15 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace Arksplorer
 {
-    public class ListInfoItem
-    {
-        public string Description { get; set; }
-        public string Value { get; set; }
-        public string Details { get; set; }
-    }
-
     public class ListInfo
     {
         public List<ListInfoItem> Items { get; set; } = new();

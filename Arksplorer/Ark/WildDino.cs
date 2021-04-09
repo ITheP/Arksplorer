@@ -1,6 +1,4 @@
-﻿//using System.Windows.Shapes;
-
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using System.Windows.Media.Imaging;
 
 namespace Arksplorer
@@ -28,16 +26,28 @@ namespace Arksplorer
         public int Craft { get; set; }
         [JsonConverter(typeof(ArkColorConverter))]
         public ArkColor C0 { get; set; }
+        [JsonIgnore]
+        public int C0_Sort { get; set; }
         [JsonConverter(typeof(ArkColorConverter))]
         public ArkColor C1 { get; set; }
+        [JsonIgnore]
+        public int C1_Sort { get; set; }
         [JsonConverter(typeof(ArkColorConverter))]
         public ArkColor C2 { get; set; }
+        [JsonIgnore]
+        public int C2_Sort { get; set; }
         [JsonConverter(typeof(ArkColorConverter))]
         public ArkColor C3 { get; set; }
+        [JsonIgnore]
+        public int C3_Sort { get; set; }
         [JsonConverter(typeof(ArkColorConverter))]
         public ArkColor C4 { get; set; }
+        [JsonIgnore]
+        public int C4_Sort { get; set; }
         [JsonConverter(typeof(ArkColorConverter))]
         public ArkColor C5 { get; set; }
+        [JsonIgnore]
+        public int C5_Sort { get; set; }
         public string Ccc { get; set; }
         //public long Id { get; set; } <-- not bothered about seeing this
     }

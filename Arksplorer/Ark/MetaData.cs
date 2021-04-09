@@ -6,9 +6,6 @@ namespace Arksplorer
 {
     public class MetaData
     {
-        /// <summary>
-        /// Class type is needed for JSON decoding, i.w. what to map the JSON data too
-        /// </summary>
         public Type JsonClassType { get; set; }
         public string ArkEntityType { get; set; }
         public string Description { get; set; }

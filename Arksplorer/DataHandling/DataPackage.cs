@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
-//using System.Windows.Shapes;
 
 namespace Arksplorer
 {
@@ -38,12 +36,10 @@ namespace Arksplorer
             foreach (KeyValuePair<string, MapPackage> map in IndividualMaps)
             {
                 MapPackage mapPackage = map.Value;
-                //MapsDescription += $"{map.Key} ({mapPackage.Data.Rows.Count}) [{mapPackage.Timestamp:HH:mm}]{Environment.NewLine}";
                 Debug.Print($"   {Metadata.ArkEntityType}.{map.Key} - {mapPackage.Data.Rows.Count}");
                 Data.Merge(mapPackage.Data);
             }
 
-            //MapsDescription = $"Showing {Metadata.Description}s ({Data.Rows.Count} total){Environment.NewLine}{MapsDescription}";
             Debug.Print($"...{Data.Rows.Count} total");
             
             DataIsStale = false;

@@ -150,4 +150,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="JsonClasses\" />
+  </ItemGroup>
+
 </Project>

@@ -1,53 +1,26 @@
-﻿using Arksplorer;
-using Arksplorer.Properties;
-using Microsoft.VisualBasic;
-using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.WinForms;
-using Microsoft.Web.WebView2.Wpf;
+﻿using Arksplorer.Properties;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-//using System.Drawing;
-using System.Globalization;
 using System.IO;
-using System.IO.Packaging;
 using System.Linq;
 using System.Media;
-using System.Net.Cache;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Numerics;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Reflection.Metadata;
-using System.Resources;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Policy;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-//using System.Windows.Shapes;
-using System.Xaml;
-using System.Xml.Linq;
 
 namespace Arksplorer
 {
@@ -73,10 +46,13 @@ namespace Arksplorer
         /// Forces use of local temp.json file as a data file. Used for debugging (rather than having to make a server trip for data we can't control)
         /// </summary>
         public bool ForceLocalLoad { get; set; } = false;
+
         /// <summary>
         /// Set this to true to force refresh of data reload, even if cache timings have not expired. Handy for debugging.
         /// </summary>
         public bool ForceRefreshOfData { get; set; } = false;
+
+        //private Queue DataQueue { get; set; } = new();
 
         public MainWindow()
         {
@@ -87,7 +63,6 @@ namespace Arksplorer
 
         private void Init()
         {
-
             DataContext = this;
             // These are visible at design time to aid design, but want to hide them when window first opens
             MapImage.Visibility = Visibility.Collapsed;
@@ -116,14 +91,12 @@ namespace Arksplorer
 
             InitWebTabs();
 
-            // Grab config from server that feeds into all this
+            // Load data and grab config from server that feeds into all this
             try
             {
-                Lookup.LoadDinoData("./Data/Lookup-Dinos.json");
-                Lookup.LoadColorData("./Data/Lookup-Colors.json");
+                Lookup.LoadDataFromLookupFiles();
 
                 string lastServer = Settings.Default.LastServer;
-
 
                 KnownServers = JsonSerializer.Deserialize<List<Server>>(File.ReadAllText("./Servers.json"));
                 ServerList.ItemsSource = KnownServers;
@@ -223,7 +196,7 @@ namespace Arksplorer
                 CheckAndRefreshCache("CacheRefresh");
         }
 
-        // Different types of dino may be loaded with different maps. There may be no consistence across packages of data!
+        // Different types of dino may be loaded with different maps. There may be no consistency across packages of data!
 
         private bool CheckingQueue { get; set; }
 
@@ -239,7 +212,7 @@ namespace Arksplorer
 
             Debug.Print($"{now:HH:mm:ss} {from}");
 
-            List<QueueDataItem> queue = new();
+            Queue queue = new();
 
             foreach (KeyValuePair<string, DataPackage> package in DataPackages)
             {
@@ -252,7 +225,7 @@ namespace Arksplorer
                     {
                         // We are reloading what we already have
                         // Load process will flush old data if it exists first
-                        AddToQueue(queue, map.Key, package.Value.Metadata, ForceRefreshOfData);
+                        queue.AddNewItem(map.Key, package.Value.Metadata, ForceRefreshOfData, ServerConfig);
                     }
 
                     string difference = $"{(mapPackage.ApproxNextServerUpdateTimestamp - now):mm\\:ss}";
@@ -261,7 +234,7 @@ namespace Arksplorer
                 }
             }
 
-            if (queue.Count > 0)
+            if (queue.Items.Count > 0)
             {
                 Debug.Print($"Refreshing cache...");
                 // We don't automatically refresh the visual display as someone may be part way through looking at data.
@@ -334,7 +307,7 @@ namespace Arksplorer
             AlarmTimeLeft.Text = "Off";
         }
 
-        // Problems with MediaPlayer not playing. Not sure why! To retry with a different mp3?
+        //Problems with MediaPlayer not playing. Not sure why! To retry with a different mp3?
         //private MediaPlayer Player { get; set; } = new();
         SoundPlayer Player { get; set; } = new();
 
@@ -387,12 +360,13 @@ namespace Arksplorer
             LoadableControlsEnabled(false);
             LoadingVisualEnabled(true);
 
-            List<QueueDataItem> queue = new();
+            //List<QueueDataItem> queue = new();
+            Queue queue = new();
 
             foreach (var selection in MapList)
             {
                 if (selection.Load)
-                    AddToQueue(queue, selection.Name, type, ForceRefreshOfData);
+                    queue.AddNewItem( selection.Name, type, ForceRefreshOfData, ServerConfig);
             }
 
             LoadQueue(queue, true);
@@ -527,30 +501,18 @@ namespace Arksplorer
 
         private static Dictionary<string, DataPackage> DataPackages { get; set; } = new Dictionary<string, DataPackage>();
 
-        private static DataPackage CurrentDataPackage { get; set; }
-
-        private static void AddToQueue(List<QueueDataItem> queue, string map, MetaData metaData, bool forceRefresh)
-        {
-            queue.Add(new QueueDataItem()
-            {
-                MapName = map,
-                MetaData = metaData,
-                DataUri = ServerConfig.GetUri($"{map}.{metaData.ArkEntityType}"),
-                TimestampUri = ServerConfig.GetUri($"{map}.timestamp"),
-                ForceRefresh = forceRefresh
-            });
-        }
+        public DataPackage CurrentDataPackage { get; set; }
 
         private Cursor PrevCursor { get; set; }
         //private bool ProcessingQueue { get; set; }
 
         // When a queue is loading, no others should load as controls that could trigger another load are disabled.
-        private async void LoadQueue(List<QueueDataItem> queue, bool autoUpdateDataGrid)
+        private async void LoadQueue(Queue queue, bool autoUpdateDataGrid)
         {
             // PrevCursor = Mouse.OverrideCursor;
             //  Mouse.OverrideCursor = Cursors.Wait;
 
-            int mapsLoaded = await Task.Run(() => ProcessQueue(queue, autoUpdateDataGrid));
+            int mapsLoaded = await Task.Run(() => queue.Process( autoUpdateDataGrid, DataPackages, this, ServerConfig, ForceLocalLoad));
         }
 
         public void LoadableControlsEnabled(bool isEnabled)
@@ -577,7 +539,7 @@ namespace Arksplorer
             }
         }
 
-        private void ShowData(string type, bool updateVisualDataGrid)
+        public void ShowData(string type, bool updateVisualDataGrid)
         {
             if (DataPackages.ContainsKey(type))
             {
@@ -628,12 +590,11 @@ namespace Arksplorer
             }
 
             DataVisual.DataContext = data;
-            InitColumnIndexPositions(data);
+            Info.InitColumnIndexPositions(data);
             DataVisualCount.Text = $"{data.Rows.Count} entries";
             HideFlashMessage();
         }
 
-        static readonly HttpClient httpClient = new();
 
         private async void LoadServerConfig(Server server)
         {
@@ -641,7 +602,7 @@ namespace Arksplorer
 
             try
             {
-                RawServerData rawServerData = await httpClient.GetFromJsonAsync<RawServerData>(new Uri(server.Url));
+                RawServerData rawServerData = await Web.HttpClient.GetFromJsonAsync<RawServerData>(new Uri(server.Url));
                 ServerConfig = new ServerConfig(rawServerData);
 
                 // Save this as the last selected server - that we know has worked!
@@ -697,215 +658,6 @@ namespace Arksplorer
             MessageBox.Show($"There was a problem during start up...{Environment.NewLine}{error}){Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
             ExitApplication();
         }
-        private async Task<int> ProcessQueue(List<QueueDataItem> queue, bool autoUpdateVisualDataGrid)
-        {
-            int count = 0;
-            string type = "";
-            int newRecords = 0;
-            string description = "";
-            int totalCount = queue.Count;
-            int doneCount = 0;
-
-            foreach (QueueDataItem item in queue)
-            {
-                type = item.MetaData.ArkEntityType;
-                string mapName = item.MapName;
-                description = item.MetaData.Description;
-                bool grabData = false;
-                string rawServerTimestamp = string.Empty;
-                DateTime serverTimestamp = DateTime.MinValue;
-
-                bool dataExists = (DataPackages.ContainsKey(type) && DataPackages[type].IndividualMaps.ContainsKey(mapName));
-
-                if (dataExists)
-                {
-                    if (item.ForceRefresh)
-                    {
-                        Debug.Print("ProcessQue.GrabData forced refresh of data");
-                        grabData = true;
-                    }
-                    else
-                    {
-                        // Check for timeout
-                        MapPackage mapPackage = DataPackages[type].IndividualMaps[mapName];
-                        DataTimestamp jsonTimestamp = await httpClient.GetFromJsonAsync<DataTimestamp>(item.TimestampUri);
-                        rawServerTimestamp = jsonTimestamp.Date;
-
-                        if (DateTime.TryParseExact(rawServerTimestamp, "yyyyMMdd_HHmm", CultureInfo.InvariantCulture, DateTimeStyles.None, out serverTimestamp))
-                        {
-                            if (serverTimestamp > mapPackage.Timestamp)
-                            {
-                                // Newer data available!!!
-                                Debug.Print("ProcessQue.GrabData on server time stamp out of date");
-                                grabData = true;
-                            }
-                        }
-                        else
-                            MessageBox.Show($"Error reading timestamp for {mapName}.{type}, value returned: '{rawServerTimestamp}'", "Date error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
-                else
-                {
-                    grabData = true;
-                }
-
-                if (grabData)
-                {
-                    // ToDo: More obvious+visual loading marker
-                    this.Dispatcher.Invoke(() => Status.Text = $"Loading {++doneCount}/{totalCount}{Environment.NewLine}{mapName} {type} data...");
-                    // We re-use the timestamp from earlier, if its available. Saves a server trip.
-                    newRecords += await Task.Run(() => GetDataAsync(item, rawServerTimestamp, serverTimestamp));
-                }
-                else
-                {
-                    Debug.Print($"Load of data skipped, already exists for {type}.{mapName} and is up to date");
-                    Debug.Print($"{type}.{mapName}.{serverTimestamp} Already using latest available data, loading skipped");
-                }
-            }
-
-            Dispatcher.Invoke(() =>
-            {
-                Debug.Print($"ProcessQue with done count {doneCount}");
-                if (doneCount > 0)
-                {
-                    if (newRecords > 0)
-                        Status.Text = $"Loaded {newRecords} {description}s!";
-                    else
-                        Status.Text = "Select maps to load first";
-
-                }
-                else
-                {
-                    Status.Text = "Nothing new to load";
-                }
-
-                // Even if nothing was loaded, if it's a different type of dino, we still want to `show things` - so always update here
-                ShowData(type, autoUpdateVisualDataGrid);
-
-                LoadableControlsEnabled(true);
-                LoadingVisualEnabled(false);
-                //   Mouse.OverrideCursor = PrevCursor;
-            });
-
-            //ProcessingQueue = false;
-
-            return count;
-        }
-
-        /// <summary>
-        /// Gets (or creates) a DataPackage (collection of data around a map)
-        /// Grabs data for a type/map
-        /// Updates/creates set of data in DataPackage IndividualMaps with new data
-        /// Makes master data stale
-        /// When required, stale data will regenerate to master list
-        /// Means that we only ever update individual maps, if required - rather than requiry all if we are requested to refresh one
-        /// Also means we only update stale data when required (rather than every time, if we are e.g. loading multiple maps we do this at the end)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="map"></param>
-        /// <param name="uri"></param>
-        /// <param name="metaData"></param>
-        /// <returns></returns>
-        private async Task<int> GetDataAsync(QueueDataItem item, string rawServerTimestamp, DateTime serverTimestamp)
-        {
-            try
-            {
-                string metaDataType = item.MetaData.ArkEntityType;
-                DataPackage dataPackage;
-
-                if (DataPackages.ContainsKey(metaDataType))
-                {
-                    dataPackage = DataPackages[metaDataType];
-                }
-                else
-                {
-                    dataPackage = new DataPackage()
-                    {
-                        Metadata = item.MetaData,
-                        IndividualMaps = new Dictionary<string, MapPackage>()
-                    };
-                    DataPackages.Add(metaDataType, dataPackage);
-                }
-
-                string mapName = item.MapName;
-
-                IEnumerable<IArkEntity> result;
-#if DEBUG
-                if (ForceLocalLoad)
-                    result = (IEnumerable<IArkEntity>)JsonSerializer.Deserialize(File.ReadAllText("./temp.json"), typeof(List<>).MakeGenericType(item.MetaData.JsonClassType));
-                else
-#endif
-                    result = (IEnumerable<IArkEntity>)await httpClient.GetFromJsonAsync(item.DataUri, typeof(List<>).MakeGenericType(item.MetaData.JsonClassType));
-
-                // Extra processing of data goes here - e.g. calculating extra data values not in JSON and not part of JSON import translations
-                // E.g. colour sort data, as we can't easily read single json colour values into 2 properties at once during import
-                if (typeof(IArkEntityWithCreature).IsAssignableFrom(result.GetType().GetGenericArguments()[0]))
-                {
-                    // It's a creature! it has colours :)
-                    foreach (var creature in result)
-                        Lookup.SetArkColorSortCode((IArkEntityWithCreature)creature);
-                }
-
-
-                DataTable newData = DataTableExtensions.AddToDataTable(result, item.MetaData.JsonClassType, mapName, item.MetaData, null);
-                MapPackage newMapPackage = new();
-                newMapPackage.Data = newData;
-
-                // Only calculate timestamps if they haven't already just been snagged
-                if (rawServerTimestamp == string.Empty)
-                {
-                    DataTimestamp jsonTimestamp = await httpClient.GetFromJsonAsync<DataTimestamp>(item.TimestampUri);
-                    rawServerTimestamp = jsonTimestamp.Date;
-                    if (DateTime.TryParseExact(rawServerTimestamp, "yyyyMMdd_HHmm", CultureInfo.InvariantCulture, DateTimeStyles.None, out serverTimestamp))
-                    {
-                        Debug.Print($"GetDataAsync updating from web site into newMapPackage.Timestamp from {newMapPackage.Timestamp} to {serverTimestamp} : {mapName}.{metaDataType}");
-                        newMapPackage.Timestamp = serverTimestamp;
-                    }
-                    else
-                        MessageBox.Show($"Error reading timestamp for {mapName}.{metaDataType}, value returned: '{rawServerTimestamp}'", "Date error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                else
-                {
-                    Debug.Print($"GetDataAsync updating from cached timestamp into newMapPackage.Timestamp from {newMapPackage.Timestamp} to {serverTimestamp} : {mapName}.{metaDataType}");
-                    newMapPackage.Timestamp = serverTimestamp;
-                }
-                newMapPackage.RawTimestamp = rawServerTimestamp;
-                newMapPackage.ApproxNextServerUpdateTimestamp = newMapPackage.Timestamp.AddMinutes(ServerConfig.RefreshRate);
-
-                var maps = dataPackage.IndividualMaps;
-                if (maps.ContainsKey(mapName))
-                    maps[mapName] = newMapPackage;
-                else
-                    maps.Add(mapName, newMapPackage);
-
-                Debug.Print($"GetDataAsync CurrentDataPackage == dataPackage {CurrentDataPackage == dataPackage} to trigger visual refresh");
-
-                this.Dispatcher.Invoke(() => { ExtraInfoMapData.ItemsSource = CurrentDataPackage?.IndividualMaps.ToList(); }); //THIS should work but doesnt visually --> if (CurrentDataPackage == dataPackage) ExtraInfoMapData.Items.Refresh(); });
-
-                dataPackage.DataIsStale = true;
-
-                return newData.Rows.Count;
-            }
-            catch (HttpRequestException ex)
-            {
-                MessageBox.Show($"Error: {ex.StatusCode}", $"Error retrieving JSON data for {item.MetaData.Description}", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            catch (NotSupportedException ex)
-            {
-                MessageBox.Show($"Invalid content type: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}", $"Error retrieving JSON data for {item.MetaData.Description}", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            catch (JsonException ex)
-            {
-                MessageBox.Show($"Invalid JSON: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}", $"Error retrieving JSON data for {item.MetaData.Description}", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Problem loading data: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}", $"Error retrieving JSON data for {item.MetaData.Description}", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            return -1;
-        }
-
         private string LastCreatureId { get; set; } = string.Empty;
 
         private void DataVisual_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -918,7 +670,7 @@ namespace Arksplorer
                 return;
             }
 
-            Info info = CreateInfoFromRow(entity.Row);
+            Info info = new(entity.Row);
 
             // Marker offset
             // translate 0->100 to -50->50
@@ -1016,186 +768,6 @@ namespace Arksplorer
         private string LastSelected_Map { get; set; }
         private string LastSelected_CreatureId { get; set; }
 
-        private void RemoveMassMarkers()
-        {
-            MassMarkerHolder.Children.Clear();
-        }
-
-        private int MapColumn { get; set; }
-        private int LatColumn { get; set; }
-        private int LonColumn { get; set; }
-        private int CreatureIdColumn { get; set; }
-        private int LvlColumn { get; set; }
-        private int BaseColumn { get; set; }
-        private int CreatureColumn { get; set; }
-        private int NameColumn { get; set; }
-        private int SexColumn { get; set; }
-        private int CryoColumn { get; set; }
-        private int C0Column { get; set; }
-        private int C1Column { get; set; }
-        private int C2Column { get; set; }
-        private int C3Column { get; set; }
-        private int C4Column { get; set; }
-        private int C5Column { get; set; }
-        private int CCCColumn { get; set; }
-        private int HpColumn { get; set; }
-        private int StamColumn { get; set; }
-        private int MeleeColumn { get; set; }
-        private int WeightColumn { get; set; }
-        private int SpeedColumn { get; set; }
-        private int FoodColumn { get; set; }
-        private int OxyColumn { get; set; }
-        private int CraftColumn { get; set; }
-        private int TamerColumn { get; set; }
-        private int ImprinterColumn { get; set; }
-        private int ImprintColumn { get; set; }
-        private int MutFColumn { get; set; }
-        private int MutMColumn { get; set; }
-
-        /// <summary>
-        /// Column positions are all assumed to be dynamic (even if they are actually pretty static)
-        /// This is to account for future expansion, new datasets, columns, definitions, changes etc.
-        /// so we don't need to hardcode/recode values. Not quite as performant as hardcoding but does
-        /// the job nicely.
-        /// </summary>
-        /// <param name="data"></param>
-        private void InitColumnIndexPositions(DataTable data)
-        {
-            MapColumn = data.Columns["Map"]?.Ordinal ?? -1;
-            LatColumn = data.Columns["Lat"]?.Ordinal ?? -1;
-            LonColumn = data.Columns["Lon"]?.Ordinal ?? -1;
-            CreatureIdColumn = data.Columns["CreatureId"]?.Ordinal ?? -1;
-            LvlColumn = data.Columns["Lvl"]?.Ordinal ?? -1;
-            BaseColumn = data.Columns["Base"]?.Ordinal ?? -1;
-            CreatureColumn = data.Columns["Creature"]?.Ordinal ?? -1;
-            NameColumn = data.Columns["Name"]?.Ordinal ?? -1;
-            SexColumn = data.Columns["Sex"]?.Ordinal ?? -1;
-            CryoColumn = data.Columns["Cryo"]?.Ordinal ?? -1;
-            C0Column = data.Columns["C0"]?.Ordinal ?? -1;
-            C1Column = data.Columns["C1"]?.Ordinal ?? -1;
-            C2Column = data.Columns["C2"]?.Ordinal ?? -1;
-            C3Column = data.Columns["C3"]?.Ordinal ?? -1;
-            C4Column = data.Columns["C4"]?.Ordinal ?? -1;
-            C5Column = data.Columns["C5"]?.Ordinal ?? -1;
-            // Ark has some W variants of columns in wild vs tame. We just re-use below for either as we dont care
-            HpColumn = data.Columns["Hp"]?.Ordinal ?? data.Columns["HpW"]?.Ordinal ?? -1;
-            StamColumn = data.Columns["Stam"]?.Ordinal ?? data.Columns["StamW"]?.Ordinal ?? -1;
-            MeleeColumn = data.Columns["Melee"]?.Ordinal ?? data.Columns["MeleeW"]?.Ordinal ?? -1;
-            WeightColumn = data.Columns["Weight"]?.Ordinal ?? data.Columns["WeightW"]?.Ordinal ?? -1;
-            SpeedColumn = data.Columns["Speed"]?.Ordinal ?? data.Columns["SpeedW"]?.Ordinal ?? -1;
-            FoodColumn = data.Columns["Food"]?.Ordinal ?? data.Columns["FoodW"]?.Ordinal ?? -1;
-            OxyColumn = data.Columns["Oxy"]?.Ordinal ?? data.Columns["OxyW"]?.Ordinal ?? -1;
-            CraftColumn = data.Columns["Craft"]?.Ordinal ?? data.Columns["CraftT"]?.Ordinal ?? -1;
-            TamerColumn = data.Columns["Tamer"]?.Ordinal ?? -1;
-            ImprinterColumn = data.Columns["Imprinter"]?.Ordinal ?? -1;
-            ImprintColumn = data.Columns["Imprint"]?.Ordinal ?? -1;
-            MutFColumn = data.Columns["MutF"]?.Ordinal ?? -1;
-            MutMColumn = data.Columns["MutM"]?.Ordinal ?? -1;
-            CCCColumn = data.Columns["CCC"]?.Ordinal ?? -1;
-        }
-
-        private Info CreateInfoFromRow(DataRow row)
-        {
-            Info info = new();
-
-            info.Lat = (float)row[LatColumn];
-            info.Lon = (float)row[LonColumn];
-
-            if (NameColumn > -1)
-                info.Name = row[NameColumn] as string;
-
-            //info.Add("Location", $"{info.Lat:0.00},{info.Lon:0.00}");
-
-            if (CreatureColumn > -1)
-                info.Creature = row[CreatureColumn] as string;
-
-            if (CreatureIdColumn > -1)
-                info.CreatureId = row[CreatureIdColumn] as string;
-
-            if (SexColumn > -1)
-            {
-                BitmapImage sex = row[SexColumn] as BitmapImage;
-                info.Sex = (sex == Icons.Male ? "M" : "F");
-                info.AddIcon(sex);
-            }
-
-            if (BaseColumn > -1)
-            {
-                int baseLevel = (row[BaseColumn] as int? ?? -1);
-                if (baseLevel > 0)
-                {
-                    info.BaseLevel = baseLevel;
-                    info.Add("Base level", $"{row[BaseColumn] as int?}");
-                }
-            }
-
-            int level = (int)row[LvlColumn];
-            info.Add("Level", $"{level}");
-            info.Level = level;
-
-            if (HpColumn > -1)
-                info.Add("Health", $"{row[WeightColumn]}");
-            if (StamColumn > -1)
-                info.Add("Stamina", $"{row[StamColumn]}");
-            if (MeleeColumn > -1)
-                info.Add("Melee", $"{row[MeleeColumn]}");
-            if (WeightColumn > -1)
-                info.Add("Weight", $"{row[WeightColumn]}");
-            if (SpeedColumn > -1)
-                info.Add("Speed", $"{row[SpeedColumn]}");
-            if (FoodColumn > -1)
-                info.Add("Food", $"{row[FoodColumn]}");
-            if (OxyColumn > -1)
-                info.Add("Oxygen", $"{row[OxyColumn]}");
-            if (CraftColumn > -1)
-                info.Add("Crafting", $"{row[CraftColumn]}");
-            if (StamColumn > -1)
-                info.Add("Stamina", $"{row[StamColumn]}");
-
-            if (TamerColumn > -1)
-            {
-                string tribe = $"{row[TamerColumn] as string}";
-                info.Add("Tamer (Tribe)", tribe);
-                info.Tribe = tribe;
-            }
-            if (ImprinterColumn > -1)
-                info.Add("Imprinter", $"{row[ImprinterColumn] as string}");
-            if (ImprintColumn > -1)
-                info.Add("Imprint", $"{row[ImprintColumn]}");
-
-            if (MutFColumn > -1)
-                info.Add("Mutations F", $"{row[MutFColumn]}");
-            if (MutMColumn > -1)
-                info.Add("Mutations M", $"{row[MutMColumn]}");
-
-            if (CCCColumn > -1)
-                info.Add("3D Coordinates", $"{row[CCCColumn] as string}");
-
-            if (CryoColumn > -1)
-            {
-                if (row[CryoColumn] != System.DBNull.Value)
-                {
-                    info.AddIcon((BitmapImage)row[CryoColumn]);
-                    info.Cryoed = true;
-                }
-            }
-
-            if (C0Column > -1)
-                info.C0 = row[C0Column] as ArkColor;
-            if (C1Column > -1)
-                info.C1 = row[C1Column] as ArkColor;
-            if (C2Column > -1)
-                info.C2 = row[C2Column] as ArkColor;
-            if (C3Column > -1)
-                info.C3 = row[C3Column] as ArkColor;
-            if (C4Column > -1)
-                info.C4 = row[C4Column] as ArkColor;
-            if (C5Column > -1)
-                info.C5 = row[C5Column] as ArkColor;
-
-            return (info);
-        }
-
         private void SetSelectedInfo(Info info)
         {
             if (info == null)
@@ -1204,71 +776,6 @@ namespace Arksplorer
             OverviewInfo.ShowInfo(info, true, DetailInPopUps);
 
             OverviewInfo.Visibility = Visibility.Visible;
-        }
-
-        // ToDo: Regeneration of extra info all the time is a needless overhead. Cache once generate and reuse!
-        private void ShowMassMarkers(string creatureId, string mapName)
-        {
-            RemoveMassMarkers();    // Make sure any previous markers are no longer there
-
-            if (string.IsNullOrWhiteSpace(creatureId) || string.IsNullOrWhiteSpace(mapName))
-                return;
-
-            var data = (DataTable)DataVisual.DataContext;
-
-            if (data == null)
-                return;
-
-            if (MapColumn == -1 || LatColumn == -1 || LonColumn == -1 || CreatureIdColumn == -1)
-                return;
-
-            double lat, lon;
-            int level;
-            // Translate level from 0->150+ to 0->1%
-            double levelPerc;
-            byte g;
-
-            foreach (DataRow row in data.Rows)
-            {
-                if ((string)row[MapColumn] == mapName)
-                {
-                    if ((string)row[CreatureIdColumn] == creatureId)
-                    {
-                        lat = (float)row[LatColumn];
-                        lon = (float)row[LonColumn];
-
-                        if (lat > -1 && lon > -1)
-                        {
-                            Info info = CreateInfoFromRow(row);
-
-                            level = info.Level;
-
-                            double yPos = lat - 50.0f;
-                            double xPos = lon - 50.0f;
-
-                            levelPerc = level / 150.0d; // e.g. 120 out of max 150 = 80% <-- this will need to become dynamic e.g. if its a Tek dino and max wild level is 180
-                            if (levelPerc > 1.0)
-                                levelPerc = 1.0;
-
-                            g = (byte)(255 * (1.0 - levelPerc));
-
-                            var rec = new System.Windows.Shapes.Rectangle()
-                            {
-                                Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 255, g, 0)),
-                                Stroke = (info.Sex == "M" ? Brushes.DarkBlue : Brushes.DarkRed),
-                                StrokeThickness = 0.2,
-                                Width = 1.4,
-                                Height = 1.4,
-                                RenderTransform = new TranslateTransform(xPos, yPos)
-                            };
-
-                            rec.Tag = info;
-
-                            MassMarkerHolder.Children.Add(rec);
-                        }
-                    }
-                }
-            }
         }
 
         private void ExactFilter_Click(object sender, RoutedEventArgs e)
@@ -1318,8 +825,7 @@ namespace Arksplorer
             if (whatToShow2 != null)
                 whatToShow2.Visibility = Visibility.Visible;
         }
-
-        private DataGridRow LastDataGridRow { get; set; }
+                private DataGridRow LastDataGridRow { get; set; }
         private Info CurrentRectanglePopUpInfo { get; set; }
         private System.Windows.Shapes.Rectangle LastRectangle { get; set; }
         // Note that we COULD attach mouse enter/leave events to all rectangles we have created (mass markers) along with
@@ -1369,7 +875,7 @@ namespace Arksplorer
                             LastDataGridRow = gridRow;
 
                             DataRowView dataRowView = (System.Data.DataRowView)gridRow.Item;
-                            PopUpInfoVisual.ShowInfo(CreateInfoFromRow(dataRowView.Row), false, DetailInPopUps);
+                            PopUpInfoVisual.ShowInfo(new Info(dataRowView.Row), false, DetailInPopUps);
                         }
 
                         // Even if we don't change how this looks, we want to make sure its position is updated
@@ -1482,7 +988,6 @@ namespace Arksplorer
         {
             OpenUrlInExternalBrowser(DododexWebTab.CurrentUrl);
         }
-
         private void DataVisual_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             if (e.Column is DataGridTextColumn column)
@@ -1502,7 +1007,7 @@ namespace Arksplorer
                     FrameworkElementFactory factory = new(typeof(Rectangle));
                     factory.SetValue(Rectangle.WidthProperty, 32.0d);
                     factory.SetValue(Rectangle.HeightProperty, 16.0d);
-                    Binding binding = new($"{e.PropertyName}"); //.Color");
+                    Binding binding = new($"{e.PropertyName}");
                     binding.Converter = new ArkColorDBNullConverter();
                     factory.SetBinding(Rectangle.FillProperty, binding);
 
@@ -1511,7 +1016,7 @@ namespace Arksplorer
                     template.CellTemplate = dataTemplate;
                     template.CanUserResize = false;
                     template.CanUserSort = true;
-                    template.SortMemberPath = $"{e.PropertyName}";      // ToDo: Actually sort properly on colours
+                    template.SortMemberPath = $"{e.PropertyName}";
                     e.Column = template;
                 }
                 else if (e.PropertyType == typeof(BitmapImage))
@@ -1534,9 +1039,9 @@ namespace Arksplorer
                     template.SortMemberPath = e.PropertyName;
                     e.Column = template;
                 }
-                else if (e.PropertyName == "Ccc" || e.PropertyName.EndsWith("_Sortt"))
+                // Don't want to see the ccc column or any hidden ..._sort columns
+                else if (e.PropertyName == "Ccc" || e.PropertyName.EndsWith("_Sort"))
                 {
-                    // Don't want to see the ccc column or any hidden ..._sort columns
                     e.Column.Visibility = Visibility.Collapsed;
                 }
             }
@@ -1568,6 +1073,16 @@ namespace Arksplorer
         private static bool IsInteger(string text)
         {
             return int.TryParse(text, out _);
+        }
+
+        private void ShowMassMarkers(string creatureId, string mapName)
+        {
+            Info.ShowMassMarkers(creatureId, mapName, (DataTable)DataVisual.DataContext, MassMarkerHolder);
+        }
+
+        private void RemoveMassMarkers()
+        {
+            Info.RemoveMassMarkers(MassMarkerHolder);
         }
 
         private void MapsToIncludeCheckbox_Click(object sender, RoutedEventArgs e)
@@ -1648,15 +1163,6 @@ namespace Arksplorer
             Properties.Settings.Default.IncludeDetailsInPopUps = DetailInPopUps;
         }
 
-        //private static IComparer SortArkColorAscending()
-        //{
-        //    return (IComparer)new SortArkColorAscendingHelper();
-        //}
-        //private static IComparer SortArkColorDescending()
-        //{
-        //    return (IComparer)new SortArkColorDescendingHelper();
-        //}
-
         private void DataVisual_Sorting(object sender, DataGridSortingEventArgs e)
         {
             DataGridColumn column = e.Column;
@@ -1666,11 +1172,11 @@ namespace Arksplorer
             {
                 // Sorting on our own custom colours is an absolute pain in the rear
                 // Also - colours - how do you sort on a colour? Namne? Id? RGB value?
-                // So we have custom sort columns for just this purpose
-                // and intercept the sorting so we can put them in place here!
+                // So we have custom sort column for each for just this purpose - how a sort code is stuck in here, well, we can be flexible!
+                // We intercept the sorting so we can specify the sort column here instead
                 ICollectionView dataView = CollectionViewSource.GetDefaultView(DataVisual.ItemsSource);
                 dataView.SortDescriptions.Clear();
-                dataView.SortDescriptions.Add(new SortDescription($"{column.Header}_Sort", ListSortDirection.Ascending));
+                dataView.SortDescriptions.Add(new SortDescription($"{column.Header}_Sort", column.SortDirection??ListSortDirection.Ascending));
 
                 e.Handled = true;
             }

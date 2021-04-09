@@ -1,8 +1,5 @@
-﻿using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using System.Windows.Media.Imaging;
-//using System.Windows.Shapes;
 
 namespace Arksplorer
 {
@@ -46,16 +43,28 @@ namespace Arksplorer
         public object Imprint { get; set; }
         [JsonConverter(typeof(ArkColorConverter))]
         public ArkColor C0 { get; set; }
+        [JsonIgnore]
+        public int C0_Sort { get; set; }
         [JsonConverter(typeof(ArkColorConverter))]
         public ArkColor C1 { get; set; }
+        [JsonIgnore]
+        public int C1_Sort { get; set; }
         [JsonConverter(typeof(ArkColorConverter))]
         public ArkColor C2 { get; set; }
+        [JsonIgnore]
+        public int C2_Sort { get; set; }
         [JsonConverter(typeof(ArkColorConverter))]
         public ArkColor C3 { get; set; }
+        [JsonIgnore]
+        public int C3_Sort { get; set; }
         [JsonConverter(typeof(ArkColorConverter))]
         public ArkColor C4 { get; set; }
+        [JsonIgnore]
+        public int C4_Sort { get; set; }
         [JsonConverter(typeof(ArkColorConverter))]
         public ArkColor C5 { get; set; }
+        [JsonIgnore]
+        public int C5_Sort { get; set; }
         [JsonPropertyName("mut-f")]
         public int MutF { get; set; }
         [JsonPropertyName("mut-m")]

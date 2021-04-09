@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 
 namespace Arksplorer
 {
-    public static class Icons
+    public static class IconImages
     {
         public static BitmapImage Male { get; } = LoadImage("Images/Male.png");
         public static BitmapImage Female { get; } = LoadImage("Images/Female.png");
