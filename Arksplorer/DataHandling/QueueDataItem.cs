@@ -1,17 +1,15 @@
-﻿//using System.Windows.Shapes;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Net.Http.Json;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
-using System.IO;
 
 namespace Arksplorer
 {
@@ -75,12 +73,12 @@ namespace Arksplorer
                     // It's a creature! it has colours :)
                     foreach (IArkEntityWithCreature creature in result)
                     {
-                        creature.C0_Sort = creature.C0?.Id ?? -1;
-                        creature.C1_Sort = creature.C1?.Id ?? -1;
-                        creature.C2_Sort = creature.C2?.Id ?? -1;
-                        creature.C3_Sort = creature.C3?.Id ?? -1;
-                        creature.C4_Sort = creature.C4?.Id ?? -1;
-                        creature.C5_Sort = creature.C5?.Id ?? -1;
+                        creature.C0_Sort = creature.C0?.SortOrder ?? -1;   // Colour.SortKeyFromColor(creature.C0);
+                        creature.C1_Sort = creature.C1?.SortOrder ?? -1;
+                        creature.C2_Sort = creature.C2?.SortOrder ?? -1;
+                        creature.C3_Sort = creature.C3?.SortOrder ?? -1;
+                        creature.C4_Sort = creature.C4?.SortOrder ?? -1;
+                        creature.C5_Sort = creature.C5?.SortOrder ?? -1;
                     }
                 }
 

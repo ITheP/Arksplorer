@@ -1,632 +1,758 @@
-﻿[
-  {
-    "Id": 1,
-    "Hex": "#ff0000",
-    "Name": "Red"
-  },
-  {
-    "Id": 2,
-    "Hex": "#0000ff",
-    "Name": "Blue"
-  },
-  {
-    "Id": 3,
-    "Hex": "#00ff00",
-    "Name": "Green"
-  },
-  {
-    "Id": 4,
-    "Hex": "#ffff00",
-    "Name": "Yellow"
-  },
-  {
-    "Id": 5,
-    "Hex": "#00ffff",
-    "Name": "Cyan"
-  },
-  {
-    "Id": 6,
-    "Hex": "#ff00ff",
-    "Name": "Magenta"
-  },
-  {
-    "Id": 7,
-    "Hex": "#c0ffba",
-    "Name": "Light Green"
-  },
-  {
-    "Id": 8,
-    "Hex": "#c8caca",
-    "Name": "Light Grey"
-  },
-  {
-    "Id": 9,
-    "Hex": "#786759",
-    "Name": "Light Brown"
-  },
-  {
-    "Id": 10,
-    "Hex": "#ffb46c",
-    "Name": "Light Orange"
-  },
-  {
-    "Id": 11,
-    "Hex": "#fffa8a",
-    "Name": "Light Yellow"
-  },
-  {
-    "Id": 12,
-    "Hex": "#ff756c",
-    "Name": "Light Red"
-  },
-  {
-    "Id": 13,
-    "Hex": "#7b7b7b",
-    "Name": "Dark Grey"
-  },
-  {
-    "Id": 14,
-    "Hex": "#3b3b3b",
-    "Name": "Black"
-  },
-  {
-    "Id": 15,
-    "Hex": "#593a2a",
-    "Name": "Brown"
-  },
-  {
-    "Id": 16,
-    "Hex": "#224900",
-    "Name": "Dark Green"
-  },
-  {
-    "Id": 17,
-    "Hex": "#812118",
-    "Name": "Dark Red"
-  },
-  {
-    "Id": 18,
-    "Hex": "#ffffff",
-    "Name": "White"
-  },
-  {
-    "Id": 19,
-    "Hex": "#ffa8a8",
-    "Name": "Dino Light Red"
-  },
-  {
-    "Id": 20,
-    "Hex": "#592b2b",
-    "Name": "Dino Dark Red"
-  },
-  {
-    "Id": 21,
-    "Hex": "#ffb694",
-    "Name": "Dino Light Orange"
-  },
-  {
-    "Id": 22,
-    "Hex": "#88532f",
-    "Name": "Dino Dark Orange"
-  },
-  {
-    "Id": 23,
-    "Hex": "#cacaa0",
-    "Name": "Dino Light Yellow"
-  },
-  {
-    "Id": 24,
-    "Hex": "#94946c",
-    "Name": "Dino Dark Yellow"
-  },
-  {
-    "Id": 25,
-    "Hex": "#e0ffe0",
-    "Name": "Dino Light Green"
-  },
-  {
-    "Id": 26,
-    "Hex": "#799479",
-    "Name": "Dino Medium Green"
-  },
-  {
-    "Id": 27,
-    "Hex": "#224122",
-    "Name": "Dino Dark Green"
-  },
-  {
-    "Id": 28,
-    "Hex": "#d9e0ff",
-    "Name": "Dino Light Blue"
-  },
-  {
-    "Id": 29,
-    "Hex": "#394263",
-    "Name": "Dino Dark Blue"
-  },
-  {
-    "Id": 30,
-    "Hex": "#e4d9ff",
-    "Name": "Dino Light Purple"
-  },
-  {
-    "Id": 31,
-    "Hex": "#403459",
-    "Name": "Dino Dark Purple"
-  },
-  {
-    "Id": 32,
-    "Hex": "#ffe0ba",
-    "Name": "Dino Light Brown"
-  },
-  {
-    "Id": 33,
-    "Hex": "#948575",
-    "Name": "Dino Medium Brown"
-  },
-  {
-    "Id": 34,
-    "Hex": "#594e41",
-    "Name": "Dino Dark Brown"
-  },
-  {
-    "Id": 35,
-    "Hex": "#595959",
-    "Name": "Dino Darker Grey"
-  },
-  {
-    "Id": 36,
-    "Hex": "#ffffff",
-    "Name": "Dino Albino"
-  },
-  {
-    "Id": 37,
-    "Hex": "#b79683",
-    "Name": "BigFoot0"
-  },
-  {
-    "Id": 38,
-    "Hex": "#eadad5",
-    "Name": "BigFoot4"
-  },
-  {
-    "Id": 39,
-    "Hex": "#d0a794",
-    "Name": "BigFoot5"
-  },
-  {
-    "Id": 40,
-    "Hex": "#c3b39f",
-    "Name": "WolfFur"
-  },
-  {
-    "Id": 41,
-    "Hex": "#887666",
-    "Name": "DarkWolfFur"
-  },
-  {
-    "Id": 42,
-    "Hex": "#a0664b",
-    "Name": "DragonBase0"
-  },
-  {
-    "Id": 43,
-    "Hex": "#cb7956",
-    "Name": "DragonBase1"
-  },
-  {
-    "Id": 44,
-    "Hex": "#bc4f00",
-    "Name": "DragonFire"
-  },
-  {
-    "Id": 45,
-    "Hex": "#79846c",
-    "Name": "DragonGreen0"
-  },
-  {
-    "Id": 46,
-    "Hex": "#909c79",
-    "Name": "DragonGreen1"
-  },
-  {
-    "Id": 47,
-    "Hex": "#a5a48b",
-    "Name": "DragonGreen2"
-  },
-  {
-    "Id": 48,
-    "Hex": "#74939c",
-    "Name": "DragonGreen3"
-  },
-  {
-    "Id": 49,
-    "Hex": "#787496",
-    "Name": "WyvernPurple0"
-  },
-  {
-    "Id": 50,
-    "Hex": "#b0a2c0",
-    "Name": "WyvernPurple1"
-  },
-  {
-    "Id": 51,
-    "Hex": "#6281a7",
-    "Name": "WyvernBlue0"
-  },
-  {
-    "Id": 52,
-    "Hex": "#485c75",
-    "Name": "WyvernBlue1"
-  },
-  {
-    "Id": 53,
-    "Hex": "#5fa4ea",
-    "Name": "Dino Medium Blue"
-  },
-  {
-    "Id": 54,
-    "Hex": "#4568d4",
-    "Name": "Dino Deep Blue"
-  },
-  {
-    "Id": 55,
-    "Hex": "#ededed",
-    "Name": "NearWhite"
-  },
-  {
-    "Id": 56,
-    "Hex": "#515151",
-    "Name": "NearBlack"
-  },
-  {
-    "Id": 57,
-    "Hex": "#184546",
-    "Name": "DarkTurquoise"
-  },
-  {
-    "Id": 58,
-    "Hex": "#007060",
-    "Name": "MediumTurquoise"
-  },
-  {
-    "Id": 59,
-    "Hex": "#00c5ab",
-    "Name": "Turquoise"
-  },
-  {
-    "Id": 60,
-    "Hex": "#40594c",
-    "Name": "GreenSlate"
-  },
-  {
-    "Id": 61,
-    "Hex": "#3e4f40",
-    "Name": "Sage"
-  },
-  {
-    "Id": 62,
-    "Hex": "#3b3938",
-    "Name": "DarkWarmGray"
-  },
-  {
-    "Id": 63,
-    "Hex": "#585554",
-    "Name": "MediumWarmGray"
-  },
-  {
-    "Id": 64,
-    "Hex": "#9b9290",
-    "Name": "LightWarmGray"
-  },
-  {
-    "Id": 65,
-    "Hex": "#525b56",
-    "Name": "DarkCement"
-  },
-  {
-    "Id": 66,
-    "Hex": "#8aa196",
-    "Name": "LightCement"
-  },
-  {
-    "Id": 67,
-    "Hex": "#e8b0ff",
-    "Name": "LightPink"
-  },
-  {
-    "Id": 68,
-    "Hex": "#ff119a",
-    "Name": "DeepPink"
-  },
-  {
-    "Id": 69,
-    "Hex": "#730046",
-    "Name": "DarkViolet"
-  },
-  {
-    "Id": 70,
-    "Hex": "#b70042",
-    "Name": "DarkMagenta"
-  },
-  {
-    "Id": 71,
-    "Hex": "#7e331e",
-    "Name": "BurntSienna"
-  },
-  {
-    "Id": 72,
-    "Hex": "#a93000",
-    "Name": "MediumAutumn"
-  },
-  {
-    "Id": 73,
-    "Hex": "#ef3100",
-    "Name": "Vermillion"
-  },
-  {
-    "Id": 74,
-    "Hex": "#ff5834",
-    "Name": "Coral"
-  },
-  {
-    "Id": 75,
-    "Hex": "#ff7f00",
-    "Name": "Orange"
-  },
-  {
-    "Id": 76,
-    "Hex": "#ffa73a",
-    "Name": "Peach"
-  },
-  {
-    "Id": 77,
-    "Hex": "#ae7000",
-    "Name": "LightAutumn"
-  },
-  {
-    "Id": 78,
-    "Hex": "#949427",
-    "Name": "Mustard"
-  },
-  {
-    "Id": 79,
-    "Hex": "#000000",
-    "Name": "ActualBlack"
-  },
-  {
-    "Id": 80,
-    "Hex": "#191d36",
-    "Name": "MidnightBlue"
-  },
-  {
-    "Id": 81,
-    "Hex": "#152b3a",
-    "Name": "DarkBlue"
-  },
-  {
-    "Id": 82,
-    "Hex": "#302531",
-    "Name": "BlackSands"
-  },
-  {
-    "Id": 83,
-    "Hex": "#a8ff44",
-    "Name": "LemonLime"
-  },
-  {
-    "Id": 84,
-    "Hex": "#38e985",
-    "Name": "Mint"
-  },
-  {
-    "Id": 85,
-    "Hex": "#008840",
-    "Name": "Jade"
-  },
-  {
-    "Id": 86,
-    "Hex": "#0f552e",
-    "Name": "PineGreen"
-  },
-  {
-    "Id": 87,
-    "Hex": "#005b45",
-    "Name": "SpruceGreen"
-  },
-  {
-    "Id": 88,
-    "Hex": "#5b9725",
-    "Name": "LeafGreen"
-  },
-  {
-    "Id": 89,
-    "Hex": "#5e275f",
-    "Name": "DarkLavender"
-  },
-  {
-    "Id": 90,
-    "Hex": "#853587",
-    "Name": "MediumLavender"
-  },
-  {
-    "Id": 91,
-    "Hex": "#bd77be",
-    "Name": "Lavender"
-  },
-  {
-    "Id": 92,
-    "Hex": "#0e404a",
-    "Name": "DarkTeal"
-  },
-  {
-    "Id": 93,
-    "Hex": "#105563",
-    "Name": "MediumTeal"
-  },
-  {
-    "Id": 94,
-    "Hex": "#14849c",
-    "Name": "Teal"
-  },
-  {
-    "Id": 95,
-    "Hex": "#82a7ff",
-    "Name": "PowderBlue"
-  },
-  {
-    "Id": 96,
-    "Hex": "#aceaff",
-    "Name": "Glacial"
-  },
-  {
-    "Id": 97,
-    "Hex": "#505118",
-    "Name": "Cammo"
-  },
-  {
-    "Id": 98,
-    "Hex": "#766e3f",
-    "Name": "DryMoss"
-  },
-  {
-    "Id": 99,
-    "Hex": "#c0bd5e",
-    "Name": "Custard"
-  },
-  {
-    "Id": 100,
-    "Hex": "#f4ffc0",
-    "Name": "Cream"
-  },
-  {
-    "Id": 201,
-    "Hex": "#1f1f1f",
-    "Name": "Black Dye"
-  },
-  {
-    "Id": 202,
-    "Hex": "#0000ff",
-    "Name": "Blue Dye"
-  },
-  {
-    "Id": 203,
-    "Hex": "#756147",
-    "Name": "Brown Dye"
-  },
-  {
-    "Id": 204,
-    "Hex": "#00ffff",
-    "Name": "Cyan Dye"
-  },
-  {
-    "Id": 205,
-    "Hex": "#006c00",
-    "Name": "Forest Dye"
-  },
-  {
-    "Id": 206,
-    "Hex": "#00ff00",
-    "Name": "Green Dye"
-  },
-  {
-    "Id": 207,
-    "Hex": "#6c00ba",
-    "Name": "Purple Dye"
-  },
-  {
-    "Id": 208,
-    "Hex": "#ff8800",
-    "Name": "Orange Dye"
-  },
-  {
-    "Id": 209,
-    "Hex": "#ffffba",
-    "Name": "Parchment Dye"
-  },
-  {
-    "Id": 210,
-    "Hex": "#ff7be1",
-    "Name": "Pink Dye"
-  },
-  {
-    "Id": 211,
-    "Hex": "#7b00e0",
-    "Name": "Unused Purple Dye"
-  },
-  {
-    "Id": 212,
-    "Hex": "#ff0000",
-    "Name": "Red Dye"
-  },
-  {
-    "Id": 213,
-    "Hex": "#7b00a8",
-    "Name": "Royalty Dye"
-  },
-  {
-    "Id": 214,
-    "Hex": "#e0e0e0",
-    "Name": "Silver Dye"
-  },
-  {
-    "Id": 215,
-    "Hex": "#bad4ff",
-    "Name": "Sky Dye"
-  },
-  {
-    "Id": 216,
-    "Hex": "#ffed82",
-    "Name": "Tan Dye"
-  },
-  {
-    "Id": 217,
-    "Hex": "#ad652c",
-    "Name": "Tangerine Dye"
-  },
-  {
-    "Id": 218,
-    "Hex": "#fefefe",
-    "Name": "White Dye"
-  },
-  {
-    "Id": 219,
-    "Hex": "#ffff00",
-    "Name": "Yellow Dye"
-  },
-  {
-    "Id": 220,
-    "Hex": "#e71fd9",
-    "Name": "Magenta Dye"
-  },
-  {
-    "Id": 221,
-    "Hex": "#94341f",
-    "Name": "Brick Dye"
-  },
-  {
-    "Id": 222,
-    "Hex": "#ff9a00",
-    "Name": "Cantaloupe Dye"
-  },
-  {
-    "Id": 223,
-    "Hex": "#473b2b",
-    "Name": "Mud Dye"
-  },
-  {
-    "Id": 224,
-    "Hex": "#34346c",
-    "Name": "Navy Dye"
-  },
-  {
-    "Id": 225,
-    "Hex": "#baba59",
-    "Name": "Olive Dye"
-  },
-  {
-    "Id": 226,
-    "Hex": "#595959",
-    "Name": "Slate Dye"
-  }
+[
+    {
+        "Id": 36,
+        "Hex": "#ffffff",
+        "Name": "Dino Albino",
+        "SortOrder": 1
+    },
+    {
+        "Id": 18,
+        "Hex": "#ffffff",
+        "Name": "White",
+        "SortOrder": 2
+    },
+    {
+        "Id": 218,
+        "Hex": "#fefefe",
+        "Name": "White Dye",
+        "SortOrder": 3
+    },
+    {
+        "Id": 55,
+        "Hex": "#ededed",
+        "Name": "NearWhite",
+        "SortOrder": 4
+    },
+    {
+        "Id": 214,
+        "Hex": "#e0e0e0",
+        "Name": "Silver Dye",
+        "SortOrder": 5
+    },
+    {
+        "Id": 8,
+        "Hex": "#c8caca",
+        "Name": "Light Grey",
+        "SortOrder": 6
+    },
+    {
+        "Id": 24,
+        "Hex": "#94946c",
+        "Name": "Dino Dark Yellow",
+        "SortOrder": 7
+    },
+    {
+        "Id": 78,
+        "Hex": "#949427",
+        "Name": "Mustard",
+        "SortOrder": 8
+    },
+    {
+        "Id": 225,
+        "Hex": "#baba59",
+        "Name": "Olive Dye",
+        "SortOrder": 9
+    },
+    {
+        "Id": 99,
+        "Hex": "#c0bd5e",
+        "Name": "Custard",
+        "SortOrder": 10
+    },
+    {
+        "Id": 23,
+        "Hex": "#cacaa0",
+        "Name": "Dino Light Yellow",
+        "SortOrder": 11
+    },
+    {
+        "Id": 209,
+        "Hex": "#ffffba",
+        "Name": "Parchment Dye",
+        "SortOrder": 12
+    },
+    {
+        "Id": 100,
+        "Hex": "#f4ffc0",
+        "Name": "Cream",
+        "SortOrder": 13
+    },
+    {
+        "Id": 11,
+        "Hex": "#fffa8a",
+        "Name": "Light Yellow",
+        "SortOrder": 14
+    },
+    {
+        "Id": 4,
+        "Hex": "#ffff00",
+        "Name": "Yellow",
+        "SortOrder": 15
+    },
+    {
+        "Id": 219,
+        "Hex": "#ffff00",
+        "Name": "Yellow Dye",
+        "SortOrder": 16
+    },
+    {
+        "Id": 216,
+        "Hex": "#ffed82",
+        "Name": "Tan Dye",
+        "SortOrder": 17
+    },
+    {
+        "Id": 32,
+        "Hex": "#ffe0ba",
+        "Name": "Dino Light Brown",
+        "SortOrder": 18
+    },
+    {
+        "Id": 38,
+        "Hex": "#eadad5",
+        "Name": "BigFoot4",
+        "SortOrder": 19
+    },
+    {
+        "Id": 40,
+        "Hex": "#c3b39f",
+        "Name": "WolfFur",
+        "SortOrder": 20
+    },
+    {
+        "Id": 33,
+        "Hex": "#948575",
+        "Name": "Dino Medium Brown",
+        "SortOrder": 21
+    },
+    {
+        "Id": 203,
+        "Hex": "#756147",
+        "Name": "Brown Dye",
+        "SortOrder": 22
+    },
+    {
+        "Id": 34,
+        "Hex": "#594e41",
+        "Name": "Dino Dark Brown",
+        "SortOrder": 23
+    },
+    {
+        "Id": 63,
+        "Hex": "#585554",
+        "Name": "MediumWarmGray",
+        "SortOrder": 24
+    },
+    {
+        "Id": 226,
+        "Hex": "#595959",
+        "Name": "Slate Dye",
+        "SortOrder": 25
+    },
+    {
+        "Id": 35,
+        "Hex": "#595959",
+        "Name": "Dino Darker Grey",
+        "SortOrder": 26
+    },
+    {
+        "Id": 56,
+        "Hex": "#515151",
+        "Name": "NearBlack",
+        "SortOrder": 27
+    },
+    {
+        "Id": 62,
+        "Hex": "#3b3938",
+        "Name": "DarkWarmGray",
+        "SortOrder": 28
+    },
+    {
+        "Id": 201,
+        "Hex": "#1f1f1f",
+        "Name": "Black Dye",
+        "SortOrder": 29
+    },
+    {
+        "Id": 82,
+        "Hex": "#302531",
+        "Name": "BlackSands",
+        "SortOrder": 30
+    },
+    {
+        "Id": 223,
+        "Hex": "#473b2b",
+        "Name": "Mud Dye",
+        "SortOrder": 31
+    },
+    {
+        "Id": 97,
+        "Hex": "#505118",
+        "Name": "Cammo",
+        "SortOrder": 32
+    },
+    {
+        "Id": 98,
+        "Hex": "#766e3f",
+        "Name": "DryMoss",
+        "SortOrder": 33
+    },
+    {
+        "Id": 9,
+        "Hex": "#786759",
+        "Name": "Light Brown",
+        "SortOrder": 34
+    },
+    {
+        "Id": 41,
+        "Hex": "#887666",
+        "Name": "DarkWolfFur",
+        "SortOrder": 35
+    },
+    {
+        "Id": 13,
+        "Hex": "#7b7b7b",
+        "Name": "Dark Grey",
+        "SortOrder": 36
+    },
+    {
+        "Id": 64,
+        "Hex": "#9b9290",
+        "Name": "LightWarmGray",
+        "SortOrder": 37
+    },
+    {
+        "Id": 39,
+        "Hex": "#d0a794",
+        "Name": "BigFoot5",
+        "SortOrder": 38
+    },
+    {
+        "Id": 37,
+        "Hex": "#b79683",
+        "Name": "BigFoot0",
+        "SortOrder": 39
+    },
+    {
+        "Id": 43,
+        "Hex": "#cb7956",
+        "Name": "DragonBase1",
+        "SortOrder": 40
+    },
+    {
+        "Id": 44,
+        "Hex": "#bc4f00",
+        "Name": "DragonFire",
+        "SortOrder": 41
+    },
+    {
+        "Id": 217,
+        "Hex": "#ad652c",
+        "Name": "Tangerine Dye",
+        "SortOrder": 42
+    },
+    {
+        "Id": 77,
+        "Hex": "#ae7000",
+        "Name": "LightAutumn",
+        "SortOrder": 43
+    },
+    {
+        "Id": 42,
+        "Hex": "#a0664b",
+        "Name": "DragonBase0",
+        "SortOrder": 44
+    },
+    {
+        "Id": 22,
+        "Hex": "#88532f",
+        "Name": "Dino Dark Orange",
+        "SortOrder": 45
+    },
+    {
+        "Id": 15,
+        "Hex": "#593a2a",
+        "Name": "Brown",
+        "SortOrder": 46
+    },
+    {
+        "Id": 20,
+        "Hex": "#592b2b",
+        "Name": "Dino Dark Red",
+        "SortOrder": 47
+    },
+    {
+        "Id": 71,
+        "Hex": "#7e331e",
+        "Name": "BurntSienna",
+        "SortOrder": 48
+    },
+    {
+        "Id": 17,
+        "Hex": "#812118",
+        "Name": "Dark Red",
+        "SortOrder": 49
+    },
+    {
+        "Id": 221,
+        "Hex": "#94341f",
+        "Name": "Brick Dye",
+        "SortOrder": 50
+    },
+    {
+        "Id": 72,
+        "Hex": "#a93000",
+        "Name": "MediumAutumn",
+        "SortOrder": 51
+    },
+    {
+        "Id": 70,
+        "Hex": "#b70042",
+        "Name": "DarkMagenta",
+        "SortOrder": 52
+    },
+    {
+        "Id": 1,
+        "Hex": "#ff0000",
+        "Name": "Red",
+        "SortOrder": 53
+    },
+    {
+        "Id": 212,
+        "Hex": "#ff0000",
+        "Name": "Red Dye",
+        "SortOrder": 54
+    },
+    {
+        "Id": 73,
+        "Hex": "#ef3100",
+        "Name": "Vermillion",
+        "SortOrder": 55
+    },
+    {
+        "Id": 74,
+        "Hex": "#ff5834",
+        "Name": "Coral",
+        "SortOrder": 56
+    },
+    {
+        "Id": 12,
+        "Hex": "#ff756c",
+        "Name": "Light Red",
+        "SortOrder": 57
+    },
+    {
+        "Id": 75,
+        "Hex": "#ff7f00",
+        "Name": "Orange",
+        "SortOrder": 58
+    },
+    {
+        "Id": 208,
+        "Hex": "#ff8800",
+        "Name": "Orange Dye",
+        "SortOrder": 59
+    },
+    {
+        "Id": 222,
+        "Hex": "#ff9a00",
+        "Name": "Cantaloupe Dye",
+        "SortOrder": 60
+    },
+    {
+        "Id": 76,
+        "Hex": "#ffa73a",
+        "Name": "Peach",
+        "SortOrder": 61
+    },
+    {
+        "Id": 10,
+        "Hex": "#ffb46c",
+        "Name": "Light Orange",
+        "SortOrder": 62
+    },
+    {
+        "Id": 21,
+        "Hex": "#ffb694",
+        "Name": "Dino Light Orange",
+        "SortOrder": 63
+    },
+    {
+        "Id": 19,
+        "Hex": "#ffa8a8",
+        "Name": "Dino Light Red",
+        "SortOrder": 64
+    },
+    {
+        "Id": 210,
+        "Hex": "#ff7be1",
+        "Name": "Pink Dye",
+        "SortOrder": 65
+    },
+    {
+        "Id": 68,
+        "Hex": "#ff119a",
+        "Name": "DeepPink",
+        "SortOrder": 66
+    },
+    {
+        "Id": 6,
+        "Hex": "#ff00ff",
+        "Name": "Magenta",
+        "SortOrder": 67
+    },
+    {
+        "Id": 220,
+        "Hex": "#e71fd9",
+        "Name": "Magenta Dye",
+        "SortOrder": 68
+    },
+    {
+        "Id": 211,
+        "Hex": "#7b00e0",
+        "Name": "Unused Purple Dye",
+        "SortOrder": 69
+    },
+    {
+        "Id": 207,
+        "Hex": "#6c00ba",
+        "Name": "Purple Dye",
+        "SortOrder": 70
+    },
+    {
+        "Id": 213,
+        "Hex": "#7b00a8",
+        "Name": "Royalty Dye",
+        "SortOrder": 71
+    },
+    {
+        "Id": 90,
+        "Hex": "#853587",
+        "Name": "MediumLavender",
+        "SortOrder": 72
+    },
+    {
+        "Id": 91,
+        "Hex": "#bd77be",
+        "Name": "Lavender",
+        "SortOrder": 73
+    },
+    {
+        "Id": 67,
+        "Hex": "#e8b0ff",
+        "Name": "LightPink",
+        "SortOrder": 74
+    },
+    {
+        "Id": 30,
+        "Hex": "#e4d9ff",
+        "Name": "Dino Light Purple",
+        "SortOrder": 75
+    },
+    {
+        "Id": 50,
+        "Hex": "#b0a2c0",
+        "Name": "WyvernPurple1",
+        "SortOrder": 76
+    },
+    {
+        "Id": 49,
+        "Hex": "#787496",
+        "Name": "WyvernPurple0",
+        "SortOrder": 77
+    },
+    {
+        "Id": 69,
+        "Hex": "#730046",
+        "Name": "DarkViolet",
+        "SortOrder": 78
+    },
+    {
+        "Id": 89,
+        "Hex": "#5e275f",
+        "Name": "DarkLavender",
+        "SortOrder": 79
+    },
+    {
+        "Id": 31,
+        "Hex": "#403459",
+        "Name": "Dino Dark Purple",
+        "SortOrder": 80
+    },
+    {
+        "Id": 224,
+        "Hex": "#34346c",
+        "Name": "Navy Dye",
+        "SortOrder": 81
+    },
+    {
+        "Id": 29,
+        "Hex": "#394263",
+        "Name": "Dino Dark Blue",
+        "SortOrder": 82
+    },
+    {
+        "Id": 52,
+        "Hex": "#485c75",
+        "Name": "WyvernBlue1",
+        "SortOrder": 83
+    },
+    {
+        "Id": 51,
+        "Hex": "#6281a7",
+        "Name": "WyvernBlue0",
+        "SortOrder": 84
+    },
+    {
+        "Id": 53,
+        "Hex": "#5fa4ea",
+        "Name": "Dino Medium Blue",
+        "SortOrder": 85
+    },
+    {
+        "Id": 5,
+        "Hex": "#00ffff",
+        "Name": "Cyan",
+        "SortOrder": 86
+    },
+    {
+        "Id": 204,
+        "Hex": "#00ffff",
+        "Name": "Cyan Dye",
+        "SortOrder": 87
+    },
+    {
+        "Id": 96,
+        "Hex": "#aceaff",
+        "Name": "Glacial",
+        "SortOrder": 88
+    },
+    {
+        "Id": 28,
+        "Hex": "#d9e0ff",
+        "Name": "Dino Light Blue",
+        "SortOrder": 89
+    },
+    {
+        "Id": 215,
+        "Hex": "#bad4ff",
+        "Name": "Sky Dye",
+        "SortOrder": 90
+    },
+    {
+        "Id": 95,
+        "Hex": "#82a7ff",
+        "Name": "PowderBlue",
+        "SortOrder": 91
+    },
+    {
+        "Id": 54,
+        "Hex": "#4568d4",
+        "Name": "Dino Deep Blue",
+        "SortOrder": 92
+    },
+    {
+        "Id": 2,
+        "Hex": "#0000ff",
+        "Name": "Blue",
+        "SortOrder": 93
+    },
+    {
+        "Id": 202,
+        "Hex": "#0000ff",
+        "Name": "Blue Dye",
+        "SortOrder": 94
+    },
+    {
+        "Id": 80,
+        "Hex": "#191d36",
+        "Name": "MidnightBlue",
+        "SortOrder": 95
+    },
+    {
+        "Id": 81,
+        "Hex": "#152b3a",
+        "Name": "DarkBlue",
+        "SortOrder": 96
+    },
+    {
+        "Id": 92,
+        "Hex": "#0e404a",
+        "Name": "DarkTeal",
+        "SortOrder": 97
+    },
+    {
+        "Id": 57,
+        "Hex": "#184546",
+        "Name": "DarkTurquoise",
+        "SortOrder": 98
+    },
+    {
+        "Id": 93,
+        "Hex": "#105563",
+        "Name": "MediumTeal",
+        "SortOrder": 99
+    },
+    {
+        "Id": 94,
+        "Hex": "#14849c",
+        "Name": "Teal",
+        "SortOrder": 100
+    },
+    {
+        "Id": 59,
+        "Hex": "#00c5ab",
+        "Name": "Turquoise",
+        "SortOrder": 101
+    },
+    {
+        "Id": 84,
+        "Hex": "#38e985",
+        "Name": "Mint",
+        "SortOrder": 102
+    },
+    {
+        "Id": 3,
+        "Hex": "#00ff00",
+        "Name": "Green",
+        "SortOrder": 103
+    },
+    {
+        "Id": 206,
+        "Hex": "#00ff00",
+        "Name": "Green Dye",
+        "SortOrder": 104
+    },
+    {
+        "Id": 83,
+        "Hex": "#a8ff44",
+        "Name": "LemonLime",
+        "SortOrder": 105
+    },
+    {
+        "Id": 7,
+        "Hex": "#c0ffba",
+        "Name": "Light Green",
+        "SortOrder": 106
+    },
+    {
+        "Id": 25,
+        "Hex": "#e0ffe0",
+        "Name": "Dino Light Green",
+        "SortOrder": 107
+    },
+    {
+        "Id": 47,
+        "Hex": "#a5a48b",
+        "Name": "DragonGreen2",
+        "SortOrder": 108
+    },
+    {
+        "Id": 66,
+        "Hex": "#8aa196",
+        "Name": "LightCement",
+        "SortOrder": 109
+    },
+    {
+        "Id": 48,
+        "Hex": "#74939c",
+        "Name": "DragonGreen3",
+        "SortOrder": 110
+    },
+    {
+        "Id": 26,
+        "Hex": "#799479",
+        "Name": "Dino Medium Green",
+        "SortOrder": 111
+    },
+    {
+        "Id": 46,
+        "Hex": "#909c79",
+        "Name": "DragonGreen1",
+        "SortOrder": 112
+    },
+    {
+        "Id": 45,
+        "Hex": "#79846c",
+        "Name": "DragonGreen0",
+        "SortOrder": 113
+    },
+    {
+        "Id": 65,
+        "Hex": "#525b56",
+        "Name": "DarkCement",
+        "SortOrder": 114
+    },
+    {
+        "Id": 14,
+        "Hex": "#3b3b3b",
+        "Name": "Black",
+        "SortOrder": 115
+    },
+    {
+        "Id": 27,
+        "Hex": "#224122",
+        "Name": "Dino Dark Green",
+        "SortOrder": 116
+    },
+    {
+        "Id": 61,
+        "Hex": "#3e4f40",
+        "Name": "Sage",
+        "SortOrder": 117
+    },
+    {
+        "Id": 60,
+        "Hex": "#40594c",
+        "Name": "GreenSlate",
+        "SortOrder": 118
+    },
+    {
+        "Id": 58,
+        "Hex": "#007060",
+        "Name": "MediumTurquoise",
+        "SortOrder": 119
+    },
+    {
+        "Id": 85,
+        "Hex": "#008840",
+        "Name": "Jade",
+        "SortOrder": 120
+    },
+    {
+        "Id": 88,
+        "Hex": "#5b9725",
+        "Name": "LeafGreen",
+        "SortOrder": 121
+    },
+    {
+        "Id": 205,
+        "Hex": "#006c00",
+        "Name": "Forest Dye",
+        "SortOrder": 122
+    },
+    {
+        "Id": 87,
+        "Hex": "#005b45",
+        "Name": "SpruceGreen",
+        "SortOrder": 123
+    },
+    {
+        "Id": 86,
+        "Hex": "#0f552e",
+        "Name": "PineGreen",
+        "SortOrder": 124
+    },
+    {
+        "Id": 16,
+        "Hex": "#224900",
+        "Name": "Dark Green",
+        "SortOrder": 125
+    },
+    {
+        "Id": 79,
+        "Hex": "#000000",
+        "Name": "ActualBlack",
+        "SortOrder": 126
+    }
 ]

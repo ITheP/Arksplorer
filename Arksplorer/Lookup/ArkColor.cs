@@ -8,6 +8,7 @@ namespace Arksplorer
         public int Id { get; set; }
         public string Hex { get; set; }
         public string Name { get; set; }
+        public int SortOrder { get; set; }
         [JsonIgnore]
         public Brush Color { get; set; }
     }

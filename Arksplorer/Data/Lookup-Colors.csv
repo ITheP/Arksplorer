@@ -1,0 +1,127 @@
+Id,Hex,Name,SortOrder
+36,#ffffff,Dino Albino,1
+18,#ffffff,White,2
+218,#fefefe,White Dye,3
+55,#ededed,NearWhite,4
+214,#e0e0e0,Silver Dye,5
+8,#c8caca,Light Grey,6
+24,#94946c,Dino Dark Yellow,7
+78,#949427,Mustard,8
+225,#baba59,Olive Dye,9
+99,#c0bd5e,Custard,10
+23,#cacaa0,Dino Light Yellow,11
+209,#ffffba,Parchment Dye,12
+100,#f4ffc0,Cream,13
+11,#fffa8a,Light Yellow,14
+4,#ffff00,Yellow,15
+219,#ffff00,Yellow Dye,16
+216,#ffed82,Tan Dye,17
+32,#ffe0ba,Dino Light Brown,18
+38,#eadad5,BigFoot4,19
+40,#c3b39f,WolfFur,20
+33,#948575,Dino Medium Brown,21
+203,#756147,Brown Dye,22
+34,#594e41,Dino Dark Brown,23
+63,#585554,MediumWarmGray,24
+226,#595959,Slate Dye,25
+35,#595959,Dino Darker Grey,26
+56,#515151,NearBlack,27
+62,#3b3938,DarkWarmGray,28
+201,#1f1f1f,Black Dye,29
+82,#302531,BlackSands,30
+223,#473b2b,Mud Dye,31
+97,#505118,Cammo,32
+98,#766e3f,DryMoss,33
+9,#786759,Light Brown,34
+41,#887666,DarkWolfFur,35
+13,#7b7b7b,Dark Grey,36
+64,#9b9290,LightWarmGray,37
+39,#d0a794,BigFoot5,38
+37,#b79683,BigFoot0,39
+43,#cb7956,DragonBase1,40
+44,#bc4f00,DragonFire,41
+217,#ad652c,Tangerine Dye,42
+77,#ae7000,LightAutumn,43
+42,#a0664b,DragonBase0,44
+22,#88532f,Dino Dark Orange,45
+15,#593a2a,Brown,46
+20,#592b2b,Dino Dark Red,47
+71,#7e331e,BurntSienna,48
+17,#812118,Dark Red,49
+221,#94341f,Brick Dye,50
+72,#a93000,MediumAutumn,51
+70,#b70042,DarkMagenta,52
+1,#ff0000,Red,53
+212,#ff0000,Red Dye,54
+73,#ef3100,Vermillion,55
+74,#ff5834,Coral,56
+12,#ff756c,Light Red,57
+75,#ff7f00,Orange,58
+208,#ff8800,Orange Dye,59
+222,#ff9a00,Cantaloupe Dye,60
+76,#ffa73a,Peach,61
+10,#ffb46c,Light Orange,62
+21,#ffb694,Dino Light Orange,63
+19,#ffa8a8,Dino Light Red,64
+210,#ff7be1,Pink Dye,65
+68,#ff119a,DeepPink,66
+6,#ff00ff,Magenta,67
+220,#e71fd9,Magenta Dye,68
+211,#7b00e0,Unused Purple Dye,69
+207,#6c00ba,Purple Dye,70
+213,#7b00a8,Royalty Dye,71
+90,#853587,MediumLavender,72
+91,#bd77be,Lavender,73
+67,#e8b0ff,LightPink,74
+30,#e4d9ff,Dino Light Purple,75
+50,#b0a2c0,WyvernPurple1,76
+49,#787496,WyvernPurple0,77
+69,#730046,DarkViolet,78
+89,#5e275f,DarkLavender,79
+31,#403459,Dino Dark Purple,80
+224,#34346c,Navy Dye,81
+29,#394263,Dino Dark Blue,82
+52,#485c75,WyvernBlue1,83
+51,#6281a7,WyvernBlue0,84
+53,#5fa4ea,Dino Medium Blue,85
+5,#00ffff,Cyan,86
+204,#00ffff,Cyan Dye,87
+96,#aceaff,Glacial,88
+28,#d9e0ff,Dino Light Blue,89
+215,#bad4ff,Sky Dye,90
+95,#82a7ff,PowderBlue,91
+54,#4568d4,Dino Deep Blue,92
+2,#0000ff,Blue,93
+202,#0000ff,Blue Dye,94
+80,#191d36,MidnightBlue,95
+81,#152b3a,DarkBlue,96
+92,#0e404a,DarkTeal,97
+57,#184546,DarkTurquoise,98
+93,#105563,MediumTeal,99
+94,#14849c,Teal,100
+59,#00c5ab,Turquoise,101
+84,#38e985,Mint,102
+3,#00ff00,Green,103
+206,#00ff00,Green Dye,104
+83,#a8ff44,LemonLime,105
+7,#c0ffba,Light Green,106
+25,#e0ffe0,Dino Light Green,107
+47,#a5a48b,DragonGreen2,108
+66,#8aa196,LightCement,109
+48,#74939c,DragonGreen3,110
+26,#799479,Dino Medium Green,111
+46,#909c79,DragonGreen1,112
+45,#79846c,DragonGreen0,113
+65,#525b56,DarkCement,114
+14,#3b3b3b,Black,115
+27,#224122,Dino Dark Green,116
+61,#3e4f40,Sage,117
+60,#40594c,GreenSlate,118
+58,#007060,MediumTurquoise,119
+85,#008840,Jade,120
+88,#5b9725,LeafGreen,121
+205,#006c00,Forest Dye,122
+87,#005b45,SpruceGreen,123
+86,#0f552e,PineGreen,124
+16,#224900,Dark Green,125
+79,#000000,ActualBlack,126

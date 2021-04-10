@@ -905,7 +905,7 @@ namespace Arksplorer
             var percY = (pos.Y / height);
 
 
-            var brush = new SolidColorBrush(Colour.RGBFromHSL(percX, 1.0, 1.0 - percY));
+            var brush = new SolidColorBrush(Colour.HSLToColor(percX, 1.0, 1.0 - percY));
             FlashMessage.Foreground = brush;
         }
 

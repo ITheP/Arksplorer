@@ -23,7 +23,7 @@
     <Border BorderThickness="1" BorderBrush="Black">
         <Grid Background="#EFFF">
             <StackPanel Margin="2,0,2,2">
-                    <TextBlock x:Name="CreatureName" Text="Name" HorizontalAlignment="Center" FontSize="16" TextWrapping="Wrap" TextAlignment="Center"/>
+                    <TextBlock x:Name="CreatureName" Text="Name" HorizontalAlignment="Center" FontSize="16" TextWrapping="Wrap" MaxWidth="150" TextAlignment="Center"/>
                     <TextBlock x:Name="Creature" Text="Creature" HorizontalAlignment="Center" FontWeight="Bold" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <TextBlock x:Name="BaseLevel" Text="123" HorizontalAlignment="Center" />
