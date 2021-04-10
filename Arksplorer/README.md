@@ -80,6 +80,7 @@ v1.1 The Bigger Bite - 09/04/2021
 - Minor reworking of other parts of interface
 - Major refactoring of code into proper classes etc.
 - Major restructuring of files
-- Ordering by colour now possible! (Color order manually set in lookup data)
 - Misc. fixes and improvements
 - Multiple server.json files can be specified in /Servers/ (so server owners can just drop in their own)
+- Ordering by colour now possible! (Color order manually set in lookup data)
+- Search by colour (including fuzzy searching of nearby colours)

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Arksplorer"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
-        Title="Arksplorer" Height="1100" Width="800" MinWidth="600" MinHeight="900"
+        Title="Arksplorer" Height="1100" Width="800" MinWidth="800" MinHeight="950"
         MouseMove="Window_MouseMove"
         MouseUp="Window_MouseUp">
     <Window.Resources>
@@ -30,6 +30,13 @@
         <Storyboard x:Key="MarkerShrinker" RepeatBehavior="Forever">
             <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="1.0" To="0.0" Duration="0:0:0.75"/>
             <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="1.0" To="0.0" Duration="0:0:0.75"/>
+        </Storyboard>
+        <Storyboard x:Key="FlashBorder">
+            <!--<ColorAnimation Storyboard.TargetProperty="BorderThickness" To="Red" AutoReverse="True" Duration="0:0:0.5" />-->
+            <ThicknessAnimation Storyboard.TargetProperty="BorderThickness" From="5,5,5,5" To="0,0,0,0" Duration="0:0:0.25"/>
+        </Storyboard>
+        <Storyboard x:Key="FlashBackground">
+            <ColorAnimation Storyboard.TargetProperty="Background.Color" From="Red" Duration="0:0:0.25" />
         </Storyboard>
         <DataTemplate x:Key="DataGridCellImage">
             <Image Source="{Binding}"/>
@@ -302,12 +309,49 @@
                                             <ComboBoxItem Content="Ignore below level" Tag="Below"/>
                                             <ComboBoxItem Content="Ignore above level" Tag="Above"/>
                                         </ComboBox>
-                                        <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
+                                        <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" Margin="2,0,0,0" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
                                         <StackPanel Orientation="Horizontal">
-                                            <CheckBox x:Name="ShowSameType" Content="Show matching type" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" />
+                                            <CheckBox x:Name="ShowSameType" Content="Show matching" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" />
                                             <CheckBox x:Name="IncludeDetailsInPopUps" Content="Include details in popups" Margin="8,2,0,2" VerticalAlignment="Center" Click="IncludeDetailsInPopUps_Click"/>
                                         </StackPanel>
                                     </WrapPanel>
+                                    <StackPanel Margin="35,4,4,0" Orientation="Horizontal">
+                                        <ComboBox x:Name="FilterColor" Width="200" SelectedValuePath="Value" SelectionChanged="FilterColor_SelectionChanged">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderThickness="1" BorderBrush="Black" Background="{Binding Path=Value.Color}" Width="182" Margin="-6,-3,-6,-2">
+                                                        <Grid>
+                                                            <TextBlock Text="{Binding Path=Value.Id}" FontStyle="Italic" Margin="4,2,0,2" Foreground="{Binding Path=Value.LabelColor}"/>
+                                                            <TextBlock Text="{Binding Path=Value.Name}" Margin="30,2,0,2" Foreground="{Binding Path=Value.LabelColor}"/>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <ComboBox x:Name="FilterColorCloseness"  Width="130" SelectedValuePath="Tag" Margin="2,0,0,0" SelectionChanged="FilterColorCloseness_SelectionChanged">
+                                            <ComboBox.Resources>
+                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow"/>
+                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Red"/>
+                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Red"/>
+                                            </ComboBox.Resources>
+                                            <ComboBoxItem Content="Exact matches only" Tag="0"/>
+                                            <ComboBoxItem Content="Super close" Tag="1"/>
+                                            <ComboBoxItem Content="Close" IsSelected="True" Tag="2"/>
+                                            <ComboBoxItem Content="Quite close" Tag="3"/>
+                                            <ComboBoxItem Content="Near" Tag="4"/>
+                                            <ComboBoxItem Content="Nearish" Tag="5"/>
+                                            <ComboBoxItem Content="Far" Tag="10"/>
+                                            <ComboBoxItem Content="Distant" Tag="20"/>
+                                        </ComboBox>
+                                        <Button x:Name="FilterC0" Content="C0" Tag="C0" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
+                                        <Button x:Name="FilterC1" Content="C1" Tag="C1" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
+                                        <Button x:Name="FilterC2" Content="C2" Tag="C2" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
+                                        <Button x:Name="FilterC3" Content="C3" Tag="C3" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
+                                        <Button x:Name="FilterC4" Content="C4" Tag="C4" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
+                                        <Button x:Name="FilterC5" Content="C5" Tag="C5" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
+                                        <Button x:Name="FilterCAll" Content="All" Tag="CAll" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
+
+                                    </StackPanel>
                                     <StackPanel Margin="35,4,4,0" Orientation="Horizontal">
                                         <Button x:Name="FilterMap" Content="Map" Padding="8,0" Click="ButtonFilter_Click"/>
                                         <Button x:Name="FilterTribe" Content="Tribe" Padding="8,0" Margin="8,0,0,0" Click="ButtonFilter_Click"/>
@@ -318,8 +362,9 @@
                                 <Grid DockPanel.Dock="Bottom" Margin="0,4,0,0">
                                     <TextBlock x:Name="DataVisualCount" HorizontalAlignment="Right"/>
                                 </Grid>
-                                
-                                <DataGrid x:Name="DataVisual"      
+
+                                <Grid>
+                                    <DataGrid x:Name="DataVisual"      
                                     Margin="0,8,0,0"
                                     AutoGenerateColumns="True"
                                     ItemsSource="{Binding}"
@@ -332,36 +377,36 @@
                                     Sorting="DataVisual_Sorting"
                                     VerticalAlignment="Stretch"
                                     EnableRowVirtualization="True"
-                                    CanUserResizeColumns="True"
-                                />
-                            </DockPanel>
+                                    CanUserResizeColumns="True"/>
 
-                            <Viewbox Margin="5,85,5,15" >
-                                <TextBlock x:Name="FlashMessage" FontSize="8" HorizontalAlignment="Center" Foreground="White" VerticalAlignment="Center" TextAlignment="Center">
-                                <Run FontSize="16" FontWeight="Black">wiredcat.hopto.org</Run>
-                                <LineBreak/>  
-                                <LineBreak/>  
-                                <Run FontStyle="Italic">Shout outs go to to...</Run>
-                                <LineBreak/>
-                                <LineBreak/>
-                                <Run FontWeight="Bold">DuoMog</Run> for helping with the server side
-                                <LineBreak/>
-                                <LineBreak/>
-                                <Run FontWeight="Bold">Scully</Run>, <Run FontWeight="Bold">Ward</Run> and <Run FontWeight="Bold">Rrran</Run> who first tried this out
-                                <LineBreak/>
-                                <Run FontWeight="Bold">Shauna</Run> &amp; <Run FontWeight="Bold">LemonCake</Run> - best darn tribe around!
-                                <LineBreak/>
-                                <LineBreak/>
-                                <Run FontWeight="Bold">Caulkinator</Run>, <Run FontWeight="Bold">Kurt</Run>, <Run FontWeight="Bold">Joanna</Run>,
-                                <LineBreak/>
-                                <Run FontWeight="Bold">Kokow</Run>, <Run FontWeight="Bold">Ray</Run>, <Run FontWeight="Bold">EcStAsY</Run>,
-                                <LineBreak/>
-                                and the rest of you!
-                                <LineBreak/>
-                                <LineBreak/>
-                                Also <Run FontWeight="Bold">danlev</Run> for help linking to his awesome Dododex :)
-                                </TextBlock>
-                            </Viewbox>
+                                    <Viewbox Margin="10" >
+                                        <TextBlock x:Name="FlashMessage" FontSize="8" HorizontalAlignment="Center" Foreground="White" VerticalAlignment="Center" TextAlignment="Center">
+                                            <Run FontSize="16" FontWeight="Black">wiredcat.hopto.org</Run>
+                                            <LineBreak/>  
+                                            <LineBreak/>  
+                                            <Run FontStyle="Italic">Shout outs go to to...</Run>
+                                            <LineBreak/>
+                                            <LineBreak/>
+                                            <Run FontWeight="Bold">DuoMog</Run> for helping with the server side
+                                            <LineBreak/>
+                                            <LineBreak/>
+                                            <Run FontWeight="Bold">Scully</Run>, <Run FontWeight="Bold">Ward</Run> and <Run FontWeight="Bold">Rrran</Run> who first tried this out
+                                            <LineBreak/>
+                                            <Run FontWeight="Bold">Shauna</Run> &amp; <Run FontWeight="Bold">LemonCake</Run> - best darn tribe around!
+                                            <LineBreak/>
+                                            <LineBreak/>
+                                            <Run FontWeight="Bold">Caulkinator</Run>, <Run FontWeight="Bold">Kurt</Run>, <Run FontWeight="Bold">Joanna</Run>,
+                                            <LineBreak/>
+                                            <Run FontWeight="Bold">Kokow</Run>, <Run FontWeight="Bold">Ray</Run>, <Run FontWeight="Bold">EcStAsY</Run>,
+                                            <LineBreak/>
+                                            and the rest of you!
+                                            <LineBreak/>
+                                            <LineBreak/>
+                                            Also <Run FontWeight="Bold">danlev</Run> for help linking to his awesome Dododex :)
+                                        </TextBlock>
+                                    </Viewbox>
+                                </Grid>
+                            </DockPanel>
 
                             <!--<local:InfoVisual x:Name="PopUpInfoVisual" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4" Padding="4" />-->
                         </Grid>

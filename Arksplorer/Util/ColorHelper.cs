@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace Arksplorer
 {
-    public static class Colour
+    public static class ColorHelper
     {
         /// <summary>
         /// Converts % HSL to Color
@@ -79,65 +79,65 @@ namespace Arksplorer
             return (byte)(c * 255);
         }
 
-        ///// <summary>
-        ///// Convery RGB to HSL
-        ///// </summary>
-        ///// <param name="r">0.0 to 1.0</param>
-        ///// <param name="g">0.0 to 1.0</param>
-        ///// <param name="b">0.0 to 1.0</param>
-        ///// <param name="h">Resulting Hue</param>
-        ///// <param name="s">Resulting Saturdation</param>
-        ///// <param name="l">Resulting Luminance</param>
-        //public static void RGBToHSL(int r, int g, int b, out double h, out double s, out double l)
-        //{
-        //    // Convert RGB to a 0.0 to 1.0 range.
-        //    double tR = r / 255.0;
-        //    double tG = g / 255.0;
-        //    double tB = b / 255.0;
+        /// <summary>
+        /// Convery RGB to HSL
+        /// </summary>
+        /// <param name="r">0.0 to 1.0</param>
+        /// <param name="g">0.0 to 1.0</param>
+        /// <param name="b">0.0 to 1.0</param>
+        /// <param name="h">Resulting Hue</param>
+        /// <param name="s">Resulting Saturdation</param>
+        /// <param name="l">Resulting Luminance</param>
+        public static void RGBToHSL(int r, int g, int b, out double h, out double s, out double l)
+        {
+            // Convert RGB to a 0.0 to 1.0 range.
+            double tR = r / 255.0;
+            double tG = g / 255.0;
+            double tB = b / 255.0;
 
-        //    double min = tR;
-        //    if (tG < min)
-        //        min = tG;
-        //    if (tB < min) min = tB;
+            double min = tR;
+            if (tG < min)
+                min = tG;
+            if (tB < min) min = tB;
 
-        //    double max = tR;
-        //    if (tG > max)
-        //        max = tG;
-        //    if (tB > max)
-        //        max = tB;
+            double max = tR;
+            if (tG > max)
+                max = tG;
+            if (tB > max)
+                max = tB;
 
-        //    double diff = max - min;
-        //    l = (max + min) / 2;
+            double diff = max - min;
+            l = (max + min) / 2;
 
-        //    if (Math.Abs(diff) < 0.00001)
-        //    {
-        //        s = 0.0d;
-        //        h = 0.0d;  // H is really undefined.
-        //    }
-        //    else
-        //    {
-        //        if (l <= 0.5d)
-        //            s = diff / (max + min);
-        //        else
-        //            s = diff / (2.0 - max - min);
+            if (Math.Abs(diff) < 0.00001)
+            {
+                s = 0.0d;
+                h = 0.0d;  // H is really undefined.
+            }
+            else
+            {
+                if (l <= 0.5d)
+                    s = diff / (max + min);
+                else
+                    s = diff / (2.0 - max - min);
 
-        //        double rDist = (max - tR) / diff;
-        //        double gDist = (max - tG) / diff;
-        //        double bDist = (max - tB) / diff;
+                double rDist = (max - tR) / diff;
+                double gDist = (max - tG) / diff;
+                double bDist = (max - tB) / diff;
 
-        //        if (tR == max)
-        //            h = bDist - gDist;
-        //        else if (tG == max)
-        //            h = 2 + rDist - bDist;
-        //        else
-        //            h = 4 + gDist - rDist;
+                if (tR == max)
+                    h = bDist - gDist;
+                else if (tG == max)
+                    h = 2 + rDist - bDist;
+                else
+                    h = 4 + gDist - rDist;
 
-        //        h *= 60;
+                h *= 60;
 
-        //        if (h < 0)
-        //            h += 360;
-        //    }
-        //}
+                if (h < 0)
+                    h += 360;
+            }
+        }
 
         ///// <summary>
         /////  Attempt to auto-sort colors into something vaugly nice, without getting too complicated.

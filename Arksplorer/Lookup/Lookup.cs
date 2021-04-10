@@ -58,6 +58,7 @@ namespace Arksplorer
                 var color = (SolidColorBrush)(new BrushConverter().ConvertFrom(arkColor.Hex));
                 color.Freeze();
                 arkColor.Color = color;
+                arkColor.InitSuitableLabelColour();
                 ArkColors.Add(arkColor.Id, arkColor);
             }
         }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
+using System.Diagnostics;//using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Media;
@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -30,6 +31,8 @@ namespace Arksplorer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static bool WPFInitialisting { get; set; }
+
         private static Dictionary<string, BitmapImage> MapImages { get; } = new();
         private static string CurrentMapImage { get; set; } = "";
         private static UIElement LoadingSpinner { get; set; }
@@ -56,9 +59,12 @@ namespace Arksplorer
 
         public MainWindow()
         {
+            WPFInitialisting = true;
             InitializeComponent();
+            WPFInitialisting = false;
 
             Init();
+
         }
 
         private void Init()
@@ -95,6 +101,7 @@ namespace Arksplorer
             try
             {
                 Lookup.LoadDataFromLookupFiles();
+                FilterColor.ItemsSource = Lookup.ArkColors;
 
                 string lastServer = Settings.Default.LastServer;
 
@@ -369,7 +376,7 @@ namespace Arksplorer
             foreach (var selection in MapList)
             {
                 if (selection.Load)
-                    queue.AddNewItem( selection.Name, type, ForceRefreshOfData, ServerConfig);
+                    queue.AddNewItem(selection.Name, type, ForceRefreshOfData, ServerConfig);
             }
 
             LoadQueue(queue, true);
@@ -462,8 +469,116 @@ namespace Arksplorer
 
                 if (!string.IsNullOrWhiteSpace(trimmed))
                 {
-                    finalFilter += $"{separator}({filter.Replace("#", trimmed)})";
-                    separator = " AND ";
+                    if (trimmed.Contains("="))
+                    {
+                        // Check for special case colour filters
+                        // C0=, C1=, C2=, C3=, C4=, C5=, CAll=
+
+                        // Find requested color id -> get ArkColor -> get sort index -> search for colours +/- how close we want a match
+
+                        string[] subParts = trimmed.Split("=");
+                        if (subParts.Length == 2)
+                        {
+                            string instruction = subParts[0];
+                            string colorId = subParts[1];
+
+                            if (int.TryParse(colorId, out int colorIndex))
+                            {
+                                ArkColor color = Lookup.FindColor(colorIndex);
+                                if (color != null)
+                                {
+                                    int sortIndex = color.SortOrder;
+                                    int closeness = int.Parse((string)FilterColorCloseness.SelectedValue);
+
+                                    string colorFilter = string.Empty;
+
+
+                                    if (instruction == "CAll")
+                                    {
+                                        if (closeness == 0)
+                                        {
+                                            // Exact matches only
+                                            colorFilter = $"(" +
+                                                $"(C0_Sort = {sortIndex}) OR " +
+                                                $"(C1_Sort = {sortIndex}) OR " +
+                                                $"(C2_Sort = {sortIndex}) OR " +
+                                                $"(C3_Sort = {sortIndex}) OR " +
+                                                $"(C4_Sort = {sortIndex}) OR " +
+                                                $"(C5_Sort = {sortIndex})" +
+                                                ")";
+                                        }
+                                        else
+                                        {
+                                            colorFilter = $"(" +
+                                                $"(C0_Sort >= {sortIndex - closeness} AND C0_Sort <= {sortIndex + closeness}) OR " +
+                                                $"(C1_Sort >= {sortIndex - closeness} AND C1_Sort <= {sortIndex + closeness}) OR " +
+                                                $"(C2_Sort >= {sortIndex - closeness} AND C2_Sort <= {sortIndex + closeness}) OR " +
+                                                $"(C3_Sort >= {sortIndex - closeness} AND C3_Sort <= {sortIndex + closeness}) OR " +
+                                                $"(C4_Sort >= {sortIndex - closeness} AND C4_Sort <= {sortIndex + closeness}) OR " +
+                                                $"(C5_Sort >= {sortIndex - closeness} AND C5_Sort <= {sortIndex + closeness})" +
+                                                ")";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (closeness == 0)
+                                        {
+                                            // Exact matches only
+                                            switch (instruction)
+                                            {
+                                                case "C0":
+                                                case "C1":
+                                                case "C2":
+                                                case "C3":
+                                                case "C4":
+                                                case "C5":
+                                                    colorFilter = $"({instruction}_Sort = {sortIndex})";
+                                                    break;
+                                                default:
+                                                    MessageBox.Show($"Unknown colour component '{instruction}' to search in", "Unknown colour component", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                                    break;
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            // Exact matches only
+                                            switch (instruction)
+                                            {
+                                                case "C0":
+                                                case "C1":
+                                                case "C2":
+                                                case "C3":
+                                                case "C4":
+                                                case "C5":
+                                                    colorFilter = $"({instruction}_Sort >= {sortIndex - closeness} AND {instruction}_Sort <= {sortIndex + closeness})";
+                                                    break;
+                                                default:
+                                                    MessageBox.Show($"Unknown colour component '{instruction}' to search in", "Unknown colour component", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                                    break;
+                                            }
+                                        }
+                                    }
+
+                                    if (!string.IsNullOrWhiteSpace(colorFilter))
+                                    {
+                                        finalFilter += $"{separator}({colorFilter})";
+                                        separator = " AND ";
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show($"Unknown Ark colour Id '{colorId}' to search for", "Unknown colour Id", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+
+                        finalFilter += $"{separator}({filter.Replace("#", trimmed)})";
+                        separator = " AND ";
+                    }
                 }
             }
 
@@ -515,7 +630,7 @@ namespace Arksplorer
             // PrevCursor = Mouse.OverrideCursor;
             //  Mouse.OverrideCursor = Cursors.Wait;
 
-            int mapsLoaded = await Task.Run(() => queue.Process( autoUpdateDataGrid, DataPackages, this, ServerConfig, ForceLocalLoad));
+            int mapsLoaded = await Task.Run(() => queue.Process(autoUpdateDataGrid, DataPackages, this, ServerConfig, ForceLocalLoad));
         }
 
         public void LoadableControlsEnabled(bool isEnabled)
@@ -665,6 +780,9 @@ namespace Arksplorer
 
         private void DataVisual_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (WPFInitialisting)
+                return;
+
             DataRowView entity = (DataRowView)(DataVisual.SelectedItem);
 
             if (entity == null)
@@ -828,7 +946,7 @@ namespace Arksplorer
             if (whatToShow2 != null)
                 whatToShow2.Visibility = Visibility.Visible;
         }
-                private DataGridRow LastDataGridRow { get; set; }
+        private DataGridRow LastDataGridRow { get; set; }
         private Info CurrentRectanglePopUpInfo { get; set; }
         private System.Windows.Shapes.Rectangle LastRectangle { get; set; }
         // Note that we COULD attach mouse enter/leave events to all rectangles we have created (mass markers) along with
@@ -905,7 +1023,7 @@ namespace Arksplorer
             var percY = (pos.Y / height);
 
 
-            var brush = new SolidColorBrush(Colour.HSLToColor(percX, 1.0, 1.0 - percY));
+            var brush = new SolidColorBrush(ColorHelper.HSLToColor(percX, 1.0, 1.0 - percY));
             FlashMessage.Foreground = brush;
         }
 
@@ -925,6 +1043,9 @@ namespace Arksplorer
 
         private void ServerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (WPFInitialisting)
+                return;
+
             Server server = (Server)(ServerList.SelectedItem);
             LoadServer(server);
         }
@@ -1114,6 +1235,9 @@ namespace Arksplorer
 
         private void FilterLevelType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (WPFInitialisting)
+                return;
+
             ApplyFilterCriteria();
         }
 
@@ -1179,12 +1303,53 @@ namespace Arksplorer
                 // We intercept the sorting so we can specify the sort column here instead
                 ICollectionView dataView = CollectionViewSource.GetDefaultView(DataVisual.ItemsSource);
                 dataView.SortDescriptions.Clear();
-                dataView.SortDescriptions.Add(new SortDescription($"{column.Header}_Sort", column.SortDirection??ListSortDirection.Ascending));
+                dataView.SortDescriptions.Add(new SortDescription($"{column.Header}_Sort", column.SortDirection ?? ListSortDirection.Ascending));
 
                 e.Handled = true;
             }
             else
                 return;
+        }
+
+        private void FilterColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (WPFInitialisting)
+                return;
+
+            ((Storyboard)this.FindResource("FlashBorder")).Begin(FilterColorCloseness);
+            FlashFilterColorButtons();
+        }
+
+        private void FlashFilterColorButtons()
+        {
+            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterC0);
+            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterC1);
+            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterC2);
+            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterC3);
+            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterC4);
+            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterC5);
+            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterCAll);
+        }
+
+        private void FilterColor_Click(object sender, RoutedEventArgs e)
+        {
+            ArkColor color = ((KeyValuePair<int, ArkColor>)FilterColor.SelectedItem).Value;
+
+            if (color == null)
+                return;
+
+            Button button = (Button)sender;
+
+            FilterCriteria.Text = $"{button.Tag as string}={color.Id}";
+            ApplyFilterCriteria();
+        }
+
+        private void FilterColorCloseness_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (WPFInitialisting)
+                return;
+
+            FlashFilterColorButtons();
         }
 
         //private bool DebugEnabled { get; set; } = true;
