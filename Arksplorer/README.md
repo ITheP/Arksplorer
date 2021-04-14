@@ -78,12 +78,18 @@ v1.1 The Bigger Bite - 10/04/2021
 - Included Map/Tribe/Dino quick filter buttons
 - Minor reworking of pop up info layout
 - Minor reworking of other parts of interface
-- Major refactoring of code into proper classes etc.
+- Major refactoring of code into more classes etc.
 - Major restructuring of files
 - Misc. fixes and improvements
 - Multiple server.json files can be specified in /Servers/ (so server owners can just drop in their own)
 - Ordering by colour now possible! (Color order manually set in lookup data)
 - Search by colour (including fuzzy searching of nearby colours)
+
+v1.1.1
+- Enable/Disable filter controls depending on data type
+- Hide messages that shouldn't stick around
+- Make buttons flash under certain conditions to help with usage between controls
+- Neatened up main window code
 
 ToDo:
 - Click on a colour on a dino and it sets the search color

@@ -31,12 +31,39 @@
             <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="1.0" To="0.0" Duration="0:0:0.75"/>
             <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="1.0" To="0.0" Duration="0:0:0.75"/>
         </Storyboard>
-        <Storyboard x:Key="FlashBorder">
-            <!--<ColorAnimation Storyboard.TargetProperty="BorderThickness" To="Red" AutoReverse="True" Duration="0:0:0.5" />-->
+        <!--<Storyboard x:Key="FlashBorder">
+            --><!--<ColorAnimation Storyboard.TargetProperty="BorderThickness" To="Red" AutoReverse="True" Duration="0:0:0.5" />--><!--
             <ThicknessAnimation Storyboard.TargetProperty="BorderThickness" From="5,5,5,5" To="0,0,0,0" Duration="0:0:0.25"/>
-        </Storyboard>
-        <Storyboard x:Key="FlashBackground">
+        </Storyboard>-->
+        <!--<Storyboard x:Key="FlashBackground">
             <ColorAnimation Storyboard.TargetProperty="Background.Color" From="Red" Duration="0:0:0.25" />
+        </Storyboard>
+        <Storyboard x:Key="FlashForeground">
+            <ColorAnimation Storyboard.TargetProperty="Foreground.Color" From="Red" Duration="0:0:0.25" />
+        </Storyboard>-->
+        <Storyboard x:Key="FlashControl">
+            <!--<ColorAnimation Storyboard.TargetProperty="Foreground.Color" From="Red" Duration="0:0:0.25" />
+            <ColorAnimation Storyboard.TargetProperty="BorderBrush.Color" From="Red" Duration="0:0:0.25" />-->
+            <ColorAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop">
+                <DiscreteColorKeyFrame KeyTime="00:00:00" Value="Orange"/>
+                <DiscreteColorKeyFrame KeyTime="00:00:00.1" Value="LightGray"/>
+                <DiscreteColorKeyFrame KeyTime="00:00:00.2" Value="Orange"/>
+                <DiscreteColorKeyFrame KeyTime="00:00:00.3" Value="LightGray"/>
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="FlashTriggeredControl">
+            <ColorAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop">
+                <DiscreteColorKeyFrame KeyTime="00:00:00" Value="LightGreen"/>
+                <DiscreteColorKeyFrame KeyTime="00:00:00.2" Value="LightGray"/>
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="FlashMissingControl">
+            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="(UIElement.Visibility)" FillBehavior="Stop">
+                <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Hidden}"/>
+                <DiscreteObjectKeyFrame KeyTime="00:00:00.1" Value="{x:Static Visibility.Visible}"/>
+                <DiscreteObjectKeyFrame KeyTime="00:00:00.2" Value="{x:Static Visibility.Hidden}"/>
+                <DiscreteObjectKeyFrame KeyTime="00:00:00.3" Value="{x:Static Visibility.Visible}"/>
+            </ObjectAnimationUsingKeyFrames>
         </Storyboard>
         <DataTemplate x:Key="DataGridCellImage">
             <Image Source="{Binding}"/>
@@ -143,9 +170,9 @@
                                 <Separator Margin="0,8"/>
 
                                 <TextBlock Margin="0,0,0,4" FontWeight="Bold" Foreground="DarkSeaGreen" Style="{StaticResource TitleText}" HorizontalAlignment="Center">Show data for...</TextBlock>
-                                <Button x:Name="TameDinos" Content="Tame Dinos" Margin="0,4,0,0" Click="TameDinos_Click" />
-                                <Button x:Name="WildDinos" Content="Wild Dinos" Margin="0,4,0,0" Click="WildDinos_Click" />
-                                <Button x:Name="Survivors" Content="Survivors" Margin="0,4,0,0" Click="Survivors_Click" />
+                                <Button x:Name="LoadTameDinos" Content="Tame Dinos" Margin="0,4,0,0" Click="TameDinos_Click" />
+                                <Button x:Name="LoadWildDinos" Content="Wild Dinos" Margin="0,4,0,0" Click="WildDinos_Click" />
+                                <Button x:Name="LoadSurvivors" Content="Survivors" Margin="0,4,0,0" Click="Survivors_Click" />
                                 <Separator Margin="0,12,0,8"/>
                             </StackPanel>
                         </Grid>
@@ -328,12 +355,7 @@
                                                 </DataTemplate>
                                             </ComboBox.ItemTemplate>
                                         </ComboBox>
-                                        <ComboBox x:Name="FilterColorCloseness"  Width="130" SelectedValuePath="Tag" Margin="2,0,0,0" SelectionChanged="FilterColorCloseness_SelectionChanged">
-                                            <ComboBox.Resources>
-                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Yellow"/>
-                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Red"/>
-                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Red"/>
-                                            </ComboBox.Resources>
+                                        <ComboBox x:Name="FilterColorCloseness" Width="130" SelectedValuePath="Tag" Margin="2,0,0,0" SelectionChanged="FilterColorCloseness_SelectionChanged">
                                             <ComboBoxItem Content="Exact matches only" Tag="0"/>
                                             <ComboBoxItem Content="Super close" Tag="1"/>
                                             <ComboBoxItem Content="Close" IsSelected="True" Tag="2"/>

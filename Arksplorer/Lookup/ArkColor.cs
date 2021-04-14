@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics;
+using System.Text.Json.Serialization;
 using System.Windows.Media;
 
 namespace Arksplorer
@@ -19,10 +20,9 @@ namespace Arksplorer
             Color color = ((SolidColorBrush)Color).Color;
 
             ColorHelper.RGBToHSL(color.R, color.G, color.B, out double h, out double s, out double l);
-            if (Name == "Light Green")
-                System.Diagnostics.Debug.Print("freese");
 
-            if (l < 0.5)
+            // Gives a reasonable white/black text contrast on relevant colours
+            if (l < 0.5 || (l == 0.5 && s == 1 && (h != 60 && h != 120 && h != 180)))
                 LabelColor = Brushes.White;
             else
                 LabelColor = Brushes.Black;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;//using System.Drawing;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Media;
@@ -31,7 +31,7 @@ namespace Arksplorer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static bool WPFInitialisting { get; set; }
+        private static bool Initialisting { get; set; }
 
         private static Dictionary<string, BitmapImage> MapImages { get; } = new();
         private static string CurrentMapImage { get; set; } = "";
@@ -55,36 +55,35 @@ namespace Arksplorer
         /// </summary>
         public bool ForceRefreshOfData { get; set; } = false;
 
-        //private Queue DataQueue { get; set; } = new();
+        private List<FrameworkElement> FilterColorButtons { get; set; }
+        private List<FrameworkElement> LoadDataButtons { get; set; }
+
+        private static Dictionary<string, DataPackage> DataPackages { get; set; } = new Dictionary<string, DataPackage>();
+
+        public DataPackage CurrentDataPackage { get; set; }
+
+        private Cursor PrevCursor { get; set; }
+
+        //private bool ProcessingQueue { get; set; }
 
         public MainWindow()
         {
-            WPFInitialisting = true;
+            Initialisting = true;
             InitializeComponent();
-            WPFInitialisting = false;
+            Initialisting = false;
 
             Init();
-
         }
+
+        #region Init
 
         private void Init()
         {
+            InitUILists();
+            InitStoryboards();
+            InitControlState();
+
             DataContext = this;
-            // These are visible at design time to aid design, but want to hide them when window first opens
-            MapImage.Visibility = Visibility.Collapsed;
-            Marker.Visibility = Visibility.Collapsed;
-            ServerLoadedControls.Visibility = Visibility.Collapsed;
-            DataVisual.Visibility = Visibility.Collapsed;
-            OverviewInfo.Visibility = Visibility.Collapsed;
-            FilterMap.Visibility = Visibility.Collapsed;
-            FilterTribe.Visibility = Visibility.Collapsed;
-            FilterCreature.Visibility = Visibility.Collapsed;
-
-            // Disable all controls that are reliant on working server connection...
-            LoadableControlsEnabled(false);
-
-            // ...except we re-enable the one control that will let us specify a server location :)
-            ServerList.IsEnabled = true;
 
             Version.Text = Globals.Version;
 
@@ -101,6 +100,7 @@ namespace Arksplorer
             try
             {
                 Lookup.LoadDataFromLookupFiles();
+
                 FilterColor.ItemsSource = Lookup.ArkColors;
 
                 string lastServer = Settings.Default.LastServer;
@@ -120,38 +120,47 @@ namespace Arksplorer
                 ExitApplication();
             }
 
+            // Timer is used for both triggering any Alarm and triggering checks to see if data needs to be refreshed
             Timer = new();
-            Timer.Interval = new TimeSpan(0, 0, 1); // Recheck if the cache can be refreshed every 10 seconds
+            Timer.Interval = new TimeSpan(0, 0, 1);
             Timer.Tick += TimerTrigger;
             Timer.Start();
         }
 
-        //private List<WebTab> WebTabs { get; set; }
-        public WebTab ArkpediaWebTab { get; set; }
-        public WebTab DododexWebTab { get; set; }
-        public WebTab ServerWebTab { get; set; }
-
-        private void InitWebTabs()
+        /// <summary>
+        /// Lists of related UI components - defined for e.g triggering highlighting of related controls easily
+        /// </summary>
+        private void InitUILists()
         {
-            ArkpediaWebTab = new(ArkpediaBrowser) { LoadingControl = ArkpediaLoadingSpinner, Browser = ArkpediaBrowser, Tab = ArkpediaTab };
-            DododexWebTab = new(DododexBrowser) { LoadingControl = DododexLoadingSpinner, Browser = DododexBrowser, Tab = DododexTab };
-            ServerWebTab = new(ServerBrowser) { LoadingControl = ServerLoadingSpinner, Browser = ServerBrowser, Tab = ServerTab };
+            FilterColorButtons = new() { FilterC0, FilterC1, FilterC2, FilterC3, FilterC4, FilterC5, FilterCAll };
+            LoadDataButtons = new() { LoadTameDinos, LoadWildDinos, LoadSurvivors };
         }
 
-        public void SaveMapPreference(object sender, RoutedEventArgs e)
+        private void InitControlState()
         {
-            // Save currently flagged maps to settings
-            string flaggedMaps = "";
+            // These are visible at design time to aid design, but want to hide them when window first opens
+            MapImage.Visibility = Visibility.Collapsed;
+            Marker.Visibility = Visibility.Collapsed;
+            ServerLoadedControls.Visibility = Visibility.Collapsed;
+            DataVisual.Visibility = Visibility.Collapsed;
+            OverviewInfo.Visibility = Visibility.Collapsed;
+            FilterMap.Visibility = Visibility.Collapsed;
+            FilterTribe.Visibility = Visibility.Collapsed;
+            FilterCreature.Visibility = Visibility.Collapsed;
 
-            foreach (var selection in MapList)
-            {
-                if (selection.Load)
-                    flaggedMaps += selection.Name;
-            }
+            SetFilterLevelEnabled(false);
+            SetFilterColorEnabled(false);
 
-            if (Settings.Default.LastMaps != flaggedMaps)
-                Settings.Default.LastMaps = flaggedMaps;
+            // Disable all controls that are reliant on working server connection...
+            LoadableControlsEnabled(false);
+
+            // ...except we re-enable the one control that will let us specify a server location :)
+            ServerList.IsEnabled = true;
         }
+
+        #endregion Init
+
+        #region Timer and Alarm
 
         private bool AlarmEnabled { get; set; }
         private DateTime AlarmTimestamp { get; set; }
@@ -206,9 +215,216 @@ namespace Arksplorer
                 CheckAndRefreshCache("CacheRefresh");
         }
 
-        // Different types of dino may be loaded with different maps. There may be no consistency across packages of data!
+        private void SetAlarm(object sender, RoutedEventArgs e)
+        {
+            string duration = (string)((Button)sender).Tag;
+            AlarmTimestamp = DateTime.Now.AddMinutes(double.Parse(duration));
+            AlarmTriggered = false;
+            AlarmEnabled = true;
+            TimerTrigger();
+        }
 
-        private bool CheckingQueue { get; set; }
+        private void TriggerAlarm()
+        {
+            AlarmTriggered = true;
+            PlaySample("FeedMe");
+        }
+
+        private void RemoveAlarm()
+        {
+            AlarmEnabled = false;
+            Player.Stop();
+            AlarmTimeLeft.Foreground = Brushes.Black;
+            AlarmTimeLeft.FontWeight = FontWeights.Normal;
+            AlarmTimeLeft.Text = "Off";
+        }
+
+        private void AlarmOff_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveAlarm();
+        }
+
+        #endregion Timer and Alarm
+
+        #region Web and WebTabs
+
+        //private List<WebTab> WebTabs { get; set; }
+        public WebTab ArkpediaWebTab { get; set; }
+        public WebTab DododexWebTab { get; set; }
+        public WebTab ServerWebTab { get; set; }
+
+        private void InitWebTabs()
+        {
+            ArkpediaWebTab = new(ArkpediaBrowser) { LoadingControl = ArkpediaLoadingSpinner, Browser = ArkpediaBrowser, Tab = ArkpediaTab };
+            DododexWebTab = new(DododexBrowser) { LoadingControl = DododexLoadingSpinner, Browser = DododexBrowser, Tab = DododexTab };
+            ServerWebTab = new(ServerBrowser) { LoadingControl = ServerLoadingSpinner, Browser = ServerBrowser, Tab = ServerTab };
+        }
+
+        private static void GoBack(Microsoft.Web.WebView2.Wpf.WebView2 browser)
+        {
+            if (browser.CanGoBack)
+                browser.GoBack();
+        }
+
+        private static void GoForward(Microsoft.Web.WebView2.Wpf.WebView2 browser)
+        {
+            if (browser.CanGoForward)
+                browser.GoForward();
+        }
+
+        public static void Navigate(WebTab webTab, string url, bool jumpToTab = true)
+        {
+            try
+            {
+                var browser = webTab.Browser;
+
+                if (browser.CoreWebView2 == null)
+                    browser.Source = new Uri(url);
+                else
+                    browser.CoreWebView2?.Navigate(url);
+
+                if (jumpToTab && webTab.Tab != null)
+                    webTab.Tab.Focus();
+            }
+            catch (Exception ex)
+            {
+                Debug.Print($"Error navigating to '{url}': {ex.Message}");
+            }
+        }
+        private static void OpenUrlInExternalBrowser(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+                return;
+
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        private void HandleLinkClick(object sender, RequestNavigateEventArgs e)
+        {
+            OpenUrlInExternalBrowser(e.Uri.AbsoluteUri);
+            e.Handled = true;
+        }
+
+        private void DododexNavigate_Click(object sender, RoutedEventArgs e)
+        {
+            Navigate(DododexWebTab, (string)((Button)sender).Tag);
+        }
+
+        private void DododexBack_Click(object sender, RoutedEventArgs e)
+        {
+            GoBack(DododexWebTab.Browser);
+        }
+
+        private void ArkpediaNavigate_Click(object sender, RoutedEventArgs e)
+        {
+            Navigate(ArkpediaWebTab, (string)((Button)sender).Tag);
+        }
+
+
+        private void ArkpediaBack_Click(object sender, RoutedEventArgs e)
+        {
+            GoBack(ArkpediaWebTab.Browser);
+        }
+
+        private void ArkpediaOpenExternal_Click(object sender, RoutedEventArgs e)
+        {
+            OpenUrlInExternalBrowser(ArkpediaWebTab.CurrentUrl);
+        }
+
+        private void DododexOpenExternal_Click(object sender, RoutedEventArgs e)
+        {
+            OpenUrlInExternalBrowser(DododexWebTab.CurrentUrl);
+        }
+
+        private void ServerBack_Click(object sender, RoutedEventArgs e)
+        {
+            GoBack(ServerWebTab.Browser);
+        }
+
+        private void ServerNavigate_Click(object sender, RoutedEventArgs e)
+        {
+            Navigate(ServerWebTab, (string)((Button)sender).Tag);
+        }
+
+        private void ServerOpenExternal_Click(object sender, RoutedEventArgs e)
+        {
+            OpenUrlInExternalBrowser(ServerWebTab.CurrentUrl);
+        }
+
+        private void ArkpediaForward_Click(object sender, RoutedEventArgs e)
+        {
+            GoForward(ArkpediaWebTab.Browser);
+        }
+
+        private void DododexForward_Click(object sender, RoutedEventArgs e)
+        {
+            GoForward(DododexWebTab.Browser);
+        }
+
+        private void ServerForward_Click(object sender, RoutedEventArgs e)
+        {
+            GoForward(ServerWebTab.Browser);
+        }
+
+        #endregion Web and WebTabs
+
+        #region Settings
+
+        public void SaveMapPreference(object sender, RoutedEventArgs e)
+        {
+            // Save currently flagged maps to settings
+            string flaggedMaps = "";
+
+            foreach (var selection in MapList)
+            {
+                if (selection.Load)
+                    flaggedMaps += selection.Name;
+            }
+
+            if (Settings.Default.LastMaps != flaggedMaps)
+                Settings.Default.LastMaps = flaggedMaps;
+        }
+
+        #endregion Settings
+
+        #region Server
+        /// <summary>
+        /// Highest level contact of a server - kick off attempting to get ArksplorerData.json data file we use to configure all our data fetching
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        private bool LoadServer(Server server)
+        {
+            if (string.IsNullOrWhiteSpace(server.Url))
+                return false;
+
+            // Grab config from server that feeds into all this
+            // ToDo: Config required for where this comes from!
+            try
+            {
+                LoadingVisualEnabled(true);
+                Status.Text = "Contacting server...";
+                // Initial set up can happen in the background - it will enable relevant bits of interface when it completes
+                Task.Run(() => LoadServerConfig(server));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"There was a problem loading server information from {server.Url}{Environment.NewLine}{ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}{Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
+                LoadableControlsEnabled(false);
+                return false;
+            }
+        }
+
+        private static bool IsServerConfigLoaded()
+        {
+            return (ServerConfig != null);
+        }
+
+        #endregion Server
+
+        #region Cache
+
+        // Different types of dino may be loaded with different maps. There may be no consistency across packages of data!
 
         private void CheckAndRefreshCache(string from)
         {
@@ -255,67 +471,9 @@ namespace Arksplorer
             CheckingQueue = false;
         }
 
-        /// <summary>
-        /// Highest level contact of a server - kick off attempting to get ArksplorerData.json data file we use to configure all our data fetching
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        private bool LoadServer(Server server)
-        {
-            if (string.IsNullOrWhiteSpace(server.Url))
-                return false;
+        #endregion Cache
 
-            // Grab config from server that feeds into all this
-            // ToDo: Config required for where this comes from!
-            try
-            {
-                LoadingVisualEnabled(true);
-                Status.Text = "Contacting server...";
-                // Initial set up can happen in the background - it will enable relevant bits of interface when it completes
-                Task.Run(() => LoadServerConfig(server));
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"There was a problem loading server information from {server.Url}{Environment.NewLine}{ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}{Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
-                LoadableControlsEnabled(false);
-                return false;
-            }
-        }
-
-        private static bool IsServerConfigLoaded()
-        {
-            return (ServerConfig != null);
-        }
-
-        private static void ExitApplication()
-        {
-            Application.Current.Shutdown();
-        }
-
-        private void SetAlarm(object sender, RoutedEventArgs e)
-        {
-            string duration = (string)((Button)sender).Tag;
-            AlarmTimestamp = DateTime.Now.AddMinutes(double.Parse(duration));
-            AlarmTriggered = false;
-            AlarmEnabled = true;
-            TimerTrigger();
-        }
-
-        private void TriggerAlarm()
-        {
-            AlarmTriggered = true;
-            PlaySample("FeedMe");
-        }
-
-        private void RemoveAlarm()
-        {
-            AlarmEnabled = false;
-            Player.Stop();
-            AlarmTimeLeft.Foreground = Brushes.Black;
-            AlarmTimeLeft.FontWeight = FontWeights.Normal;
-            AlarmTimeLeft.Text = "Off";
-        }
+        #region Audio
 
         //Problems with MediaPlayer not playing. Not sure why! To retry with a different mp3?
         //private MediaPlayer Player { get; set; } = new();
@@ -335,32 +493,13 @@ namespace Arksplorer
             }
         }
 
-        private void Exit_Click(object sender, RoutedEventArgs e)
-        {
-            ExitApplication();
-        }
+        #endregion Audio
 
-        private void About_Click(object sender, RoutedEventArgs e)
-        {
-            ShowExtraInfo(AboutExtraInfo);
-        }
+        #region Queue
 
-        private void ApplyFilter_Click(object sender, RoutedEventArgs e)
-        {
-            ApplyFilterCriteria(false);
-        }
+        private bool CheckingQueue { get; set; }
 
-        private void RemoveFilter_Click(object sender, RoutedEventArgs e)
-        {
-            ClearFilter();
-        }
-
-        private void TameDinos_Click(object sender, RoutedEventArgs e)
-        {
-            SetUpQue(Types.TameMetadata);
-        }
-
-        private void SetUpQue(MetaData type)
+        private void SetUpQueue(MetaData type)
         {
             if (!IsServerConfigLoaded())
                 return;
@@ -382,48 +521,33 @@ namespace Arksplorer
             LoadQueue(queue, true);
         }
 
+        // When a queue is loading, no others should load as controls that could trigger another load are disabled.
+        private async void LoadQueue(Queue queue, bool autoUpdateDataGrid)
+        {
+            // PrevCursor = Mouse.OverrideCursor;
+            //  Mouse.OverrideCursor = Cursors.Wait;
+
+            int mapsLoaded = await Task.Run(() => queue.Process(autoUpdateDataGrid, DataPackages, this, ServerConfig, ForceLocalLoad));
+        }
 
         private void WildDinos_Click(object sender, RoutedEventArgs e)
         {
-            SetUpQue(Types.WildMetadata);
+            SetUpQueue(Types.WildMetadata);
+        }
+
+        private void TameDinos_Click(object sender, RoutedEventArgs e)
+        {
+            SetUpQueue(Types.TameMetadata);
         }
 
         private void Survivors_Click(object sender, RoutedEventArgs e)
         {
-            SetUpQue(Types.SurvivorMetadata);
+            SetUpQueue(Types.SurvivorMetadata);
         }
 
-        public static BitmapImage LoadImage(string mapName)
-        {
-            if (MapImages.ContainsKey(mapName))
-                return MapImages[mapName];
+        #endregion Queue
 
-            var path = System.IO.Path.Combine(Environment.CurrentDirectory, "Images", $"{mapName}.png");
-            if (!File.Exists(path))
-            {
-                path = System.IO.Path.Combine(Environment.CurrentDirectory, "Images", $"{mapName}.jpg");
-                if (!File.Exists(path))
-                    return null; // backup image
-            }
-
-            var uri = new Uri(path);
-            var bitmap = new BitmapImage(uri);
-
-            MapImages.Add(mapName, bitmap);
-
-            return bitmap;
-        }
-
-        private void SetFlashMessage(string message)
-        {
-            FlashMessage.Text = message;
-            FlashMessage.Visibility = Visibility.Visible;
-        }
-
-        private void HideFlashMessage()
-        {
-            FlashMessage.Visibility = Visibility.Collapsed;
-        }
+        #region Filter
 
         private void ApplyFilterCriteria(bool exactOnly = false)
         {
@@ -471,107 +595,111 @@ namespace Arksplorer
                 {
                     if (trimmed.Contains("="))
                     {
-                        // Check for special case colour filters
-                        // C0=, C1=, C2=, C3=, C4=, C5=, CAll=
-
-                        // Find requested color id -> get ArkColor -> get sort index -> search for colours +/- how close we want a match
-
-                        string[] subParts = trimmed.Split("=");
-                        if (subParts.Length == 2)
+                        if (dataPackage.Metadata.IncludesColors)
                         {
-                            string instruction = subParts[0];
-                            string colorId = subParts[1];
+                            // Check for special case colour filters
+                            // C0=, C1=, C2=, C3=, C4=, C5=, CAll=
 
-                            if (int.TryParse(colorId, out int colorIndex))
+                            // Find requested color id -> get ArkColor -> get sort index -> search for colours +/- how close we want a match
+
+                            string[] subParts = trimmed.Split("=");
+                            if (subParts.Length == 2)
                             {
-                                ArkColor color = Lookup.FindColor(colorIndex);
-                                if (color != null)
+                                string instruction = subParts[0];
+                                string colorId = subParts[1];
+
+                                if (int.TryParse(colorId, out int colorIndex))
                                 {
-                                    int sortIndex = color.SortOrder;
-                                    int closeness = int.Parse((string)FilterColorCloseness.SelectedValue);
-
-                                    string colorFilter = string.Empty;
-
-
-                                    if (instruction == "CAll")
+                                    ArkColor color = Lookup.FindColor(colorIndex);
+                                    if (color != null)
                                     {
-                                        if (closeness == 0)
+                                        int sortIndex = color.SortOrder;
+                                        int closeness = int.Parse((string)FilterColorCloseness.SelectedValue);
+
+                                        string colorFilter = string.Empty;
+
+
+                                        if (instruction == "CAll")
                                         {
-                                            // Exact matches only
-                                            colorFilter = $"(" +
-                                                $"(C0_Sort = {sortIndex}) OR " +
-                                                $"(C1_Sort = {sortIndex}) OR " +
-                                                $"(C2_Sort = {sortIndex}) OR " +
-                                                $"(C3_Sort = {sortIndex}) OR " +
-                                                $"(C4_Sort = {sortIndex}) OR " +
-                                                $"(C5_Sort = {sortIndex})" +
-                                                ")";
+                                            if (closeness == 0)
+                                            {
+                                                // Exact matches only
+                                                colorFilter = $"(" +
+                                                    $"(C0_Sort = {sortIndex}) OR " +
+                                                    $"(C1_Sort = {sortIndex}) OR " +
+                                                    $"(C2_Sort = {sortIndex}) OR " +
+                                                    $"(C3_Sort = {sortIndex}) OR " +
+                                                    $"(C4_Sort = {sortIndex}) OR " +
+                                                    $"(C5_Sort = {sortIndex})" +
+                                                    ")";
+                                            }
+                                            else
+                                            {
+                                                colorFilter = $"(" +
+                                                    $"(C0_Sort >= {sortIndex - closeness} AND C0_Sort <= {sortIndex + closeness}) OR " +
+                                                    $"(C1_Sort >= {sortIndex - closeness} AND C1_Sort <= {sortIndex + closeness}) OR " +
+                                                    $"(C2_Sort >= {sortIndex - closeness} AND C2_Sort <= {sortIndex + closeness}) OR " +
+                                                    $"(C3_Sort >= {sortIndex - closeness} AND C3_Sort <= {sortIndex + closeness}) OR " +
+                                                    $"(C4_Sort >= {sortIndex - closeness} AND C4_Sort <= {sortIndex + closeness}) OR " +
+                                                    $"(C5_Sort >= {sortIndex - closeness} AND C5_Sort <= {sortIndex + closeness})" +
+                                                    ")";
+                                            }
                                         }
                                         else
                                         {
-                                            colorFilter = $"(" +
-                                                $"(C0_Sort >= {sortIndex - closeness} AND C0_Sort <= {sortIndex + closeness}) OR " +
-                                                $"(C1_Sort >= {sortIndex - closeness} AND C1_Sort <= {sortIndex + closeness}) OR " +
-                                                $"(C2_Sort >= {sortIndex - closeness} AND C2_Sort <= {sortIndex + closeness}) OR " +
-                                                $"(C3_Sort >= {sortIndex - closeness} AND C3_Sort <= {sortIndex + closeness}) OR " +
-                                                $"(C4_Sort >= {sortIndex - closeness} AND C4_Sort <= {sortIndex + closeness}) OR " +
-                                                $"(C5_Sort >= {sortIndex - closeness} AND C5_Sort <= {sortIndex + closeness})" +
-                                                ")";
+                                            if (closeness == 0)
+                                            {
+                                                // Exact matches only
+                                                switch (instruction)
+                                                {
+                                                    case "C0":
+                                                    case "C1":
+                                                    case "C2":
+                                                    case "C3":
+                                                    case "C4":
+                                                    case "C5":
+                                                        colorFilter = $"({instruction}_Sort = {sortIndex})";
+                                                        break;
+                                                    default:
+                                                        MessageBox.Show($"Unknown colour component '{instruction}' to search in", "Unknown colour component", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                                        break;
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                // Exact matches only
+                                                switch (instruction)
+                                                {
+                                                    case "C0":
+                                                    case "C1":
+                                                    case "C2":
+                                                    case "C3":
+                                                    case "C4":
+                                                    case "C5":
+                                                        colorFilter = $"({instruction}_Sort >= {sortIndex - closeness} AND {instruction}_Sort <= {sortIndex + closeness})";
+                                                        break;
+                                                    default:
+                                                        MessageBox.Show($"Unknown colour component '{instruction}' to search in", "Unknown colour component", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                                        break;
+                                                }
+                                            }
+                                        }
+
+                                        if (!string.IsNullOrWhiteSpace(colorFilter))
+                                        {
+                                            finalFilter += $"{separator}({colorFilter})";
+                                            separator = " AND ";
                                         }
                                     }
                                     else
                                     {
-                                        if (closeness == 0)
-                                        {
-                                            // Exact matches only
-                                            switch (instruction)
-                                            {
-                                                case "C0":
-                                                case "C1":
-                                                case "C2":
-                                                case "C3":
-                                                case "C4":
-                                                case "C5":
-                                                    colorFilter = $"({instruction}_Sort = {sortIndex})";
-                                                    break;
-                                                default:
-                                                    MessageBox.Show($"Unknown colour component '{instruction}' to search in", "Unknown colour component", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                                                    break;
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            // Exact matches only
-                                            switch (instruction)
-                                            {
-                                                case "C0":
-                                                case "C1":
-                                                case "C2":
-                                                case "C3":
-                                                case "C4":
-                                                case "C5":
-                                                    colorFilter = $"({instruction}_Sort >= {sortIndex - closeness} AND {instruction}_Sort <= {sortIndex + closeness})";
-                                                    break;
-                                                default:
-                                                    MessageBox.Show($"Unknown colour component '{instruction}' to search in", "Unknown colour component", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                                                    break;
-                                            }
-                                        }
+                                        MessageBox.Show($"Unknown Ark colour Id '{colorId}' to search for", "Unknown colour Id", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                                     }
-
-                                    if (!string.IsNullOrWhiteSpace(colorFilter))
-                                    {
-                                        finalFilter += $"{separator}({colorFilter})";
-                                        separator = " AND ";
-                                    }
-                                }
-                                else
-                                {
-                                    MessageBox.Show($"Unknown Ark colour Id '{colorId}' to search for", "Unknown colour Id", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                                 }
                             }
                         }
+                        // Ignore if entity doesn't include colours
                     }
                     else
                     {
@@ -614,48 +742,174 @@ namespace Arksplorer
         private void ClearFilter()
         {
             if (CurrentDataPackage.Data != null)
+            {
                 DataVisual.DataContext = CurrentDataPackage.Data;
-        }
-
-        private static Dictionary<string, DataPackage> DataPackages { get; set; } = new Dictionary<string, DataPackage>();
-
-        public DataPackage CurrentDataPackage { get; set; }
-
-        private Cursor PrevCursor { get; set; }
-        //private bool ProcessingQueue { get; set; }
-
-        // When a queue is loading, no others should load as controls that could trigger another load are disabled.
-        private async void LoadQueue(Queue queue, bool autoUpdateDataGrid)
-        {
-            // PrevCursor = Mouse.OverrideCursor;
-            //  Mouse.OverrideCursor = Cursors.Wait;
-
-            int mapsLoaded = await Task.Run(() => queue.Process(autoUpdateDataGrid, DataPackages, this, ServerConfig, ForceLocalLoad));
-        }
-
-        public void LoadableControlsEnabled(bool isEnabled)
-        {
-            ServerList.IsEnabled = isEnabled;
-            TameDinos.IsEnabled = isEnabled;
-            WildDinos.IsEnabled = isEnabled;
-            Survivors.IsEnabled = isEnabled;
-        }
-
-        public void LoadingVisualEnabled(bool isEnabled)
-        {
-            if (isEnabled)
-            {
-                GeneralLoadingSpinner.Child = LoadingSpinner;
-                GeneralLoadingSpinner.Visibility = Visibility.Visible;
-                ExtraInfoHolder.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                GeneralLoadingSpinner.Child = null;
-                GeneralLoadingSpinner.Visibility = Visibility.Hidden;
-                ExtraInfoHolder.Visibility = Visibility.Visible;
+                HideFlashMessage();
             }
         }
+
+        private void SetFilterLevelEnabled(bool enabled)
+        {
+            FilterLevelType.IsEnabled = enabled;
+            FilterLevelNumber.IsEnabled = enabled;
+        }
+
+        private void SetFilterColorEnabled(bool enabled)
+        {
+            FilterColor.IsEnabled = enabled;
+            FilterColorCloseness.IsEnabled = enabled;
+            FilterC0.IsEnabled = enabled;
+            FilterC1.IsEnabled = enabled;
+            FilterC2.IsEnabled = enabled;
+            FilterC3.IsEnabled = enabled;
+            FilterC4.IsEnabled = enabled;
+            FilterC5.IsEnabled = enabled;
+            FilterCAll.IsEnabled = enabled;
+        }
+
+        private void FilterColor_Click(object sender, RoutedEventArgs e)
+        {
+            if (FilterColor.SelectedItem == null)
+            {
+                if (FilterColor.SelectedItem == null)
+                    FlashMissingControl(FilterColor);
+
+                return;
+            }
+
+            ArkColor color = ((KeyValuePair<int, ArkColor>)FilterColor.SelectedItem).Value;
+
+            if (color == null)
+                return;
+
+            Button button = (Button)sender;
+
+            FilterCriteria.Text = $"{button.Tag as string}={color.Id}";
+            ApplyFilterCriteria();
+        }
+
+        private void FilterColorCloseness_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Initialisting)
+                return;
+
+            FlashFilterColorButtons();
+        }
+
+        private void ExactFilter_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyFilterCriteria(true);
+        }
+
+        private void FilterCriteria_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return || e.Key == Key.Enter || e.Key == Key.Tab)
+            {
+                FlashTriggeredControl(ApplyFilter);
+                ApplyFilterCriteria();
+            }
+        }
+        private void FilterLevelNumber_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsInteger(e.Text);
+        }
+
+        private void FilterLevelNumber_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (e.DataObject.GetDataPresent(typeof(string)))
+            {
+                string text = (string)e.DataObject.GetData(typeof(string));
+                if (IsInteger(text))
+                    return;
+            }
+
+            e.CancelCommand();
+        }
+
+        private void FilterLevelType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Initialisting)
+                return;
+
+            ApplyFilterCriteria();
+        }
+
+        private void ButtonFilter_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            FilterCriteria.Text = button.Tag as string;
+            ApplyFilterCriteria(true);
+        }
+
+        private void FilterColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Initialisting)
+                return;
+
+            FlashFilterColorButtons();
+        }
+
+        private void FlashFilterColorButtons()
+        {
+            FlashControl(FilterColorButtons);
+        }
+
+        private void ApplyFilter_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyFilterCriteria(false);
+        }
+
+        private void RemoveFilter_Click(object sender, RoutedEventArgs e)
+        {
+            ClearFilter();
+        }
+
+        #endregion Filter
+
+        #region Control Highlighting
+
+        private void InitStoryboards()
+        {
+            FlashControlStoryboard = (Storyboard)this.FindResource("FlashControl");
+            FlashTriggeredControlStoryboard = (Storyboard)this.FindResource("FlashTriggeredControl");
+            FlashMissingControlStoryboard = (Storyboard)this.FindResource("FlashMissingControl");
+        }
+
+        Storyboard FlashControlStoryboard { get; set; }
+        Storyboard FlashTriggeredControlStoryboard { get; set; }
+        Storyboard FlashMissingControlStoryboard { get; set; }
+
+        private void FlashControl(FrameworkElement element)
+        {
+            FlashControlStoryboard.Begin(element);
+        }
+
+        private void FlashControl(List<FrameworkElement> elements)
+        {
+            foreach (var element in elements)
+                FlashControlStoryboard.Begin(element);
+        }
+
+        private void FlashMissingControl(FrameworkElement element)
+        {
+            FlashMissingControlStoryboard.Begin(element);
+        }
+
+        private void FlashTriggeredControl(FrameworkElement element)
+        {
+            FlashTriggeredControlStoryboard.Begin(element);
+        }
+
+        private void FlashLoadDataButtons()
+        {
+            FlashControl(LoadDataButtons);
+        }
+
+        #endregion Control Highlighting
+
+        #region DataVisual
+
+        private string LastCreatureId { get; set; } = string.Empty;
 
         public void ShowData(string type, bool updateVisualDataGrid)
         {
@@ -681,13 +935,30 @@ namespace Arksplorer
                 ExtraInfoMapDataHolder.Visibility = Visibility.Visible;
 
                 if (CurrentDataPackage.Data == null)
+                {
                     Status.Text = $"No data found!";
+
+                    SetFilterLevelEnabled(false);
+                    SetFilterColorEnabled(false);
+                }
                 else
                 {
                     if (CurrentDataPackage.Data.Rows.Count == 0)
+                    {
                         Status.Text = $"No data loaded yet";
+
+                        SetFilterLevelEnabled(false);
+                        SetFilterColorEnabled(false);
+                    }
                     else
-                        Status.Text = $"Loaded {CurrentDataPackage.Data.Rows.Count} {CurrentDataPackage.Metadata.Description}s!";
+                    {
+                        MetaData metadata = CurrentDataPackage.Metadata;
+
+                        Status.Text = $"Loaded {CurrentDataPackage.Data.Rows.Count} {metadata.Description}s!";
+
+                        SetFilterLevelEnabled(metadata.IncludesLevel);
+                        SetFilterColorEnabled(metadata.IncludesColors);
+                    }
                 }
             }
             else
@@ -713,74 +984,69 @@ namespace Arksplorer
             HideFlashMessage();
         }
 
-
-        private async void LoadServerConfig(Server server)
+        private void DataVisual_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
-            string error = "";
-
-            try
+            if (e.Column is DataGridTextColumn column)
             {
-                RawServerData rawServerData = await Web.HttpClient.GetFromJsonAsync<RawServerData>(new Uri(server.Url));
-                ServerConfig = new ServerConfig(rawServerData);
-
-                // Save this as the last selected server - that we know has worked!
-                Properties.Settings.Default.LastServer = server.Name;
-
-                // If we were successfull, we also want to clear down any displayed data, caches, etc. which could be from an older server
-                CurrentDataPackage = null;
-
-                Debug.Print($"LoadServerConfig.CurrentDataPackage = null");
-
-                DataPackages.Clear();
-
-                Dispatcher.Invoke(() =>
+                if (e.PropertyType == typeof(Single))
+                    column.Binding = new Binding(e.PropertyName) { StringFormat = "N2" };
+                else if (e.PropertyType == typeof(DateTime))
+                    column.Binding = new Binding(e.PropertyName) { StringFormat = "dd/MM/yyyy hh:mm:ss" };
+                else if (e.PropertyType == typeof(ArkColor))
                 {
-                    MapList.Clear();
-                    string lastMaps = Properties.Settings.Default.LastMaps;
-                    foreach (var mapName in ServerConfig.Maps)
-                        MapList.Add(new() { Name = mapName, CacheState = "Not loaded", Load = lastMaps.Contains(mapName) });
+                    DataGridTemplateColumn template = new();
+                    template.Header = column.Header;
 
-                    DataVisual.DataContext = null; // Clear any current results list
-                    Status.Text = $"Welcome! This server updates data approx. every {ServerConfig.RefreshRate} minutes.";
-                    LoadableControlsEnabled(true);
-                    LoadingVisualEnabled(false);
-                    ServerLoadedControls.Visibility = Visibility.Visible;
+                    DataTemplate dataTemplate = new();
+                    dataTemplate.DataType = typeof(Rectangle);
 
-                    ServerBrowser.Source = new Uri(ServerConfig.Website);
-                    ServerHome.Tag = ServerConfig.Website;
+                    FrameworkElementFactory factory = new(typeof(Rectangle));
+                    factory.SetValue(Rectangle.WidthProperty, 32.0d);
+                    factory.SetValue(Rectangle.HeightProperty, 16.0d);
+                    Binding binding = new($"{e.PropertyName}");
+                    binding.Converter = new ArkColorDBNullConverter();
+                    factory.SetBinding(Rectangle.FillProperty, binding);
 
-                    ServerInfoList.ItemsSource = ServerConfig.GetServerOverview().Items;
+                    dataTemplate.VisualTree = factory;
 
-                    GeneralLoadingSpinner.Child = null;
-                });
+                    template.CellTemplate = dataTemplate;
+                    template.CanUserResize = false;
+                    template.CanUserSort = true;
+                    template.SortMemberPath = $"{e.PropertyName}";
+                    e.Column = template;
+                }
+                else if (e.PropertyType == typeof(BitmapImage))
+                {
+                    DataGridTemplateColumn template = new() { Header = column.Header };
 
-                return;
+                    DataTemplate dataTemplate = new();
+                    dataTemplate.DataType = typeof(BitmapImage);
+
+                    FrameworkElementFactory factory = new(typeof(Image));
+                    factory.SetValue(Image.WidthProperty, 16.0d);
+                    factory.SetValue(Image.HeightProperty, 16.0d);
+                    Binding binding = new(e.PropertyName);
+                    factory.SetBinding(Image.SourceProperty, binding);
+                    dataTemplate.VisualTree = factory;
+
+                    template.CellTemplate = dataTemplate;
+                    template.CanUserResize = false;
+                    template.CanUserSort = true;
+                    template.SortMemberPath = e.PropertyName;
+                    e.Column = template;
+                }
+                // Don't want to see the ccc column or any hidden ..._sort columns
+                else if (e.PropertyName == "Ccc" || e.PropertyName.EndsWith("_Sort"))
+                {
+                    e.Column.Visibility = Visibility.Collapsed;
+                }
             }
-            catch (HttpRequestException ex)
-            {
-                error = $"Error: {ex.StatusCode}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
-            }
-            catch (NotSupportedException ex)
-            {
-                error = $"Invalid content type: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
-            }
-            catch (JsonException ex)
-            {
-                error = $"Invalid JSON: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
-            }
-            catch (Exception ex)
-            {
-                error = $"Problem loading data: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
-            }
 
-            MessageBox.Show($"There was a problem during start up...{Environment.NewLine}{error}){Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
-            ExitApplication();
         }
-        private string LastCreatureId { get; set; } = string.Empty;
 
         private void DataVisual_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (WPFInitialisting)
+            if (Initialisting)
                 return;
 
             DataRowView entity = (DataRowView)(DataVisual.SelectedItem);
@@ -831,7 +1097,7 @@ namespace Arksplorer
             string mapName = (string)entity[0];
             if (mapName != CurrentMapImage)
             {
-                MapImage.Source = LoadImage(mapName);
+                MapImage.Source = LoadMapImage(mapName);
                 MapImage.Visibility = Visibility.Visible;
             }
 
@@ -884,24 +1150,147 @@ namespace Arksplorer
 
         }
 
-        // Note: at the moment mass markers are based around CreatureId's, but could be used in the future for other purposes (e.g. resources)
+        private void DataVisual_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            DataGridColumn column = e.Column;
+            DataTable data = (DataTable)DataVisual.DataContext;
+            var columnType = data.Columns[column.DisplayIndex].DataType;
+            if (columnType == typeof(ArkColor))
+            {
+                // Sorting on our own custom colours is an absolute pain in the rear
+                // Also - colours - how do you sort on a colour? Namne? Id? RGB value?
+                // So we have custom sort column for each for just this purpose - how a sort code is stuck in here, well, we can be flexible!
+                // We intercept the sorting so we can specify the sort column here instead
+                ICollectionView dataView = CollectionViewSource.GetDefaultView(DataVisual.ItemsSource);
+                dataView.SortDescriptions.Clear();
+                dataView.SortDescriptions.Add(new SortDescription($"{column.Header}_Sort", column.SortDirection ?? ListSortDirection.Ascending));
+
+                e.Handled = true;
+            }
+            else
+                return;
+        }
+
+        #endregion DataVisual
+
+        #region Server
+
+        private async void LoadServerConfig(Server server)
+        {
+            string error = "";
+
+            try
+            {
+                RawServerData rawServerData = await Web.HttpClient.GetFromJsonAsync<RawServerData>(new Uri(server.Url));
+                ServerConfig = new ServerConfig(rawServerData);
+
+                // Save this as the last selected server - that we know has worked!
+                Properties.Settings.Default.LastServer = server.Name;
+
+                // If we were successfull, we also want to clear down any displayed data, caches, etc. which could be from an older server
+                CurrentDataPackage = null;
+
+                Debug.Print($"LoadServerConfig.CurrentDataPackage = null");
+
+                DataPackages.Clear();
+
+                Dispatcher.Invoke(() =>
+                {
+                    MapList.Clear();
+                    string lastMaps = Properties.Settings.Default.LastMaps;
+                    foreach (var mapName in ServerConfig.Maps)
+                        MapList.Add(new() { Name = mapName, CacheState = "Not loaded", Load = lastMaps.Contains(mapName) });
+
+                    DataVisual.DataContext = null; // Clear any current results list
+                    Status.Text = $"Welcome! This server updates data approx. every {ServerConfig.RefreshRate} minutes.";
+                    LoadableControlsEnabled(true);
+                    LoadingVisualEnabled(false);
+                    ServerLoadedControls.Visibility = Visibility.Visible;
+
+                    ServerBrowser.Source = new Uri(ServerConfig.Website);
+                    ServerHome.Tag = ServerConfig.Website;
+
+                    ServerInfoList.ItemsSource = ServerConfig.GetServerOverview().Items;
+
+                    GeneralLoadingSpinner.Child = null;
+
+                    FlashLoadDataButtons();
+                });
+
+                return;
+            }
+            catch (HttpRequestException ex)
+            {
+                error = $"Error: {ex.StatusCode}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
+            }
+            catch (NotSupportedException ex)
+            {
+                error = $"Invalid content type: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
+            }
+            catch (JsonException ex)
+            {
+                error = $"Invalid JSON: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
+            }
+            catch (Exception ex)
+            {
+                error = $"Problem loading data: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
+            }
+
+            MessageBox.Show($"There was a problem during start up...{Environment.NewLine}{error}){Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
+            ExitApplication();
+        }
+
+        private void ServerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Initialisting)
+                return;
+
+            Server server = (Server)(ServerList.SelectedItem);
+            LoadServer(server);
+        }
+
+        #endregion Server
+
+        #region Maps
 
         private string LastSelected_Map { get; set; }
         private string LastSelected_CreatureId { get; set; }
 
-        private void SetSelectedInfo(Info info)
+        public static BitmapImage LoadMapImage(string mapName)
         {
-            if (info == null)
-                return;
+            if (MapImages.ContainsKey(mapName))
+                return MapImages[mapName];
 
-            OverviewInfo.ShowInfo(info, true, DetailInPopUps);
+            var path = System.IO.Path.Combine(Environment.CurrentDirectory, "Images", $"{mapName}.png");
+            if (!File.Exists(path))
+            {
+                path = System.IO.Path.Combine(Environment.CurrentDirectory, "Images", $"{mapName}.jpg");
+                if (!File.Exists(path))
+                    return null; // backup image
+            }
 
-            OverviewInfo.Visibility = Visibility.Visible;
+            var uri = new Uri(path);
+            var bitmap = new BitmapImage(uri);
+
+            MapImages.Add(mapName, bitmap);
+
+            return bitmap;
         }
 
-        private void ExactFilter_Click(object sender, RoutedEventArgs e)
+        private void MapsToIncludeCheckbox_Click(object sender, RoutedEventArgs e)
         {
-            ApplyFilterCriteria(true);
+            string selectedMaps = "";
+            string separator = "";
+            foreach (var map in MapList)
+            {
+                if (map.Load)
+                {
+                    selectedMaps += separator + map.Name;
+                    separator = ",";
+                }
+            }
+
+            Settings.Default.LastMaps = selectedMaps;
         }
 
         private void IncludeAll_Click(object sender, RoutedEventArgs e)
@@ -921,17 +1310,9 @@ namespace Arksplorer
 
             MapsToInclude.Items.Refresh();
         }
+        #endregion Maps
 
-        private void FilterCriteria_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Return || e.Key == Key.Enter || e.Key == Key.Tab)
-                ApplyFilterCriteria();
-        }
-
-        private void ExternalResources_Click(object sender, RoutedEventArgs e)
-        {
-            ShowExtraInfo(ResourcesAndLinksExtraInfo);
-        }
+        #region Info and PopUps
 
         private void ShowExtraInfo(UIElement whatToShow, UIElement whatToShow2 = null)
         {
@@ -946,6 +1327,17 @@ namespace Arksplorer
             if (whatToShow2 != null)
                 whatToShow2.Visibility = Visibility.Visible;
         }
+
+        private void SetSelectedInfo(Info info)
+        {
+            if (info == null)
+                return;
+
+            OverviewInfo.ShowInfo(info, true, DetailInPopUps);
+
+            OverviewInfo.Visibility = Visibility.Visible;
+        }
+
         private DataGridRow LastDataGridRow { get; set; }
         private Info CurrentRectanglePopUpInfo { get; set; }
         private System.Windows.Shapes.Rectangle LastRectangle { get; set; }
@@ -1027,177 +1419,23 @@ namespace Arksplorer
             FlashMessage.Foreground = brush;
         }
 
-        private void HandleLinkClick(object sender, RequestNavigateEventArgs e)
+        private void Window_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            OpenUrlInExternalBrowser(e.Uri.AbsoluteUri);
-            e.Handled = true;
+            if (CurrentRectanglePopUpInfo != null)
+                SetSelectedInfo(CurrentRectanglePopUpInfo);
         }
 
-        private static void OpenUrlInExternalBrowser(string url)
+        private void IncludeDetailsInPopUps_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(url))
-                return;
-
-            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            DetailInPopUps = IncludeDetailsInPopUps.IsChecked ?? false;
+            Properties.Settings.Default.IncludeDetailsInPopUps = DetailInPopUps;
         }
 
-        private void ServerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (WPFInitialisting)
-                return;
+        #endregion Info and PopUps
 
-            Server server = (Server)(ServerList.SelectedItem);
-            LoadServer(server);
-        }
+        #region MassMarkers
 
-        private static void GoBack(Microsoft.Web.WebView2.Wpf.WebView2 browser)
-        {
-            if (browser.CanGoBack)
-                browser.GoBack();
-        }
-
-        private static void GoForward(Microsoft.Web.WebView2.Wpf.WebView2 browser)
-        {
-            if (browser.CanGoForward)
-                browser.GoForward();
-        }
-
-        public static void Navigate(WebTab webTab, string url, bool jumpToTab = true)
-        {
-            try
-            {
-                var browser = webTab.Browser;
-
-                if (browser.CoreWebView2 == null)
-                    browser.Source = new Uri(url);
-                else
-                    browser.CoreWebView2?.Navigate(url);
-
-                if (jumpToTab && webTab.Tab != null)
-                    webTab.Tab.Focus();
-            }
-            catch (Exception ex)
-            {
-                Debug.Print($"Error navigating to '{url}': {ex.Message}");
-            }
-        }
-
-        private void DododexNavigate_Click(object sender, RoutedEventArgs e)
-        {
-            Navigate(DododexWebTab, (string)((Button)sender).Tag);
-        }
-
-        private void DododexBack_Click(object sender, RoutedEventArgs e)
-        {
-            GoBack(DododexWebTab.Browser);
-        }
-
-        private void ArkpediaNavigate_Click(object sender, RoutedEventArgs e)
-        {
-            Navigate(ArkpediaWebTab, (string)((Button)sender).Tag);
-        }
-
-
-        private void ArkpediaBack_Click(object sender, RoutedEventArgs e)
-        {
-            GoBack(ArkpediaWebTab.Browser);
-        }
-
-        private void ArkpediaOpenExternal_Click(object sender, RoutedEventArgs e)
-        {
-            OpenUrlInExternalBrowser(ArkpediaWebTab.CurrentUrl);
-        }
-
-        private void DododexOpenExternal_Click(object sender, RoutedEventArgs e)
-        {
-            OpenUrlInExternalBrowser(DododexWebTab.CurrentUrl);
-        }
-        private void DataVisual_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
-        {
-            if (e.Column is DataGridTextColumn column)
-            {
-                if (e.PropertyType == typeof(Single))
-                    column.Binding = new Binding(e.PropertyName) { StringFormat = "N2" };
-                else if (e.PropertyType == typeof(DateTime))
-                    column.Binding = new Binding(e.PropertyName) { StringFormat = "dd/MM/yyyy hh:mm:ss" };
-                else if (e.PropertyType == typeof(ArkColor))
-                {
-                    DataGridTemplateColumn template = new();
-                    template.Header = column.Header;
-
-                    DataTemplate dataTemplate = new();
-                    dataTemplate.DataType = typeof(Rectangle);
-
-                    FrameworkElementFactory factory = new(typeof(Rectangle));
-                    factory.SetValue(Rectangle.WidthProperty, 32.0d);
-                    factory.SetValue(Rectangle.HeightProperty, 16.0d);
-                    Binding binding = new($"{e.PropertyName}");
-                    binding.Converter = new ArkColorDBNullConverter();
-                    factory.SetBinding(Rectangle.FillProperty, binding);
-
-                    dataTemplate.VisualTree = factory;
-
-                    template.CellTemplate = dataTemplate;
-                    template.CanUserResize = false;
-                    template.CanUserSort = true;
-                    template.SortMemberPath = $"{e.PropertyName}";
-                    e.Column = template;
-                }
-                else if (e.PropertyType == typeof(BitmapImage))
-                {
-                    DataGridTemplateColumn template = new() { Header = column.Header };
-
-                    DataTemplate dataTemplate = new();
-                    dataTemplate.DataType = typeof(BitmapImage);
-
-                    FrameworkElementFactory factory = new(typeof(Image));
-                    factory.SetValue(Image.WidthProperty, 16.0d);
-                    factory.SetValue(Image.HeightProperty, 16.0d);
-                    Binding binding = new(e.PropertyName);
-                    factory.SetBinding(Image.SourceProperty, binding);
-                    dataTemplate.VisualTree = factory;
-
-                    template.CellTemplate = dataTemplate;
-                    template.CanUserResize = false;
-                    template.CanUserSort = true;
-                    template.SortMemberPath = e.PropertyName;
-                    e.Column = template;
-                }
-                // Don't want to see the ccc column or any hidden ..._sort columns
-                else if (e.PropertyName == "Ccc" || e.PropertyName.EndsWith("_Sort"))
-                {
-                    e.Column.Visibility = Visibility.Collapsed;
-                }
-            }
-
-        }
-
-        private void AlarmOff_Click(object sender, RoutedEventArgs e)
-        {
-            RemoveAlarm();
-        }
-
-        private void FilterLevelNumber_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !IsInteger(e.Text);
-        }
-
-        private void FilterLevelNumber_Pasting(object sender, DataObjectPastingEventArgs e)
-        {
-            if (e.DataObject.GetDataPresent(typeof(string)))
-            {
-                string text = (string)e.DataObject.GetData(typeof(string));
-                if (IsInteger(text))
-                    return;
-            }
-
-            e.CancelCommand();
-        }
-
-        private static bool IsInteger(string text)
-        {
-            return int.TryParse(text, out _);
-        }
+        // Note: at the moment mass markers are based around CreatureId's, but could be used in the future for other purposes (e.g. resources)
 
         private void ShowMassMarkers(string creatureId, string mapName)
         {
@@ -1209,22 +1447,6 @@ namespace Arksplorer
             Info.RemoveMassMarkers(MassMarkerHolder);
         }
 
-        private void MapsToIncludeCheckbox_Click(object sender, RoutedEventArgs e)
-        {
-            string selectedMaps = "";
-            string separator = "";
-            foreach (var map in MapList)
-            {
-                if (map.Load)
-                {
-                    selectedMaps += separator + map.Name;
-                    separator = ",";
-                }
-            }
-
-            Settings.Default.LastMaps = selectedMaps;
-        }
-
         private void ShowSameType_Click(object sender, RoutedEventArgs e)
         {
             if (ShowSameType.IsChecked ?? false)
@@ -1233,124 +1455,71 @@ namespace Arksplorer
                 RemoveMassMarkers();
         }
 
-        private void FilterLevelType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (WPFInitialisting)
-                return;
+        #endregion MassMarkers
 
-            ApplyFilterCriteria();
+        #region Misc
+
+        private static bool IsInteger(string text)
+        {
+            return int.TryParse(text, out _);
         }
 
-        private void ServerBack_Click(object sender, RoutedEventArgs e)
+        private void SetFlashMessage(string message)
         {
-            GoBack(ServerWebTab.Browser);
+            FlashMessage.Text = message;
+            FlashMessage.Visibility = Visibility.Visible;
         }
 
-        private void ServerNavigate_Click(object sender, RoutedEventArgs e)
+        private void HideFlashMessage()
         {
-            Navigate(ServerWebTab, (string)((Button)sender).Tag);
+            FlashMessage.Visibility = Visibility.Collapsed;
         }
 
-        private void ServerOpenExternal_Click(object sender, RoutedEventArgs e)
+        public void LoadableControlsEnabled(bool isEnabled)
         {
-            OpenUrlInExternalBrowser(ServerWebTab.CurrentUrl);
+            ServerList.IsEnabled = isEnabled;
+            LoadTameDinos.IsEnabled = isEnabled;
+            LoadWildDinos.IsEnabled = isEnabled;
+            LoadSurvivors.IsEnabled = isEnabled;
         }
 
-        private void ArkpediaForward_Click(object sender, RoutedEventArgs e)
+        public void LoadingVisualEnabled(bool isEnabled)
         {
-            GoForward(ArkpediaWebTab.Browser);
-        }
-
-        private void DododexForward_Click(object sender, RoutedEventArgs e)
-        {
-            GoForward(DododexWebTab.Browser);
-        }
-
-        private void ServerForward_Click(object sender, RoutedEventArgs e)
-        {
-            GoForward(ServerWebTab.Browser);
-        }
-
-        private void Window_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (CurrentRectanglePopUpInfo != null)
-                SetSelectedInfo(CurrentRectanglePopUpInfo);
-        }
-
-        private void ButtonFilter_Click(object sender, RoutedEventArgs e)
-        {
-            Button button = (Button)sender;
-            FilterCriteria.Text = button.Tag as string;
-            ApplyFilterCriteria(true);
-        }
-
-        private void IncludeDetailsInPopUps_Click(object sender, RoutedEventArgs e)
-        {
-            DetailInPopUps = IncludeDetailsInPopUps.IsChecked ?? false;
-            Properties.Settings.Default.IncludeDetailsInPopUps = DetailInPopUps;
-        }
-
-        private void DataVisual_Sorting(object sender, DataGridSortingEventArgs e)
-        {
-            DataGridColumn column = e.Column;
-            DataTable data = (DataTable)DataVisual.DataContext;
-            var columnType = data.Columns[column.DisplayIndex].DataType;
-            if (columnType == typeof(ArkColor))
+            if (isEnabled)
             {
-                // Sorting on our own custom colours is an absolute pain in the rear
-                // Also - colours - how do you sort on a colour? Namne? Id? RGB value?
-                // So we have custom sort column for each for just this purpose - how a sort code is stuck in here, well, we can be flexible!
-                // We intercept the sorting so we can specify the sort column here instead
-                ICollectionView dataView = CollectionViewSource.GetDefaultView(DataVisual.ItemsSource);
-                dataView.SortDescriptions.Clear();
-                dataView.SortDescriptions.Add(new SortDescription($"{column.Header}_Sort", column.SortDirection ?? ListSortDirection.Ascending));
-
-                e.Handled = true;
+                GeneralLoadingSpinner.Child = LoadingSpinner;
+                GeneralLoadingSpinner.Visibility = Visibility.Visible;
+                ExtraInfoHolder.Visibility = Visibility.Hidden;
             }
             else
-                return;
+            {
+                GeneralLoadingSpinner.Child = null;
+                GeneralLoadingSpinner.Visibility = Visibility.Hidden;
+                ExtraInfoHolder.Visibility = Visibility.Visible;
+            }
         }
 
-        private void FilterColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private static void ExitApplication()
         {
-            if (WPFInitialisting)
-                return;
-
-            ((Storyboard)this.FindResource("FlashBorder")).Begin(FilterColorCloseness);
-            FlashFilterColorButtons();
+            Application.Current.Shutdown();
         }
 
-        private void FlashFilterColorButtons()
+        private void Exit_Click(object sender, RoutedEventArgs e)
         {
-            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterC0);
-            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterC1);
-            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterC2);
-            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterC3);
-            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterC4);
-            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterC5);
-            ((Storyboard)this.FindResource("FlashBackground")).Begin(FilterCAll);
+            ExitApplication();
         }
 
-        private void FilterColor_Click(object sender, RoutedEventArgs e)
+        private void About_Click(object sender, RoutedEventArgs e)
         {
-            ArkColor color = ((KeyValuePair<int, ArkColor>)FilterColor.SelectedItem).Value;
-
-            if (color == null)
-                return;
-
-            Button button = (Button)sender;
-
-            FilterCriteria.Text = $"{button.Tag as string}={color.Id}";
-            ApplyFilterCriteria();
+            ShowExtraInfo(AboutExtraInfo);
         }
 
-        private void FilterColorCloseness_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ExternalResources_Click(object sender, RoutedEventArgs e)
         {
-            if (WPFInitialisting)
-                return;
-
-            FlashFilterColorButtons();
+            ShowExtraInfo(ResourcesAndLinksExtraInfo);
         }
+
+        #endregion Misc
 
         //private bool DebugEnabled { get; set; } = true;
 
