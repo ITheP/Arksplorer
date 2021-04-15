@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -23,6 +24,9 @@ namespace Arksplorer
             double r, g, b;
             byte byteR, byteG, byteB;
 
+            // make sure hue is always 0->1
+            hue -= Math.Floor(hue);
+
             hue *= 360.0;
 
             if (saturation == 0.0)
@@ -43,7 +47,7 @@ namespace Arksplorer
             g = hue;
             b = hue - 0.33333333;
 
-             byteR = CalcComponent(t1, t2, r);
+            byteR = CalcComponent(t1, t2, r);
             byteG = CalcComponent(t1, t2, g);
             byteB = CalcComponent(t1, t2, b);
 

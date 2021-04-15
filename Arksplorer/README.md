@@ -90,7 +90,8 @@ v1.1.1
 - Hide messages that shouldn't stick around
 - Make buttons flash under certain conditions to help with usage between controls
 - Neatened up main window code
+- Moved web browser components into reusable user control
+- Made flash message more colorfull!
 
 ToDo:
 - Click on a colour on a dino and it sets the search color
-- Need to disable color searches for entities that don't have colors (e.g. survivors)

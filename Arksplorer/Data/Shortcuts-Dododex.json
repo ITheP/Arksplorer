@@ -1,0 +1,27 @@
+[
+    {
+        "Description": "Creatures",
+        "Details": "Creatures",
+        "Value": "https://www.dododex.com/dinosaurs"
+    },
+    {
+        "Description": "Consume",
+        "Details": "Consumables",
+        "Value": "https://www.dododex.com/consumables"
+    },
+    {
+        "Description": "Resources",
+        "Details": "Resources",
+        "Value": "https://www.dododex.com/resources"
+    },
+    {
+        "Description": "Kibble",
+        "Details": "Kibble",
+        "Value": "https://www.dododex.com/kibble"
+    },
+    {
+        "Description": "Saddles",
+        "Details": "Saddles",
+        "Value": "https://www.dododex.com/saddles"
+    }
+]

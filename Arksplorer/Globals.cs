@@ -11,6 +11,9 @@ namespace Arksplorer
 
         public const string Version = "v1.1.1 - The Bigger Bite";
 
+        public static WebBrowser ArkpediaBrowser { get; set; }
+        public static WebBrowser DododexBrowser { get; set; }
+
         /// <summary>
         /// Static reference to main app window that is decoupled from Application.Current.MainWindow (which e.g. can point to splash screen during start up and not an instance of the main window)
         /// </summary>

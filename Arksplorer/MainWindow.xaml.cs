@@ -248,121 +248,22 @@ namespace Arksplorer
 
         #region Web and WebTabs
 
-        //private List<WebTab> WebTabs { get; set; }
-        public WebTab ArkpediaWebTab { get; set; }
-        public WebTab DododexWebTab { get; set; }
-        public WebTab ServerWebTab { get; set; }
-
         private void InitWebTabs()
         {
-            ArkpediaWebTab = new(ArkpediaBrowser) { LoadingControl = ArkpediaLoadingSpinner, Browser = ArkpediaBrowser, Tab = ArkpediaTab };
-            DododexWebTab = new(DododexBrowser) { LoadingControl = DododexLoadingSpinner, Browser = DododexBrowser, Tab = DododexTab };
-            ServerWebTab = new(ServerBrowser) { LoadingControl = ServerLoadingSpinner, Browser = ServerBrowser, Tab = ServerTab };
+            // Could make browser controls publically accessible elsewhere using x:FieldModifier="public" in xml, but we are making them accessible via Global class instead
+            Globals.ArkpediaBrowser = ArkpediaBrowser;
+            ArkpediaBrowser.Init("Ark Wikipedia", "https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki");
+
+            Globals.DododexBrowser = DododexBrowser;
+            DododexBrowser.Init("Dododex", "https://www.dododex.com/");
+
+            ServerBrowser.Init("Server");
         }
 
-        private static void GoBack(Microsoft.Web.WebView2.Wpf.WebView2 browser)
-        {
-            if (browser.CanGoBack)
-                browser.GoBack();
-        }
-
-        private static void GoForward(Microsoft.Web.WebView2.Wpf.WebView2 browser)
-        {
-            if (browser.CanGoForward)
-                browser.GoForward();
-        }
-
-        public static void Navigate(WebTab webTab, string url, bool jumpToTab = true)
-        {
-            try
-            {
-                var browser = webTab.Browser;
-
-                if (browser.CoreWebView2 == null)
-                    browser.Source = new Uri(url);
-                else
-                    browser.CoreWebView2?.Navigate(url);
-
-                if (jumpToTab && webTab.Tab != null)
-                    webTab.Tab.Focus();
-            }
-            catch (Exception ex)
-            {
-                Debug.Print($"Error navigating to '{url}': {ex.Message}");
-            }
-        }
-        private static void OpenUrlInExternalBrowser(string url)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-                return;
-
-            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-        }
         private void HandleLinkClick(object sender, RequestNavigateEventArgs e)
         {
-            OpenUrlInExternalBrowser(e.Uri.AbsoluteUri);
+            Web.OpenUrlInExternalBrowser(e.Uri.AbsoluteUri);
             e.Handled = true;
-        }
-
-        private void DododexNavigate_Click(object sender, RoutedEventArgs e)
-        {
-            Navigate(DododexWebTab, (string)((Button)sender).Tag);
-        }
-
-        private void DododexBack_Click(object sender, RoutedEventArgs e)
-        {
-            GoBack(DododexWebTab.Browser);
-        }
-
-        private void ArkpediaNavigate_Click(object sender, RoutedEventArgs e)
-        {
-            Navigate(ArkpediaWebTab, (string)((Button)sender).Tag);
-        }
-
-
-        private void ArkpediaBack_Click(object sender, RoutedEventArgs e)
-        {
-            GoBack(ArkpediaWebTab.Browser);
-        }
-
-        private void ArkpediaOpenExternal_Click(object sender, RoutedEventArgs e)
-        {
-            OpenUrlInExternalBrowser(ArkpediaWebTab.CurrentUrl);
-        }
-
-        private void DododexOpenExternal_Click(object sender, RoutedEventArgs e)
-        {
-            OpenUrlInExternalBrowser(DododexWebTab.CurrentUrl);
-        }
-
-        private void ServerBack_Click(object sender, RoutedEventArgs e)
-        {
-            GoBack(ServerWebTab.Browser);
-        }
-
-        private void ServerNavigate_Click(object sender, RoutedEventArgs e)
-        {
-            Navigate(ServerWebTab, (string)((Button)sender).Tag);
-        }
-
-        private void ServerOpenExternal_Click(object sender, RoutedEventArgs e)
-        {
-            OpenUrlInExternalBrowser(ServerWebTab.CurrentUrl);
-        }
-
-        private void ArkpediaForward_Click(object sender, RoutedEventArgs e)
-        {
-            GoForward(ArkpediaWebTab.Browser);
-        }
-
-        private void DododexForward_Click(object sender, RoutedEventArgs e)
-        {
-            GoForward(DododexWebTab.Browser);
-        }
-
-        private void ServerForward_Click(object sender, RoutedEventArgs e)
-        {
-            GoForward(ServerWebTab.Browser);
         }
 
         #endregion Web and WebTabs
@@ -741,7 +642,7 @@ namespace Arksplorer
 
         private void ClearFilter()
         {
-            if (CurrentDataPackage.Data != null)
+            if (CurrentDataPackage?.Data != null)
             {
                 DataVisual.DataContext = CurrentDataPackage.Data;
                 HideFlashMessage();
@@ -1207,8 +1108,8 @@ namespace Arksplorer
                     LoadingVisualEnabled(false);
                     ServerLoadedControls.Visibility = Visibility.Visible;
 
-                    ServerBrowser.Source = new Uri(ServerConfig.Website);
-                    ServerHome.Tag = ServerConfig.Website;
+                    ServerBrowser.SetBrowserSource(ServerConfig.Website);
+                    ServerBrowser.SetHomeUrl(ServerConfig.Website);
 
                     ServerInfoList.ItemsSource = ServerConfig.GetServerOverview().Items;
 
@@ -1408,16 +1309,29 @@ namespace Arksplorer
                 return;
 
             pos = e.GetPosition(this);
-            var width = Width;
-            var height = Height;
+   
+            // Only update if we have some change that's taken place
+            if (Last_PosX != pos.X || Last_PosY != pos.Y)
+            {
+                Last_PosX = pos.X;
+                Last_PosY = pos.Y;
 
-            var percX = (pos.X / width);
-            var percY = (pos.Y / height);
+                var width = Width;
+                var height = Height;
 
+                var percX = (pos.X / width);
+                var percY = (pos.Y / height);
 
-            var brush = new SolidColorBrush(ColorHelper.HSLToColor(percX, 1.0, 1.0 - percY));
-            FlashMessage.Foreground = brush;
+                FlashMessageC1.Color = ColorHelper.HSLToColor(percX - (60.0 / 360.0), 1.0, 1.0 - percY);
+                FlashMessageC2.Color = ColorHelper.HSLToColor(percX, 1.0, 1.0 - percY);
+                FlashMessageC3.Color = ColorHelper.HSLToColor(percX - (240.0 / 360.0), 1.0, 1.0 - percY);
+                FlashMessageC4.Color = ColorHelper.HSLToColor(percX - (120.0 / 360.0), 1.0, 1.0 - percY);
+            }
+
         }
+
+        private double Last_PosX { get; set; }
+        private double Last_PosY { get; set; }
 
         private void Window_MouseUp(object sender, MouseButtonEventArgs e)
         {

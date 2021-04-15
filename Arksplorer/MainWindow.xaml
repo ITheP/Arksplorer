@@ -32,7 +32,9 @@
             <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="1.0" To="0.0" Duration="0:0:0.75"/>
         </Storyboard>
         <!--<Storyboard x:Key="FlashBorder">
-            --><!--<ColorAnimation Storyboard.TargetProperty="BorderThickness" To="Red" AutoReverse="True" Duration="0:0:0.5" />--><!--
+            -->
+        <!--<ColorAnimation Storyboard.TargetProperty="BorderThickness" To="Red" AutoReverse="True" Duration="0:0:0.5" />-->
+        <!--
             <ThicknessAnimation Storyboard.TargetProperty="BorderThickness" From="5,5,5,5" To="0,0,0,0" Duration="0:0:0.25"/>
         </Storyboard>-->
         <!--<Storyboard x:Key="FlashBackground">
@@ -260,7 +262,7 @@
                             <TextBlock ScrollViewer.VerticalScrollBarVisibility="Auto" TextAlignment="Center"  TextWrapping="Wrap">
                             <Span FontSize="16" FontWeight="Bold">Arksplorer</Span>
                             <LineBreak/>
-                            <Span FontStyle="Italic">© 2021 MisterB@ITheP.Rocks</Span>
+                            <Span FontStyle="Italic">© 2021 MisterB @ ITheP.Rocks</Span>
                             <LineBreak/>
                             <LineBreak/>
                             Simple front end Ark data visualiser that takes bits of Ark data expose
@@ -402,7 +404,16 @@
                                     CanUserResizeColumns="True"/>
 
                                     <Viewbox Margin="10" >
-                                        <TextBlock x:Name="FlashMessage" FontSize="8" HorizontalAlignment="Center" Foreground="White" VerticalAlignment="Center" TextAlignment="Center">
+                                        <TextBlock x:Name="FlashMessage" FontSize="8" HorizontalAlignment="Center" Height="160" VerticalAlignment="Center" TextAlignment="Center">
+                                            <TextBlock.Foreground>
+                                                <LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,160">
+                                                    <GradientStop x:Name="FlashMessageC1" Color="Yellow" Offset="0.0"/>
+                                                    <GradientStop x:Name="FlashMessageC2" Color="Red" Offset="0.25"/>
+                                                    <GradientStop x:Name="FlashMessageC3" Color="Blue" Offset="0.75"/>
+                                                    <GradientStop x:Name="FlashMessageC4" Color="LimeGreen" Offset="1.0"/>
+
+                                                </LinearGradientBrush>
+                                            </TextBlock.Foreground>
                                             <Run FontSize="16" FontWeight="Black">wiredcat.hopto.org</Run>
                                             <LineBreak/>  
                                             <LineBreak/>  
@@ -437,71 +448,13 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="Ark Wikipedia" x:Name="ArkpediaTab">
-                    <DockPanel>
-                        <DockPanel DockPanel.Dock="Top">
-                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,0,0,0">
-                                <Viewbox x:Name="ArkpediaLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                    <local:Spinner/>
-                                </Viewbox>
-                                <Button x:Name="ArkpediaOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="ArkpediaOpenExternal_Click"/>
-                            </StackPanel>
-                            <WrapPanel>
-                                <Button x:Name="ArkpediaBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="ArkpediaBack_Click"/>
-                                <Button x:Name="ArkpediaForward" Content="&#xE72A;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="ArkpediaForward_Click"/>
-                                <Button x:Name="ArkpediaHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki" Click="ArkpediaNavigate_Click"/>
-                                <WrapPanel>
-                                    <Button x:Name="ArkpediaResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/Data_Maps" Click="ArkpediaNavigate_Click"/>
-                                    <Button x:Name="ArkpediaMaps" Content="Maps" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/ARKs" Click="ArkpediaNavigate_Click"/>
-                                    <Button x:Name="ArkpediaLoot" Content="Loot" Style="{StaticResource BrowserButton}" Tag="https://ark.gamepedia.com/Loot_Tables" Click="ArkpediaNavigate_Click"/>
-                                </WrapPanel>
-                            </WrapPanel>
-                        </DockPanel>
-                        <wv2:WebView2 x:Name="ArkpediaBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki" />
-                    </DockPanel>
+                    <local:WebBrowser x:Name="ArkpediaBrowser"/>
                 </TabItem>
                 <TabItem Header="Dododex" x:Name="DododexTab">
-                    <DockPanel>
-                        <DockPanel DockPanel.Dock="Top">
-                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,0,0,0">
-                                <Viewbox x:Name="DododexLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                    <local:Spinner/>
-                                </Viewbox>
-                                <Button x:Name="DododexOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="DododexOpenExternal_Click"/>
-                            </StackPanel>
-                            <WrapPanel>
-                                <Button x:Name="DododexBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="DododexBack_Click"/>
-                                <Button x:Name="DododexForward" Content="&#xE72A;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="DododexForward_Click"/>
-                                <Button x:Name="DododexHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="https://www.dododex.com/" Click="DododexNavigate_Click"/>
-                                <WrapPanel>
-                                    <Button x:Name="DododexCreatures" Content="Creatures" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/dinosaurs" Click="DododexNavigate_Click"/>
-                                    <Button x:Name="DododexConsumables" Content="Consume" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/Consumables" Click="DododexNavigate_Click"/>
-                                    <Button x:Name="DododexResources" Content="Resources" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/resources" Click="DododexNavigate_Click"/>
-                                    <Button x:Name="DododexKibble" Content="Kibble" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/kibble" Click="DododexNavigate_Click"/>
-                                    <Button x:Name="DododexSaddles" Content="Saddles" Style="{StaticResource BrowserButton}" Tag="https://www.dododex.com/saddles" Click="DododexNavigate_Click"/>
-                                </WrapPanel>
-                            </WrapPanel>
-                        </DockPanel>
-                        <wv2:WebView2 x:Name="DododexBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="https://www.dododex.com/" />
-                    </DockPanel>
+                    <local:WebBrowser x:Name="DododexBrowser"/>
                 </TabItem>
                 <TabItem Header="Server Website" x:Name="ServerTab">
-                    <DockPanel>
-                        <DockPanel DockPanel.Dock="Top">
-                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Top" Margin="4,0,0,0">
-                                <Viewbox x:Name="ServerLoadingSpinner" Height="22" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                    <local:Spinner/>
-                                </Viewbox>
-                                <Button x:Name="ServerOpenExternal" Content="&#xE774;" Style="{StaticResource BrowserIconButton}" Margin="3,3,0,3" Click="ServerOpenExternal_Click"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Button x:Name="ServerBack" Content="&#xE72B;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="ServerBack_Click"/>
-                                <Button x:Name="ServerForward" Content="&#xE72A;" Style="{StaticResource BrowserIconButton}" Margin="0,3,3,3" Click="ServerForward_Click"/>
-                                <Button x:Name="ServerHome" Content="&#xE80F;" Style="{StaticResource BrowserIconButton}" Tag="" Click="ServerNavigate_Click"/>
-                            </StackPanel>
-
-                        </DockPanel>
-                        <wv2:WebView2 x:Name="ServerBrowser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="" />
-                    </DockPanel>
+                    <local:WebBrowser x:Name="ServerBrowser"/>
                 </TabItem>
                 <TabItem Header="Server Info" x:Name="ServerInfoTab">
                     <StackPanel>

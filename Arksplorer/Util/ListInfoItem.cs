@@ -2,7 +2,7 @@
 
 namespace Arksplorer
 {
-    public class ListInfoItem
+    public struct ListInfoItem
     {
         public string Description { get; set; }
         public string Value { get; set; }

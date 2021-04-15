@@ -146,13 +146,13 @@ namespace Arksplorer
 
         private void Arkpedia_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.Navigate(Globals.MainWindow.ArkpediaWebTab, $"https://ark.fandom.com/wiki/{CurrentDinoData.ArkpediaUrl}");
+            Globals.ArkpediaBrowser.Navigate($"https://ark.fandom.com/wiki/{CurrentDinoData.ArkpediaUrl}");
         }
 
         private void Dododex_Click(object sender, RoutedEventArgs e)
         {
             var serverConfig = MainWindow.ServerConfig;
-            MainWindow.Navigate(Globals.MainWindow.DododexWebTab, $"https://www.dododex.com/taming/{CurrentDinoData.DododexUrl}#level={CurrentDino.Level}&taming={serverConfig.TamingSpeedMultiplier}&consumption={serverConfig.FoodDrainMultiplier}");
+            Globals.DododexBrowser.Navigate( $"https://www.dododex.com/taming/{CurrentDinoData.DododexUrl}#level={CurrentDino.Level}&taming={serverConfig.TamingSpeedMultiplier}&consumption={serverConfig.FoodDrainMultiplier}");
         }
     }
 }
