@@ -85,7 +85,7 @@ v1.1 The Bigger Bite - 10/04/2021
 - Ordering by colour now possible! (Color order manually set in lookup data)
 - Search by colour (including fuzzy searching of nearby colours)
 
-v1.1.1
+v1.2 The Snaggled Tooth - 16/04/2021
 - Enable/Disable filter controls depending on data type
 - Hide messages that shouldn't stick around
 - Make buttons flash under certain conditions to help with usage between controls
