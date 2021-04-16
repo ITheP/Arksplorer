@@ -9,7 +9,9 @@ Setting up ARKViewer is beyond the scope of this document, please refer to any h
 
 Arksplorer requires a few things to operate properly.
 
-1. ARKViewer must be set up to generate various json files
+1. ArkViewer
+
+ARKViewer must be set up to generate various json files
 On the WiredCat server this includes...
    Wild.json      <-- where all wild dinos are
    Dinos.json     <-- where all tame dinos are
@@ -27,13 +29,17 @@ http://wiredcat.hopto.org/WiredcatRagnarok/Survivors.json
 http://wiredcat.hopto.org/WiredcatRagnarok/timestamp.json
 etc. for ragnarock, and a different subfolder for each other map
 
-2. You need to host a file ArksplorerData.json on the web site.
+2. Hosting the data
+
+You need to host a file ArksplorerData.json on the web site.
 This file is used by Arksplorer when it starts up to load in a bit of information about your server along with what your websites URL's are (see point 1 above) for the various peices of data hosted there.
 This means that end users don't have to worry about configurations, and you can change as you want.
 
 An example ArksplorerData.json is included in the same folder as this file.
 
-3. Give us at Arksplorer a shout where your web sites URL ArksplorerData.json is so we can add it to the clients predefined list of servers.
+3. Letting the client know about your server
+
+Give us at Arksplorer a shout where your web sites URL ArksplorerData.json is so we can add it to the clients predefined list of servers.
 We just need 3 bits of information...
 
 {
@@ -51,5 +57,11 @@ Arksplorer will go get the config file from your server
 Then it knows where to read in the data itself.
 
 Magic!
+
+Alternatively, you can simply publish this information yourself.
+Define a .json file containing the information listed above, and give to your players to copy into their .../Arksplorer/Servers folder.
+Arskplorer will scan this folder and pick up any .json server definition files and add them into the interface.
+There is are example `YourServer.json` and `YourServers.json` files here you can look at, for both a single server and multi server set up.
+You can specify as many servers as you want in a multi-server variant - it is just a list of server information.
 
 ToDo: Details from wiredcat on how exactly scripts are run!

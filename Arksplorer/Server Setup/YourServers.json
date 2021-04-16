@@ -1,0 +1,12 @@
+[
+    {
+        "Name": "Your server name",
+        "Website": "http://server.website.com/",
+        "Url": "http://server.website.com/ArksplorerData.json"
+    },
+    {
+        "Name": "Your other server name",
+        "Website": "http://other.server.com/MainPage.aspx",
+        "Url": "http://other.server.com/datafiles/ArksplorerData.json"
+    }
+]
