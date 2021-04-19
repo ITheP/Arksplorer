@@ -93,16 +93,13 @@ v1.2 The Snaggled Tooth - 16/04/2021
 - Moved web browser components into reusable user control
 - Made flash message more colorfull!
 
-v1.2.1
+v1.2.3 The Snagglier Tooth - 19/04/2021
 - Can turn on/off the mouse over pop up information windows
 - Right click on colors to set that as the Filter Color
 - Custom marker (click on map)
 - Zoom into map (centered on selected dino or custom marker)
 
 ToDo:
-- Click on a colour on a dino and it sets the search color
-- Movable custom marker (to mark where you are)
 - Handle WebView2 browser crashes https://github.com/MicrosoftEdge/WebView2Feedback/issues/774
 - Selected mass marker -> select in list?
-- Zoom
-- Disable mouseover
+- More configurables saved into user settings

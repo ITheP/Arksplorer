@@ -9,7 +9,7 @@ namespace Arksplorer
     public static class Globals
     {
 
-        public const string Version = "v1.2.1 - The Snaggled Tooth";
+        public const string Version = "v1.2.3 - The Snagglier Tooth";
 
         public static WebBrowser ArkpediaBrowser { get; set; }
         public static WebBrowser DododexBrowser { get; set; }

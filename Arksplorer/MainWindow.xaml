@@ -301,7 +301,7 @@
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0" DockPanel.Dock="Top" Margin="0,0,0,8">
                             <Image x:Name="SplashImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
-                            <Viewbox Stretch="UniformToFill" RenderTransformOrigin="0.5,0.5" ClipToBounds="True">
+                            <Viewbox Stretch="Uniform" RenderTransformOrigin="0.5,0.5" ClipToBounds="True">
                                 <Grid x:Name="MapHolder" Width="100" Height="100">
                                     <Grid.RenderTransform>
                                         <TransformGroup>
@@ -340,7 +340,7 @@
                                 <StackPanel DockPanel.Dock="Top">
                                     <DockPanel Margin="0,10,0,0">
                                         <TextBlock VerticalAlignment="Center" Width="35" DockPanel.Dock="Left">Zoom</TextBlock>
-                                        <Ellipse x:Name="HideCustomMarker"  Fill="LightGray" Stroke="LightGray" StrokeThickness="3" Width="20" Height="20" VerticalAlignment="Top" Margin="8,0,0,0" DockPanel.Dock="Right" MouseUp="HideCustomMarker_MouseUp"/>
+                                        <Ellipse x:Name="HideCustomMarker"  Fill="LightGray" Stroke="LightGray" StrokeThickness="3" Width="20" Height="20" VerticalAlignment="Top" Margin="8,-3,0,0" DockPanel.Dock="Right" MouseUp="HideCustomMarker_MouseUp"/>
                                         <Slider x:Name="Zoom" Value="1" Minimum="1" Maximum="25" SmallChange="1" LargeChange="1" TickFrequency="1" TickPlacement="BottomRight" />
                                     </DockPanel>
                                     <DockPanel Margin="0,4,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
