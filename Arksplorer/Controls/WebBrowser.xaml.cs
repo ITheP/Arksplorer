@@ -77,8 +77,8 @@ namespace Arksplorer
             // When clearing buttons, make sure any event's are cleared too - incase of references hanging around
             foreach (var element in Shortcuts.Children)
             {
-                if (element is Button)
-                    ((Button)element).Click -= Navigate_Click;
+                if (element is Button button)
+                    button.Click -= Navigate_Click;
             }
             Shortcuts.Children.Clear();
 

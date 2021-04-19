@@ -8,7 +8,8 @@
         mc:Ignorable="d"
         Title="Arksplorer" Height="1100" Width="800" MinWidth="800" MinHeight="950"
         MouseMove="Window_MouseMove"
-        MouseUp="Window_MouseUp">
+        MouseUp="Window_MouseUp"
+        MouseRightButtonUp="Window_MouseRightButtonUp">
     <Window.Resources>
         <Style TargetType="Button" x:Key="BrowserButton">
             <Setter Property="Margin" Value="3" />
@@ -27,9 +28,9 @@
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="FontSize" Value="16"/>
         </Style>
-        <Storyboard x:Key="MarkerShrinker" RepeatBehavior="Forever">
-            <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="1.0" To="0.0" Duration="0:0:0.75"/>
-            <DoubleAnimation Storyboard.TargetName="Marker" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="1.0" To="0.0" Duration="0:0:0.75"/>
+        <Storyboard x:Key="AnimatedMarker" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="1.0" To="0.0" Duration="0:0:0.75"/>
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="1.0" To="0.0" Duration="0:0:0.75"/>
         </Storyboard>
         <!--<Storyboard x:Key="FlashBorder">
             -->
@@ -71,11 +72,11 @@
             <Image Source="{Binding}"/>
         </DataTemplate>
     </Window.Resources>
-    <Window.Triggers>
+    <!--<Window.Triggers>
         <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-            <BeginStoryboard Storyboard="{StaticResource MarkerShrinker}"/>
+            <BeginStoryboard  Storyboard="{StaticResource MarkerShrinker}"/>
         </EventTrigger>
-    </Window.Triggers>
+    </Window.Triggers>-->
     <Grid x:Name="Root">
         <Popup Name="PopUpInfo"
             Placement="Relative"
@@ -200,7 +201,7 @@
                                     <LineBreak/>
                                     Visit our facebook page... <Hyperlink NavigateUri="http://facebook.com/arksplorer" RequestNavigate="HandleLinkClick">facebook.com/arksplorer</Hyperlink>
                                 </TextBlock>
-                                <Grid x:Name="ExtraInfoMapDataHolder">
+                                <Grid x:Name="ExtraInfoMapDataHolder" Visibility="Collapsed">
                                     <StackPanel>
                                         <TextBlock TextAlignment="Right" Margin="0,0,1,0">Data updates</TextBlock>
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
@@ -300,9 +301,14 @@
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0" DockPanel.Dock="Top" Margin="0,0,0,8">
                             <Image x:Name="SplashImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
-                            <Viewbox Stretch="Uniform">
+                            <Viewbox Stretch="UniformToFill" RenderTransformOrigin="0.5,0.5" ClipToBounds="True">
                                 <Grid x:Name="MapHolder" Width="100" Height="100">
-                                    <Image x:Name="MapImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
+                                    <Grid.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform x:Name="MapHolderZoom" ScaleX="{Binding ElementName=Zoom,Path=Value}" ScaleY="{Binding ElementName=Zoom,Path=Value}" CenterX="50" CenterY="50"/>
+                                        </TransformGroup>
+                                    </Grid.RenderTransform>
+                                    <Image x:Name="MapImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill" MouseUp="MapImage_MouseUp" />
                                     <Grid x:Name="MassMarkerHolder">
                                     </Grid>
                                     <Ellipse x:Name="Marker" Width="5" Height="5" Fill="CornflowerBlue" Stroke="White" StrokeThickness="0.55" RenderTransformOrigin="0.5,0.5">
@@ -315,6 +321,16 @@
                                             </TransformGroup>
                                         </Ellipse.RenderTransform>
                                     </Ellipse>
+                                    <Ellipse x:Name="CustomMarker" Width="5" Height="5" Fill="DarkOrange" Stroke="White" StrokeThickness="0.55" RenderTransformOrigin="0.5,0.5" MouseUp="CustomMarker_MouseUp">
+                                        <Ellipse.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform x:Name="CustomMarkerScale" ScaleX="1.0" ScaleY="1.0"/>
+                                                <SkewTransform/>
+                                                <RotateTransform/>
+                                                <TranslateTransform x:Name="CustomMarkerOffset" X="15" Y="25"/>
+                                            </TransformGroup>
+                                        </Ellipse.RenderTransform>
+                                    </Ellipse>
                                 </Grid>
                             </Viewbox>
                             <local:InfoVisual x:Name="OverviewInfo" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="4" Padding="4" />
@@ -322,7 +338,12 @@
                         <Grid Grid.Row="1" VerticalAlignment="Stretch">
                             <DockPanel VerticalAlignment="Stretch">
                                 <StackPanel DockPanel.Dock="Top">
-                                    <DockPanel Margin="0,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                                    <DockPanel Margin="0,10,0,0">
+                                        <TextBlock VerticalAlignment="Center" Width="35" DockPanel.Dock="Left">Zoom</TextBlock>
+                                        <Ellipse x:Name="HideCustomMarker"  Fill="LightGray" Stroke="LightGray" StrokeThickness="3" Width="20" Height="20" VerticalAlignment="Top" Margin="8,0,0,0" DockPanel.Dock="Right" MouseUp="HideCustomMarker_MouseUp"/>
+                                        <Slider x:Name="Zoom" Value="1" Minimum="1" Maximum="25" SmallChange="1" LargeChange="1" TickFrequency="1" TickPlacement="BottomRight" />
+                                    </DockPanel>
+                                    <DockPanel Margin="0,4,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
                                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Top">
                                             <Button x:Name="ApplyFilter" Margin="16,0,0,0" Width="75" VerticalAlignment="Center" Click="ApplyFilter_Click">Apply</Button>
                                             <Button x:Name="ExactFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="ExactFilter_Click">Exact</Button>
@@ -330,7 +351,7 @@
                                         </StackPanel>
 
                                         <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" Width="35">Filter</TextBlock>
-                                        <TextBox x:Name="FilterCriteria" HorizontalAlignment="Stretch" KeyDown="FilterCriteria_KeyDown"/>
+                                        <TextBox x:Name="FilterCriteria" HorizontalAlignment="Stretch" KeyDown="FilterCriteria_KeyDown" ToolTip="Filter criteria. Multiple criteria possible, just use , separation!"/>
                                     </DockPanel>
                                     <WrapPanel Margin="35,4,4,0" Orientation="Horizontal">
                                         <ComboBox x:Name="FilterLevelType" Width="130" SelectedValuePath="Tag" SelectionChanged="FilterLevelType_SelectionChanged">
@@ -341,7 +362,8 @@
                                         <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" Margin="2,0,0,0" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
                                         <StackPanel Orientation="Horizontal">
                                             <CheckBox x:Name="ShowSameType" Content="Show matching" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" />
-                                            <CheckBox x:Name="IncludeDetailsInPopUps" Content="Include details in popups" Margin="8,2,0,2" VerticalAlignment="Center" Click="IncludeDetailsInPopUps_Click"/>
+                                            <CheckBox x:Name="ShowPopUps" Content="Show popups" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" ToolTip="Show popup information under pointer"/>
+                                            <CheckBox x:Name="IncludeDetailsInPopUps" Content="Include details" Margin="8,2,0,2" VerticalAlignment="Center" Click="IncludeDetailsInPopUps_Click"/>
                                         </StackPanel>
                                     </WrapPanel>
                                     <StackPanel Margin="35,4,4,0" Orientation="Horizontal">

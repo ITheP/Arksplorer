@@ -141,6 +141,7 @@ namespace Arksplorer
             // These are visible at design time to aid design, but want to hide them when window first opens
             MapImage.Visibility = Visibility.Collapsed;
             Marker.Visibility = Visibility.Collapsed;
+            CustomMarker.Visibility = Visibility.Collapsed;
             ServerLoadedControls.Visibility = Visibility.Collapsed;
             DataVisual.Visibility = Visibility.Collapsed;
             OverviewInfo.Visibility = Visibility.Collapsed;
@@ -668,6 +669,16 @@ namespace Arksplorer
             FilterCAll.IsEnabled = enabled;
         }
 
+        public void ApplyPotentialFilterArkColor()
+        {
+            if (PotentialFilterArkColor != null)
+            {
+                // Set the filter colour selector to the current ark color (though we don't auto trigger the filter)
+                FilterColor.SelectedValue = PotentialFilterArkColor;
+                PotentialFilterArkColor = null;
+            }
+        }
+
         private void FilterColor_Click(object sender, RoutedEventArgs e)
         {
             if (FilterColor.SelectedItem == null)
@@ -774,11 +785,21 @@ namespace Arksplorer
             FlashControlStoryboard = (Storyboard)this.FindResource("FlashControl");
             FlashTriggeredControlStoryboard = (Storyboard)this.FindResource("FlashTriggeredControl");
             FlashMissingControlStoryboard = (Storyboard)this.FindResource("FlashMissingControl");
+            AnimatedMarkerStoryboard = (Storyboard)this.FindResource("AnimatedMarker");
+
+            AnimateMarkers();
+        }
+
+        private void AnimateMarkers()
+        {
+            AnimatedMarkerStoryboard.Begin(Marker);
+            AnimatedMarkerStoryboard.Begin(CustomMarker);
         }
 
         Storyboard FlashControlStoryboard { get; set; }
         Storyboard FlashTriggeredControlStoryboard { get; set; }
         Storyboard FlashMissingControlStoryboard { get; set; }
+        Storyboard AnimatedMarkerStoryboard { get; set; }
 
         private void FlashControl(FrameworkElement element)
         {
@@ -804,6 +825,44 @@ namespace Arksplorer
         private void FlashLoadDataButtons()
         {
             FlashControl(LoadDataButtons);
+        }
+
+        private double MarkerZoomCenterX { get; set; }
+        private double MarkerZoomCenterY { get; set; }
+
+        private void MapImage_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            HandleMapImageClick(e.GetPosition(MapImage));
+        }
+
+        private void HandleMapImageClick(Point pos)
+        {
+            double x = pos.X - 50.0d;
+            double y = pos.Y - 50.0d;
+
+            CustomMarkerOffset.X = x;
+            CustomMarkerOffset.Y = y;
+
+            MapHolderZoom.CenterX = x + 50.0d;
+            MapHolderZoom.CenterY = y + 50.0d;
+
+            if (CustomMarker.Visibility != Visibility.Visible)
+            {
+                CustomMarker.Visibility = Visibility.Visible;
+                HideCustomMarker.Fill = Brushes.DarkOrange;
+            }
+        }
+
+        private void DisableCustomMarker()
+        {
+            if (CustomMarker.Visibility != Visibility.Collapsed)
+                CustomMarker.Visibility = Visibility.Collapsed;
+
+            // Reset any zoom position
+            MapHolderZoom.CenterX = MarkerZoomCenterX;
+            MapHolderZoom.CenterY = MarkerZoomCenterY;
+
+            HideCustomMarker.Fill = Brushes.LightGray;
         }
 
         #endregion Control Highlighting
@@ -901,14 +960,21 @@ namespace Arksplorer
                     DataTemplate dataTemplate = new();
                     dataTemplate.DataType = typeof(Rectangle);
 
-                    FrameworkElementFactory factory = new(typeof(Rectangle));
-                    factory.SetValue(Rectangle.WidthProperty, 32.0d);
-                    factory.SetValue(Rectangle.HeightProperty, 16.0d);
-                    Binding binding = new($"{e.PropertyName}");
-                    binding.Converter = new ArkColorDBNullConverter();
-                    factory.SetBinding(Rectangle.FillProperty, binding);
+                    FrameworkElementFactory rectangle = new(typeof(Rectangle));
+                    rectangle.SetValue(Rectangle.WidthProperty, 32.0d);
+                    rectangle.SetValue(Rectangle.HeightProperty, 16.0d);
 
-                    dataTemplate.VisualTree = factory;
+                    Binding fillBinding = new($"{e.PropertyName}");
+                    fillBinding.Converter = new ArkColorDBNullConverter();
+                    rectangle.SetBinding(Rectangle.FillProperty, fillBinding);
+
+                    // Set ArkColor against Tag for future use (e.g. mouse over -> get colour -> set color in filter)
+                    Binding tagBinding = new($"{e.PropertyName}");
+                    rectangle.SetValue(Rectangle.TagProperty, tagBinding);
+
+                    rectangle.SetValue(Rectangle.ToolTipProperty, "Right click to set Filter Color");
+
+                    dataTemplate.VisualTree = rectangle;
 
                     template.CellTemplate = dataTemplate;
                     template.CanUserResize = false;
@@ -972,6 +1038,12 @@ namespace Arksplorer
 
                 MarkerOffset.X = xPos;
                 MarkerOffset.Y = yPos;
+
+                MarkerZoomCenterX = xPos + 50.0d;
+                MarkerZoomCenterY = yPos + 50.0d;
+
+                MapHolderZoom.CenterX = MarkerZoomCenterX;
+                MapHolderZoom.CenterY = MarkerZoomCenterY;
 
                 if (Marker.Visibility != Visibility.Visible)
                     Marker.Visibility = Visibility.Visible;
@@ -1241,7 +1313,9 @@ namespace Arksplorer
 
         private DataGridRow LastDataGridRow { get; set; }
         private Info CurrentRectanglePopUpInfo { get; set; }
-        private System.Windows.Shapes.Rectangle LastRectangle { get; set; }
+        private FrameworkElement LastControl { get; set; }
+        private ArkColor PotentialFilterArkColor { get; set; }
+
         // Note that we COULD attach mouse enter/leave events to all rectangles we have created (mass markers) along with
         // other entities, but then we have to keep track of all the events and remove on rectangle disposal as well (else
         // we can end up with references hanging around). Nightmare. So we don't bother and just check if we are
@@ -1249,6 +1323,7 @@ namespace Arksplorer
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
             bool showPopUpInfo = false;
+            PotentialFilterArkColor = null;
             CurrentRectanglePopUpInfo = null;
 
             // MouseOver on the DataGrid results list
@@ -1258,42 +1333,65 @@ namespace Arksplorer
             if (hitElement != null)
             {
                 DependencyObject element = hitElement;
-                while (element != null && !(element is DataGridCell || element is System.Windows.Shapes.Rectangle))
+                while (element != null && !(element is DataGridCell || (element is FrameworkElement ? ((FrameworkElement)element).Tag != null : false)))
                     element = VisualTreeHelper.GetParent(element);
 
                 if (element != null)
                 {
-                    if (element is Rectangle rectangle)
+                    if (element is DataGridCell)
                     {
-                        // Only interested in rectangles that have an Info in their tag - otherwise we assume its some random other rectangle
-                        if (rectangle.Tag is Info info)
+                        if (ShowPopUps.IsChecked ?? true)
                         {
-                            if (rectangle != LastRectangle)
+                            DataGridCell cell = (DataGridCell)element;
+                            DataGridRow gridRow = DataGridRow.GetRowContainingElement(cell);
+                            if (gridRow != LastDataGridRow)
                             {
-                                LastRectangle = rectangle;
+                                LastDataGridRow = gridRow;
 
-                                PopUpInfoVisual.ShowInfo(info, false, DetailInPopUps);
+                                DataRowView dataRowView = (System.Data.DataRowView)gridRow.Item;
+                                PopUpInfoVisual.ShowInfo(new Info(dataRowView.Row), false, DetailInPopUps);
                             }
 
-                            // Make sure we remember what we are looking at, then if we mouse_up over a rectangle, this will exist and we know what to show in the main static pop up
-                            CurrentRectanglePopUpInfo = info;
+                            // Even if we don't change how this looks, we want to make sure its position is updated
                             showPopUpInfo = true;
+                        }
+                        else
+                        {
+                            showPopUpInfo = false;
                         }
                     }
                     else
                     {
-                        DataGridCell cell = (DataGridCell)element;
-                        DataGridRow gridRow = DataGridRow.GetRowContainingElement(cell);
-                        if (gridRow != LastDataGridRow)
+                        FrameworkElement control = (FrameworkElement)element;
+
+                        // Only interested in rectangles that have an Info in their tag - otherwise we assume its some random other rectangle
+                        if (control.Tag is Info info)
                         {
-                            LastDataGridRow = gridRow;
+                            if (ShowPopUps.IsChecked ?? true)
+                            {
 
-                            DataRowView dataRowView = (System.Data.DataRowView)gridRow.Item;
-                            PopUpInfoVisual.ShowInfo(new Info(dataRowView.Row), false, DetailInPopUps);
+                                if (control != LastControl)
+                                {
+                                    LastControl = control;
+
+                                    PopUpInfoVisual.ShowInfo(info, false, DetailInPopUps);
+                                }
+
+                                // Make sure we remember what we are looking at, then if we mouse_up over a rectangle, this will exist and we know what to show in the main static pop up
+                                CurrentRectanglePopUpInfo = info;
+                                showPopUpInfo = true;
+                            }
+                            else
+                            {
+                                showPopUpInfo = false;
+                            }
                         }
-
-                        // Even if we don't change how this looks, we want to make sure its position is updated
-                        showPopUpInfo = true;
+                        else if (control.Tag is ArkColor arkColor)
+                        {
+                            // We are over a colour!
+                            if (PotentialFilterArkColor != arkColor)
+                                PotentialFilterArkColor = arkColor;
+                        }
                     }
 
 
@@ -1309,7 +1407,7 @@ namespace Arksplorer
                 return;
 
             pos = e.GetPosition(this);
-   
+
             // Only update if we have some change that's taken place
             if (Last_PosX != pos.X || Last_PosY != pos.Y)
             {
@@ -1335,8 +1433,15 @@ namespace Arksplorer
 
         private void Window_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            Debug.Print($"{CurrentRectanglePopUpInfo?.Name ?? "Null"}");
+
             if (CurrentRectanglePopUpInfo != null)
                 SetSelectedInfo(CurrentRectanglePopUpInfo);
+        }
+
+        private void Window_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ApplyPotentialFilterArkColor();
         }
 
         private void IncludeDetailsInPopUps_Click(object sender, RoutedEventArgs e)
@@ -1431,6 +1536,16 @@ namespace Arksplorer
         private void ExternalResources_Click(object sender, RoutedEventArgs e)
         {
             ShowExtraInfo(ResourcesAndLinksExtraInfo);
+        }
+
+        private void CustomMarker_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            HandleMapImageClick(e.GetPosition(MapImage));
+        }
+
+        private void HideCustomMarker_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            DisableCustomMarker();
         }
 
         #endregion Misc

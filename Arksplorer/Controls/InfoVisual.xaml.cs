@@ -129,6 +129,7 @@ namespace Arksplorer
             {
                 control.Text = string.Empty;
                 control.Background = Brushes.White;
+                control.Tag = null;
                 border.BorderBrush = Brushes.LightGray;
                 border.BorderThickness = ThinBorder;
             }
@@ -136,6 +137,7 @@ namespace Arksplorer
             {
                 control.Text = color.Name;
                 control.Background = color.Color;
+                control.Tag = color;
                 border.BorderBrush = Brushes.Black;
                 border.BorderThickness = ThickBorder;
             }
@@ -146,13 +148,13 @@ namespace Arksplorer
 
         private void Arkpedia_Click(object sender, RoutedEventArgs e)
         {
-            Globals.ArkpediaBrowser.Navigate($"https://ark.fandom.com/wiki/{CurrentDinoData.ArkpediaUrl}");
+            Globals.ArkpediaBrowser.Navigate($"https://ark.fandom.com/wiki/{CurrentDinoData.ArkpediaUrl}", Globals.MainWindow.ArkpediaTab);
         }
 
         private void Dododex_Click(object sender, RoutedEventArgs e)
         {
             var serverConfig = MainWindow.ServerConfig;
-            Globals.DododexBrowser.Navigate( $"https://www.dododex.com/taming/{CurrentDinoData.DododexUrl}#level={CurrentDino.Level}&taming={serverConfig.TamingSpeedMultiplier}&consumption={serverConfig.FoodDrainMultiplier}");
+            Globals.DododexBrowser.Navigate( $"https://www.dododex.com/taming/{CurrentDinoData.DododexUrl}#level={CurrentDino.Level}&taming={serverConfig.TamingSpeedMultiplier}&consumption={serverConfig.FoodDrainMultiplier}", Globals.MainWindow.DododexTab);
         }
     }
 }
