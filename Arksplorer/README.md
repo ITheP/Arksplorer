@@ -17,7 +17,7 @@ This version is considered a preview version. Information, supporting files, etc
 
 The `ServerSetup` folder contains details on what needs to be set up on an Ark server for it to work with Arksplorer.
 
-Change History...
+Release change history...
 
 v0.5 Preview - 02/03/2021
 - First public version
@@ -98,6 +98,19 @@ v1.2.3 The Snagglier Tooth - 19/04/2021
 - Right click on colors to set that as the Filter Color
 - Custom marker (click on map)
 - Zoom into map (centered on selected dino or custom marker)
+
+
+1.23.0 - The flappy wing
+- Level filter includes selected level properly
+- Saving a few extra settings to user settings
+- YouTube browser (as people end up watching watching loads of ark related ones)
+- Mouse wheel zooms in and out
+- Last 3 dino's selected appear in Ark Wikipedia and Dododex webbrowser tabs quick link buttons
+- Alarm times changed a bit (removed rarely used ones)
+- Alarm has +/- 1 minute buttons now to increase/decrease current timer
+- Alarm will now flash window as well
+- Changed button highlighting to make it look a bit nicer
+- Misc. optimisations
 
 ToDo:
 - Handle WebView2 browser crashes https://github.com/MicrosoftEdge/WebView2Feedback/issues/774

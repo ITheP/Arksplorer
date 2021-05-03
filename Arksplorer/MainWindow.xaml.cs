@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -22,6 +23,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Xml.Linq;
 
 namespace Arksplorer
 {
@@ -43,7 +45,6 @@ namespace Arksplorer
         private static DispatcherTimer Timer { get; set; }
 
         public static ObservableCollection<MapSelection> MapList { get; set; } = new();
-        public static bool DetailInPopUps { get; set; }
 
         /// <summary>
         /// Forces use of local temp.json file as a data file. Used for debugging (rather than having to make a server trip for data we can't control)
@@ -64,6 +65,7 @@ namespace Arksplorer
 
         private Cursor PrevCursor { get; set; }
 
+        private Settings UserSettings { get; set; }
         //private bool ProcessingQueue { get; set; }
 
         public MainWindow()
@@ -91,8 +93,12 @@ namespace Arksplorer
             // so it's not being calculated while hidden/collapsed (have seen overhead happen even when not visible if its linked into the page)
             LoadingSpinner = GeneralLoadingSpinner.Child;
 
-            DetailInPopUps = Settings.Default.IncludeDetailsInPopUps;
-            IncludeDetailsInPopUps.IsChecked = DetailInPopUps;
+            UserSettings = Settings.Default;
+
+            ShowSameType.IsChecked = UserSettings.ShowSameType;
+            ShowPopups.IsChecked = UserSettings.ShowPopups;
+            IncludeDetailsInPopUps.IsChecked = UserSettings.IncludeDetailsInPopUps;
+            Zoom.Value = UserSettings.Zoom;
 
             InitWebTabs();
 
@@ -103,7 +109,7 @@ namespace Arksplorer
 
                 FilterColor.ItemsSource = Lookup.ArkColors;
 
-                string lastServer = Settings.Default.LastServer;
+                string lastServer = UserSettings.LastServer;
 
                 List<Server> KnownServers = new();
                 foreach (var file in Directory.GetFiles("./Servers/", "*.json"))
@@ -219,9 +225,31 @@ namespace Arksplorer
         private void SetAlarm(object sender, RoutedEventArgs e)
         {
             string duration = (string)((Button)sender).Tag;
-            AlarmTimestamp = DateTime.Now.AddMinutes(double.Parse(duration));
-            AlarmTriggered = false;
+            DateTime now = DateTime.Now;
+
+            bool lapsed = AlarmTimestamp < now;
+            DateTime baseTime;
+
+            if (duration.StartsWith("+") || duration.StartsWith("-"))
+            {
+                if (AlarmEnabled == false)
+                    baseTime = now;
+                else
+                    baseTime = AlarmTimestamp;
+            }
+            else
+                baseTime = now;
+
+            AlarmTimestamp = baseTime.AddMinutes(double.Parse(duration));
+            // Only reset timer if we have gone from a negative time to a positive
+            if (lapsed && AlarmTimestamp > now)
+                AlarmTriggered = false;
+            else if (!lapsed && AlarmTimestamp < now)
+                // We have manually gone negative, cancel any alarm
+                AlarmTriggered = true;
+
             AlarmEnabled = true;
+
             TimerTrigger();
         }
 
@@ -229,6 +257,7 @@ namespace Arksplorer
         {
             AlarmTriggered = true;
             PlaySample("FeedMe");
+            FlashAlarmStoryboard.Begin(this);
         }
 
         private void RemoveAlarm()
@@ -254,9 +283,14 @@ namespace Arksplorer
             // Could make browser controls publically accessible elsewhere using x:FieldModifier="public" in xml, but we are making them accessible via Global class instead
             Globals.ArkpediaBrowser = ArkpediaBrowser;
             ArkpediaBrowser.Init("Ark Wikipedia", "https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki");
+            ArkpediaBrowser.InitRotatingShortcuts(3);
 
             Globals.DododexBrowser = DododexBrowser;
             DododexBrowser.Init("Dododex", "https://www.dododex.com/");
+            DododexBrowser.InitRotatingShortcuts(3);
+
+            Globals.YouTubeBrowser = YouTubeBrowser;
+            YouTubeBrowser.Init("YouTube", "https://youtube.com/");
 
             ServerBrowser.Init("Server");
         }
@@ -282,8 +316,8 @@ namespace Arksplorer
                     flaggedMaps += selection.Name;
             }
 
-            if (Settings.Default.LastMaps != flaggedMaps)
-                Settings.Default.LastMaps = flaggedMaps;
+            if (UserSettings.LastMaps != flaggedMaps)
+                UserSettings.LastMaps = flaggedMaps;
         }
 
         #endregion Settings
@@ -617,9 +651,9 @@ namespace Arksplorer
                 string extra = $"{(string.IsNullOrEmpty(finalFilter) ? "" : $" AND ({finalFilter})") }";
 
                 if (levelFilter == "Above")
-                    finalFilter = $"(Lvl < {FilterLevelNumber.Text}){extra}";
+                    finalFilter = $"(Lvl <= {FilterLevelNumber.Text}){extra}";
                 else if (levelFilter == "Below")
-                    finalFilter = $"(Lvl > {FilterLevelNumber.Text}){extra}";
+                    finalFilter = $"(Lvl >= {FilterLevelNumber.Text}){extra}";
             }
 
             Debug.Print($"Filter: {finalFilter}");
@@ -785,8 +819,9 @@ namespace Arksplorer
             FlashControlStoryboard = (Storyboard)this.FindResource("FlashControl");
             FlashTriggeredControlStoryboard = (Storyboard)this.FindResource("FlashTriggeredControl");
             FlashMissingControlStoryboard = (Storyboard)this.FindResource("FlashMissingControl");
+            FlashAlarmStoryboard = (Storyboard)this.FindResource("FlashAlarm");
             AnimatedMarkerStoryboard = (Storyboard)this.FindResource("AnimatedMarker");
-
+            
             AnimateMarkers();
         }
 
@@ -799,6 +834,7 @@ namespace Arksplorer
         Storyboard FlashControlStoryboard { get; set; }
         Storyboard FlashTriggeredControlStoryboard { get; set; }
         Storyboard FlashMissingControlStoryboard { get; set; }
+        Storyboard FlashAlarmStoryboard { get; set; }
         Storyboard AnimatedMarkerStoryboard { get; set; }
 
         private void FlashControl(FrameworkElement element)
@@ -1158,7 +1194,7 @@ namespace Arksplorer
                 ServerConfig = new ServerConfig(rawServerData);
 
                 // Save this as the last selected server - that we know has worked!
-                Properties.Settings.Default.LastServer = server.Name;
+                UserSettings.LastServer = server.Name;
 
                 // If we were successfull, we also want to clear down any displayed data, caches, etc. which could be from an older server
                 CurrentDataPackage = null;
@@ -1170,7 +1206,7 @@ namespace Arksplorer
                 Dispatcher.Invoke(() =>
                 {
                     MapList.Clear();
-                    string lastMaps = Properties.Settings.Default.LastMaps;
+                    string lastMaps = UserSettings.LastMaps;
                     foreach (var mapName in ServerConfig.Maps)
                         MapList.Add(new() { Name = mapName, CacheState = "Not loaded", Load = lastMaps.Contains(mapName) });
 
@@ -1263,7 +1299,7 @@ namespace Arksplorer
                 }
             }
 
-            Settings.Default.LastMaps = selectedMaps;
+            UserSettings.LastMaps = selectedMaps;
         }
 
         private void IncludeAll_Click(object sender, RoutedEventArgs e)
@@ -1306,7 +1342,7 @@ namespace Arksplorer
             if (info == null)
                 return;
 
-            OverviewInfo.ShowInfo(info, true, DetailInPopUps);
+            OverviewInfo.ShowInfo(info, true, UserSettings.IncludeDetailsInPopUps);
 
             OverviewInfo.Visibility = Visibility.Visible;
         }
@@ -1338,9 +1374,11 @@ namespace Arksplorer
 
                 if (element != null)
                 {
+                    bool showPopUps = ShowPopups.IsChecked ?? false;
+
                     if (element is DataGridCell)
                     {
-                        if (ShowPopUps.IsChecked ?? true)
+                        if (showPopUps)
                         {
                             DataGridCell cell = (DataGridCell)element;
                             DataGridRow gridRow = DataGridRow.GetRowContainingElement(cell);
@@ -1349,7 +1387,7 @@ namespace Arksplorer
                                 LastDataGridRow = gridRow;
 
                                 DataRowView dataRowView = (System.Data.DataRowView)gridRow.Item;
-                                PopUpInfoVisual.ShowInfo(new Info(dataRowView.Row), false, DetailInPopUps);
+                                PopUpInfoVisual.ShowInfo(new Info(dataRowView.Row), false, UserSettings.IncludeDetailsInPopUps);
                             }
 
                             // Even if we don't change how this looks, we want to make sure its position is updated
@@ -1367,14 +1405,14 @@ namespace Arksplorer
                         // Only interested in rectangles that have an Info in their tag - otherwise we assume its some random other rectangle
                         if (control.Tag is Info info)
                         {
-                            if (ShowPopUps.IsChecked ?? true)
+                            if (showPopUps)
                             {
 
                                 if (control != LastControl)
                                 {
                                     LastControl = control;
 
-                                    PopUpInfoVisual.ShowInfo(info, false, DetailInPopUps);
+                                    PopUpInfoVisual.ShowInfo(info, false, UserSettings.IncludeDetailsInPopUps);
                                 }
 
                                 // Make sure we remember what we are looking at, then if we mouse_up over a rectangle, this will exist and we know what to show in the main static pop up
@@ -1444,11 +1482,6 @@ namespace Arksplorer
             ApplyPotentialFilterArkColor();
         }
 
-        private void IncludeDetailsInPopUps_Click(object sender, RoutedEventArgs e)
-        {
-            DetailInPopUps = IncludeDetailsInPopUps.IsChecked ?? false;
-            Properties.Settings.Default.IncludeDetailsInPopUps = DetailInPopUps;
-        }
 
         #endregion Info and PopUps
 
@@ -1468,7 +1501,10 @@ namespace Arksplorer
 
         private void ShowSameType_Click(object sender, RoutedEventArgs e)
         {
-            if (ShowSameType.IsChecked ?? false)
+            bool showSameType = ShowSameType.IsChecked ?? false;
+            UserSettings.ShowSameType = showSameType;
+
+            if (showSameType)
                 ShowMassMarkers(LastSelected_CreatureId, LastSelected_Map);
             else
                 RemoveMassMarkers();
@@ -1518,6 +1554,14 @@ namespace Arksplorer
             }
         }
 
+        private void SaveUserSettings()
+        {
+            // Any non-specifically saved UserSettings, update here incase they have changed
+            UserSettings.Zoom = Zoom.Value;
+            UserSettings.ShowPopups = ShowPopups.IsChecked ?? false;
+            UserSettings.IncludeDetailsInPopUps = IncludeDetailsInPopUps.IsChecked ?? false;
+        }
+
         private static void ExitApplication()
         {
             Application.Current.Shutdown();
@@ -1546,6 +1590,25 @@ namespace Arksplorer
         private void HideCustomMarker_MouseUp(object sender, MouseButtonEventArgs e)
         {
             DisableCustomMarker();
+        }
+
+        private void MapHolder_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            // Very basic easing function to make the zoom usably faster
+            double pos = Zoom.Value;
+
+            pos = (Zoom.Value - 1.0d) / 24.0d;              // 1->25 -> 0->1
+
+            if (e.Delta > 0)
+                pos += pos + 0.01;
+            else if (e.Delta < 0)
+                pos -= (pos * 0.5);
+
+            Debug.Print($"{pos}");
+
+            Debug.Print($"{pos}");
+            Zoom.Value = (pos * 24.0) + 1.0;
+            Debug.Print($"{Zoom.Value}");
         }
 
         #endregion Misc

@@ -70,5 +70,41 @@ namespace Arksplorer.Properties {
                 this["IncludeDetailsInPopUps"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowSameType {
+            get {
+                return ((bool)(this["ShowSameType"]));
+            }
+            set {
+                this["ShowSameType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowPopups {
+            get {
+                return ((bool)(this["ShowPopups"]));
+            }
+            set {
+                this["ShowPopups"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double Zoom {
+            get {
+                return ((double)(this["Zoom"]));
+            }
+            set {
+                this["Zoom"] = value;
+            }
+        }
     }
 }

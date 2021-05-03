@@ -10,8 +10,9 @@
     <UserControl.Resources>
         <Style TargetType="Button" x:Key="ShortcutButton">
             <Setter Property="Margin" Value="3" />
-            <Setter Property="Width" Value="75" />
+            <Setter Property="MinWidth" Value="75" />
             <Setter Property="Height" Value="25" />
+            <Setter Property="Padding" Value="5,0" />
             <!--<Setter Property="Background" Value="Transparent" />-->
         </Style>
         <Style TargetType="Button" x:Key="BrowserIconButton">

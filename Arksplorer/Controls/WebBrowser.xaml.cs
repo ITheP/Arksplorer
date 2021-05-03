@@ -3,12 +3,16 @@ using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.ComTypes;
+using System.Security.Policy;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Shell;
 
 namespace Arksplorer
@@ -83,20 +87,76 @@ namespace Arksplorer
             Shortcuts.Children.Clear();
 
             foreach (var shortcut in shortcuts)
-                AddShortcut(shortcut);
+                _ = AddShortcut(shortcut);
         }
 
-        public void AddShortcut(ListInfoItem shortcut)
+        public Button AddShortcut(string description, string toolTip, string url, Visibility visibility = Visibility.Visible)
         {
             Button button = new();
             button.Style = this.FindResource("ShortcutButton") as Style;
-            button.Content = shortcut.Description;
-            button.ToolTip = shortcut.Details;
-            button.Tag = shortcut.Value;
+            button.Content = description;
+            button.ToolTip = toolTip;
+            button.Tag = url;
             button.Click += Navigate_Click;
+            button.Visibility = visibility;
 
             Shortcuts.Children.Add(button);
+
+            return button;
         }
+
+        public Button AddShortcut(ListInfoItem shortcut, Visibility visibility = Visibility.Visible)
+        {
+            return AddShortcut(shortcut.Description, shortcut.Details, shortcut.Value, visibility);
+        }
+
+        public Button AddEmptyShortcut()
+        {
+            return AddShortcut(null, null, null, Visibility.Collapsed);
+        }
+
+        private Button[] RotatingShortcuts { get; set; }
+
+        public void InitRotatingShortcuts(int count)
+        {
+            if (count < 1)
+                return;
+
+            RotatingShortcuts = new Button[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                var button = AddEmptyShortcut();
+                button.Background = Brushes.Lavender;
+                RotatingShortcuts[i] = button;
+            }
+        }
+
+        public void UpdateRotatingShortcuts(string description, string toolTip, string url)
+        {
+            int count = RotatingShortcuts.Length;
+
+            var button = RotatingShortcuts[count-1];
+            if ((string)button.Content == description && (string)button.Tag == url)
+                return;
+
+            for (int i = 0; i < RotatingShortcuts.Length - 1; i++)
+            {
+                var b1 = RotatingShortcuts[i];
+                var b2 = RotatingShortcuts[i + 1];
+
+                b1.Content = b2.Content;
+                b1.ToolTip = b2.ToolTip;
+                b1.Tag = b2.Tag;
+                b1.Visibility = b2.Visibility;
+            }
+
+            button.Content = description;
+            button.ToolTip = toolTip;
+            button.Tag = url;
+            button.Visibility = Visibility.Visible;
+        }
+
 
         private void AttachWebEvents(WebView2 browser)
         {

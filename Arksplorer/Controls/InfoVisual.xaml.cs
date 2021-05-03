@@ -148,13 +148,17 @@ namespace Arksplorer
 
         private void Arkpedia_Click(object sender, RoutedEventArgs e)
         {
-            Globals.ArkpediaBrowser.Navigate($"https://ark.fandom.com/wiki/{CurrentDinoData.ArkpediaUrl}", Globals.MainWindow.ArkpediaTab);
+            string url = $"https://ark.fandom.com/wiki/{CurrentDinoData.ArkpediaUrl}";
+            Globals.ArkpediaBrowser.Navigate(url, Globals.MainWindow.ArkpediaTab);
+            Globals.ArkpediaBrowser.UpdateRotatingShortcuts(CurrentDino.Creature, $"Load info for {CurrentDino.Creature}", url);
         }
 
         private void Dododex_Click(object sender, RoutedEventArgs e)
         {
             var serverConfig = MainWindow.ServerConfig;
-            Globals.DododexBrowser.Navigate( $"https://www.dododex.com/taming/{CurrentDinoData.DododexUrl}#level={CurrentDino.Level}&taming={serverConfig.TamingSpeedMultiplier}&consumption={serverConfig.FoodDrainMultiplier}", Globals.MainWindow.DododexTab);
+            string url = $"https://www.dododex.com/taming/{CurrentDinoData.DododexUrl}#level={CurrentDino.Level}&taming={serverConfig.TamingSpeedMultiplier}&consumption={serverConfig.FoodDrainMultiplier}";
+            Globals.DododexBrowser.Navigate( url, Globals.MainWindow.DododexTab);
+            Globals.DododexBrowser.UpdateRotatingShortcuts(CurrentDino.Creature, $"Load info for {CurrentDino.Creature}", url);
         }
     }
 }

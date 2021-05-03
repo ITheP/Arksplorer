@@ -9,7 +9,7 @@
         Title="Arksplorer" Height="1100" Width="800" MinWidth="800" MinHeight="950"
         MouseMove="Window_MouseMove"
         MouseUp="Window_MouseUp"
-        MouseRightButtonUp="Window_MouseRightButtonUp">
+        MouseRightButtonUp="Window_MouseRightButtonUp" Background="White">
     <Window.Resources>
         <Style TargetType="Button" x:Key="BrowserButton">
             <Setter Property="Margin" Value="3" />
@@ -47,12 +47,10 @@
         <Storyboard x:Key="FlashControl">
             <!--<ColorAnimation Storyboard.TargetProperty="Foreground.Color" From="Red" Duration="0:0:0.25" />
             <ColorAnimation Storyboard.TargetProperty="BorderBrush.Color" From="Red" Duration="0:0:0.25" />-->
-            <ColorAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop">
+            <ColorAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.1" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop">
                 <DiscreteColorKeyFrame KeyTime="00:00:00" Value="Orange"/>
-                <DiscreteColorKeyFrame KeyTime="00:00:00.1" Value="LightGray"/>
-                <DiscreteColorKeyFrame KeyTime="00:00:00.2" Value="Orange"/>
-                <DiscreteColorKeyFrame KeyTime="00:00:00.3" Value="LightGray"/>
             </ColorAnimationUsingKeyFrames>
+            <ColorAnimation BeginTime="00:00:00.2" Duration="00:00:00.4" From="Orange"  Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop"/>
         </Storyboard>
         <Storyboard x:Key="FlashTriggeredControl">
             <ColorAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop">
@@ -67,6 +65,16 @@
                 <DiscreteObjectKeyFrame KeyTime="00:00:00.2" Value="{x:Static Visibility.Hidden}"/>
                 <DiscreteObjectKeyFrame KeyTime="00:00:00.3" Value="{x:Static Visibility.Visible}"/>
             </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="FlashAlarm">
+            <!--<ColorAnimation Storyboard.TargetProperty="Foreground.Color" From="Red" Duration="0:0:0.25" />
+            <ColorAnimation Storyboard.TargetProperty="BorderBrush.Color" From="Red" Duration="0:0:0.25" />-->
+            <ColorAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.2" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop">
+                <DiscreteColorKeyFrame KeyTime="00:00:00" Value="Red"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames BeginTime="00:00:00.4" Duration="00:00:00.2" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop">
+                <DiscreteColorKeyFrame KeyTime="00:00:00" Value="Red"/>
+            </ColorAnimationUsingKeyFrames>
         </Storyboard>
         <DataTemplate x:Key="DataGridCellImage">
             <Image Source="{Binding}"/>
@@ -96,20 +104,20 @@
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="&#xEA8F;" FontFamily="Segoe MDL2 Assets" FontSize="18" Width="32" TextAlignment="Center" VerticalAlignment="Center"/>
-                                        <Button Content="½" Width="20" Margin="6,0,0,0" Click="SetAlarm" Tag="0.5"/>
-                                        <Button Content="1" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="1"/>
-                                        <Button Content="2" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="2"/>
-                                        <Button Content="3" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="3"/>
+                                        <Button Content="3" Width="20" Margin="6,0,0,0" Click="SetAlarm" Tag="3" Background="Lavender"/>
+                                        <Button Content="5" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="5" Background="Lavender"/>
+                                        <Button Content="8" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="8" Background="Lavender"/>
+                                        <Button Content="+1" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="+1"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                        <Button x:Name="AlarmOff" Content="Off" Width="32" Click="AlarmOff_Click"  Tag="0.5"/>
-                                        <Button Content="5" Width="20" Margin="6,0,0,0" Click="SetAlarm" Tag="5"/>
-                                        <Button Content="10" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="10"/>
-                                        <Button Content="11" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="11"/>
-                                        <Button Content="15" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="15"/>
+                                        <Button x:Name="AlarmOff" Content="Off" Width="32" Click="AlarmOff_Click"/>
+                                        <Button Content="10" Width="20" Margin="6,0,0,0" Click="SetAlarm" Tag="10" Background="Lavender"/>
+                                        <Button Content="11" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="11" Background="Lavender"/>
+                                        <Button Content="15" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="15" Background="Lavender"/>
+                                        <Button Content="-1" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="-1"/>
                                     </StackPanel>
                                 </StackPanel>
-                                <TextBlock x:Name="AlarmTimeLeft" Text="Off" FontSize="20" Width="70" VerticalAlignment="Center" TextAlignment="Center" />
+                                <TextBlock x:Name="AlarmTimeLeft" Text="Off" FontSize="20" Width="70" VerticalAlignment="Center" TextAlignment="Center"/>
                             </StackPanel>
                         </Grid>
                         <Separator Margin="0,8"/>
@@ -118,7 +126,7 @@
                         <Button x:Name="Exit" Content="Exit" Click="Exit_Click" Margin="0,4,0,8"/>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
-                        <Image Source="/Images/Arksplorer.png" />
+                        <Image Source="/Images/Arksplorer.png" Margin="0,2,0,0" />
                         <TextBlock x:Name="AppTitle" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>
                         <TextBlock x:Name="Version" Text="Version" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
                         <Separator Margin="0,7,0,8"/>
@@ -302,7 +310,7 @@
                         <Grid Grid.Row="0" DockPanel.Dock="Top" Margin="0,0,0,8">
                             <Image x:Name="SplashImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
                             <Viewbox Stretch="Uniform" RenderTransformOrigin="0.5,0.5" ClipToBounds="True">
-                                <Grid x:Name="MapHolder" Width="100" Height="100">
+                                <Grid x:Name="MapHolder" Width="100" Height="100" MouseWheel="MapHolder_MouseWheel">
                                     <Grid.RenderTransform>
                                         <TransformGroup>
                                             <ScaleTransform x:Name="MapHolderZoom" ScaleX="{Binding ElementName=Zoom,Path=Value}" ScaleY="{Binding ElementName=Zoom,Path=Value}" CenterX="50" CenterY="50"/>
@@ -338,10 +346,10 @@
                         <Grid Grid.Row="1" VerticalAlignment="Stretch">
                             <DockPanel VerticalAlignment="Stretch">
                                 <StackPanel DockPanel.Dock="Top">
-                                    <DockPanel Margin="0,10,0,0">
+                                    <DockPanel Margin="0,5,0,0">
                                         <TextBlock VerticalAlignment="Center" Width="35" DockPanel.Dock="Left">Zoom</TextBlock>
-                                        <Ellipse x:Name="HideCustomMarker"  Fill="LightGray" Stroke="LightGray" StrokeThickness="3" Width="20" Height="20" VerticalAlignment="Top" Margin="8,-3,0,0" DockPanel.Dock="Right" MouseUp="HideCustomMarker_MouseUp"/>
-                                        <Slider x:Name="Zoom" Value="1" Minimum="1" Maximum="25" SmallChange="1" LargeChange="1" TickFrequency="1" TickPlacement="BottomRight" />
+                                        <Ellipse x:Name="HideCustomMarker"  Fill="LightGray" Stroke="LightGray" StrokeThickness="3" Width="20" Height="20" VerticalAlignment="Top" Margin="8,1,0,0" DockPanel.Dock="Right" MouseUp="HideCustomMarker_MouseUp"/>
+                                        <Slider x:Name="Zoom" Value="1" Minimum="1" Maximum="25" SmallChange="0.01" LargeChange="1" TickFrequency="1" TickPlacement="BottomRight" />
                                     </DockPanel>
                                     <DockPanel Margin="0,4,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
                                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Top">
@@ -362,8 +370,8 @@
                                         <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" Margin="2,0,0,0" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
                                         <StackPanel Orientation="Horizontal">
                                             <CheckBox x:Name="ShowSameType" Content="Show matching" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" />
-                                            <CheckBox x:Name="ShowPopUps" Content="Show popups" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" ToolTip="Show popup information under pointer"/>
-                                            <CheckBox x:Name="IncludeDetailsInPopUps" Content="Include details" Margin="8,2,0,2" VerticalAlignment="Center" Click="IncludeDetailsInPopUps_Click"/>
+                                            <CheckBox x:Name="ShowPopups" Content="Show popups" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" ToolTip="Show popup information under pointer"/>
+                                            <CheckBox x:Name="IncludeDetailsInPopUps" Content="Include details" Margin="8,2,0,2" VerticalAlignment="Center" />
                                         </StackPanel>
                                     </WrapPanel>
                                     <StackPanel Margin="35,4,4,0" Orientation="Horizontal">
@@ -474,6 +482,9 @@
                 </TabItem>
                 <TabItem Header="Dododex" x:Name="DododexTab">
                     <local:WebBrowser x:Name="DododexBrowser"/>
+                </TabItem>
+                <TabItem Header="YouTube" x:Name="YouTubeTab">
+                    <local:WebBrowser x:Name="YouTubeBrowser"/>
                 </TabItem>
                 <TabItem Header="Server Website" x:Name="ServerTab">
                     <local:WebBrowser x:Name="ServerBrowser"/>

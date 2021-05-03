@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace Arksplorer
 {
     public static class Globals
     {
 
-        public const string Version = "v1.2.3 - The Snagglier Tooth";
+        public const string Version = "v1.3.0 - The Flappy Wing";
 
         public static WebBrowser ArkpediaBrowser { get; set; }
+
         public static WebBrowser DododexBrowser { get; set; }
+
+        public static WebBrowser YouTubeBrowser { get; set; }
 
         /// <summary>
         /// Static reference to main app window that is decoupled from Application.Current.MainWindow (which e.g. can point to splash screen during start up and not an instance of the main window)
