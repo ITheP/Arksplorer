@@ -56,8 +56,6 @@ namespace Arksplorer
             });
         }
 
-        private static string CrashFile { get; } = "./crash.txt";
-
         /// <summary>
         /// Saves off exception information in to a log file. Only used in releases, not when run in a debug development state
         /// </summary>
@@ -65,9 +63,9 @@ namespace Arksplorer
         /// <param name="@event">The event<see cref="string"/></param>
         private static void LogUnhandledException(Exception exception, string @event)
         {
-            MessageBox.Show($"Arksplorer generated a critical exception. For debugging purposes, it will attempt to dump details of this in {CrashFile}. We will now do our best to continue!", "Critical error");
+            MessageBox.Show($"Arksplorer generated a critical exception. For debugging purposes, it will attempt to dump details of this in {Globals.CrashFile}. We will now do our best to continue!", "Critical error");
 
-            string result = $"Arksplorer experienced an itsy bitsy problem @{DateTime.Now}...{Environment.NewLine}{Environment.NewLine}Exception:{Environment.NewLine}{exception.Message}";
+            string result = $"Arksplorer experienced an itsy bitsy problem...{Environment.NewLine}{Environment.NewLine}Exception:{Environment.NewLine}{exception.Message}";
 
             if (exception.InnerException != null)
                 result += $"{Environment.NewLine}{Environment.NewLine}Inner Exception:{Environment.NewLine}{exception.InnerException}";
@@ -75,17 +73,7 @@ namespace Arksplorer
             if (exception.StackTrace != null)
                 result += $"{Environment.NewLine}{Environment.NewLine}Stack Trace:{Environment.NewLine}{exception.StackTrace}";
 
-            try
-            {
-                File.AppendAllText(CrashFile, result);
-                //System.IO.File.AppendText(LogFile, result);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Unable to write log to {CrashFile}. Not going so well is it!{Environment.NewLine}{ex.Message}", "Error handling the error");
-            }
+            Globals.AddToCrashFile(result);
         }
-
-
     }
 }

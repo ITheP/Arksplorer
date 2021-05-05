@@ -32,21 +32,7 @@
             <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="1.0" To="0.0" Duration="0:0:0.75"/>
             <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="1.0" To="0.0" Duration="0:0:0.75"/>
         </Storyboard>
-        <!--<Storyboard x:Key="FlashBorder">
-            -->
-        <!--<ColorAnimation Storyboard.TargetProperty="BorderThickness" To="Red" AutoReverse="True" Duration="0:0:0.5" />-->
-        <!--
-            <ThicknessAnimation Storyboard.TargetProperty="BorderThickness" From="5,5,5,5" To="0,0,0,0" Duration="0:0:0.25"/>
-        </Storyboard>-->
-        <!--<Storyboard x:Key="FlashBackground">
-            <ColorAnimation Storyboard.TargetProperty="Background.Color" From="Red" Duration="0:0:0.25" />
-        </Storyboard>
-        <Storyboard x:Key="FlashForeground">
-            <ColorAnimation Storyboard.TargetProperty="Foreground.Color" From="Red" Duration="0:0:0.25" />
-        </Storyboard>-->
         <Storyboard x:Key="FlashControl">
-            <!--<ColorAnimation Storyboard.TargetProperty="Foreground.Color" From="Red" Duration="0:0:0.25" />
-            <ColorAnimation Storyboard.TargetProperty="BorderBrush.Color" From="Red" Duration="0:0:0.25" />-->
             <ColorAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.1" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop">
                 <DiscreteColorKeyFrame KeyTime="00:00:00" Value="Orange"/>
             </ColorAnimationUsingKeyFrames>
@@ -67,8 +53,6 @@
             </ObjectAnimationUsingKeyFrames>
         </Storyboard>
         <Storyboard x:Key="FlashAlarm">
-            <!--<ColorAnimation Storyboard.TargetProperty="Foreground.Color" From="Red" Duration="0:0:0.25" />
-            <ColorAnimation Storyboard.TargetProperty="BorderBrush.Color" From="Red" Duration="0:0:0.25" />-->
             <ColorAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.2" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop">
                 <DiscreteColorKeyFrame KeyTime="00:00:00" Value="Red"/>
             </ColorAnimationUsingKeyFrames>
@@ -79,12 +63,44 @@
         <DataTemplate x:Key="DataGridCellImage">
             <Image Source="{Binding}"/>
         </DataTemplate>
+        <!--Annoyingly, DataGrid selected row highlighting dissapears when the DataGrid looses focus. We include a style here to keep that from happening...-->
+        <Style x:Key="DataGridCellStyle1" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                            <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static DataGrid.FocusBorderBrushKey}}"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="true"/>
+                        <Condition Property="Selector.IsSelectionActive" Value="false"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}"/>
+                </MultiTrigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static DataGrid.FocusBorderBrushKey}}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
-    <!--<Window.Triggers>
-        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-            <BeginStoryboard  Storyboard="{StaticResource MarkerShrinker}"/>
-        </EventTrigger>
-    </Window.Triggers>-->
     <Grid x:Name="Root">
         <Popup Name="PopUpInfo"
             Placement="Relative"
@@ -420,6 +436,7 @@
                                 <Grid>
                                     <DataGrid x:Name="DataVisual"      
                                     Margin="0,8,0,0"
+                                    CellStyle="{DynamicResource DataGridCellStyle1}"
                                     AutoGenerateColumns="True"
                                     ItemsSource="{Binding}"
                                     IsReadOnly="True"

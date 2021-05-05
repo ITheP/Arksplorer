@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,7 @@ namespace Arksplorer
     /// </summary>
     public class Info
     {
+        public int GlobalIndex { get; set; }
         // General purpose `stick whatever you want in` lists
         public List<ListInfoItem> Items { get; } = new();
         public List<BitmapImage> Icons { get; } = new();
@@ -50,6 +52,7 @@ namespace Arksplorer
 
         public Info(DataRow row)
         {
+            GlobalIndex = (int)row[Globals.GlobalIndexColumn];
             Lat = (float)row[LatColumn];
             Lon = (float)row[LonColumn];
 
@@ -147,7 +150,8 @@ namespace Arksplorer
         }
 
 
-        public static int MapColumn { get; set; }
+        //public static int GlobalIndexColumn { get; set; }
+        //public static int MapColumn { get; set; }
         public static int LatColumn { get; set; }
         public static int LonColumn { get; set; }
         private static int CreatureIdColumn { get; set; }
@@ -187,7 +191,10 @@ namespace Arksplorer
         /// <param name="data"></param>
         public static void InitColumnIndexPositions(DataTable data)
         {
-            MapColumn = data.Columns["Map"]?.Ordinal ?? -1;
+            //GlobalIndexColumn = data.Columns["GlobalIndex"]?.Ordinal ?? -1;
+            // ...Always 0, set in Globals
+            //MapColumn = data.Columns["Map"]?.Ordinal ?? -1;
+            // ...Always 1, set in Globals
             LatColumn = data.Columns["Lat"]?.Ordinal ?? -1;
             LonColumn = data.Columns["Lon"]?.Ordinal ?? -1;
             CreatureIdColumn = data.Columns["CreatureId"]?.Ordinal ?? -1;
@@ -231,7 +238,7 @@ namespace Arksplorer
             if (data == null)
                 return;
 
-            if (MapColumn == -1 || LatColumn == -1 || LonColumn == -1 || CreatureIdColumn == -1)
+            if (LatColumn == -1 || LonColumn == -1 || CreatureIdColumn == -1)
                 return;
 
             double lat, lon;
@@ -242,7 +249,7 @@ namespace Arksplorer
 
             foreach (DataRow row in data.Rows)
             {
-                if ((string)row[MapColumn] == mapName)
+                if ((string)row[Globals.MapColumn] == mapName)
                 {
                     if ((string)row[CreatureIdColumn] == creatureId)
                     {

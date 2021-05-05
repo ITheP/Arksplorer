@@ -99,9 +99,8 @@ v1.2.3 The Snagglier Tooth - 19/04/2021
 - Custom marker (click on map)
 - Zoom into map (centered on selected dino or custom marker)
 
-
-1.23.0 - The flappy wing
-- Level filter includes selected level properly
+v1.3 - The Flappy Wing - 04/05/2021
+- Level filter includes selected level rather than excluding
 - Saving a few extra settings to user settings
 - YouTube browser (as people end up watching watching loads of ark related ones)
 - Mouse wheel zooms in and out
@@ -110,9 +109,10 @@ v1.2.3 The Snagglier Tooth - 19/04/2021
 - Alarm has +/- 1 minute buttons now to increase/decrease current timer
 - Alarm will now flash window as well
 - Changed button highlighting to make it look a bit nicer
+- Handles web browser crashes (attempts to recreate a new instance)
+- Clicking on a mass marker will (if possible) selected the selected creature in the results list/data grid
 - Misc. optimisations
 
 ToDo:
-- Handle WebView2 browser crashes https://github.com/MicrosoftEdge/WebView2Feedback/issues/774
-- Selected mass marker -> select in list?
 - More configurables saved into user settings
+- if (CurrentRectanglePopUpInfo != null) <-- need a different way of checking this, so we can still click on mass markers when popups are hidden

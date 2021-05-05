@@ -6,7 +6,9 @@ namespace Arksplorer
     public class TameDino : IArkEntityWithCreature
     {
         [JsonIgnore]
-        public string Map { get; set; }
+        public int GlobalIndex { get; set; }    // Make sure first property so indexed at [0]
+        [JsonIgnore]
+        public string Map { get; set; }         // Make sure second property so indexed at [1]
         [JsonIgnore]
         public string Creature { get; set; }
         [JsonPropertyName("creature")]

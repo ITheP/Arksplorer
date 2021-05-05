@@ -9,7 +9,9 @@ namespace Arksplorer
     public class Survivor : IArkEntity
     {
         [JsonIgnore]
-        public string Map { get; set; }
+        public int GlobalIndex { get; set; }    // Make sure first property so indexed at [0]
+        [JsonIgnore]
+        public string Map { get; set; }         // Make sure second property so indexed at [1]
         public long PlayerId { get; set; }
         public string Steam { get; set; }
         public string Name { get; set; }

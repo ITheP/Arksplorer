@@ -28,6 +28,7 @@ namespace Arksplorer
 
                 foreach (var item in data)
                 {
+                    ((IArkEntity)item).GlobalIndex = Globals.GlobalIndex++;
                     ((IArkEntity)item).Map = mapName;
 
                     tmpCreature = (IArkEntityWithCreature)item;
@@ -38,7 +39,10 @@ namespace Arksplorer
             else
             {
                 foreach (var item in data)
+                {
+                    ((IArkEntity)item).GlobalIndex = Globals.GlobalIndex++;
                     ((IArkEntity)item).Map = mapName;
+                }
             }
 
             if (dataTable == null)

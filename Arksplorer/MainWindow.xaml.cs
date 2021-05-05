@@ -821,7 +821,7 @@ namespace Arksplorer
             FlashMissingControlStoryboard = (Storyboard)this.FindResource("FlashMissingControl");
             FlashAlarmStoryboard = (Storyboard)this.FindResource("FlashAlarm");
             AnimatedMarkerStoryboard = (Storyboard)this.FindResource("AnimatedMarker");
-            
+
             AnimateMarkers();
         }
 
@@ -1043,6 +1043,8 @@ namespace Arksplorer
                 {
                     e.Column.Visibility = Visibility.Collapsed;
                 }
+                else if (column.DisplayIndex == 0)   // Hide GlobalIndex
+                    column.Visibility = Visibility.Collapsed;
             }
 
         }
@@ -1102,8 +1104,7 @@ namespace Arksplorer
                 SplashImage.Source = null;
             }
 
-            // Map name is always in column 0
-            string mapName = (string)entity[0];
+            string mapName = (string)entity[Globals.MapColumn];
             if (mapName != CurrentMapImage)
             {
                 MapImage.Source = LoadMapImage(mapName);
@@ -1211,7 +1212,7 @@ namespace Arksplorer
                         MapList.Add(new() { Name = mapName, CacheState = "Not loaded", Load = lastMaps.Contains(mapName) });
 
                     DataVisual.DataContext = null; // Clear any current results list
-                    Status.Text = $"Welcome! This server updates data approx. every {ServerConfig.RefreshRate} minutes.";
+                    Status.Text = $"Welcome! This server updates data every {ServerConfig.RefreshRate}ish minutes.";
                     LoadableControlsEnabled(true);
                     LoadingVisualEnabled(false);
                     ServerLoadedControls.Visibility = Visibility.Visible;
@@ -1414,15 +1415,15 @@ namespace Arksplorer
 
                                     PopUpInfoVisual.ShowInfo(info, false, UserSettings.IncludeDetailsInPopUps);
                                 }
-
-                                // Make sure we remember what we are looking at, then if we mouse_up over a rectangle, this will exist and we know what to show in the main static pop up
-                                CurrentRectanglePopUpInfo = info;
                                 showPopUpInfo = true;
                             }
                             else
                             {
                                 showPopUpInfo = false;
                             }
+
+                            // Make sure we remember what we are looking at, then if we mouse_up over a rectangle, this will exist and we know what to show in the main static pop up
+                            CurrentRectanglePopUpInfo = info;
                         }
                         else if (control.Tag is ArkColor arkColor)
                         {
@@ -1471,10 +1472,37 @@ namespace Arksplorer
 
         private void Window_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            Debug.Print($"{CurrentRectanglePopUpInfo?.Name ?? "Null"}");
+            //Debug.Print($"{CurrentRectanglePopUpInfo?.Name ?? "Null"}");
 
             if (CurrentRectanglePopUpInfo != null)
-                SetSelectedInfo(CurrentRectanglePopUpInfo);
+                try
+                {
+                    DataTable data = (DataTable)DataVisual.DataContext;
+
+                    int count = DataVisual.Items.Count;
+                    int srcGlobalIndex = CurrentRectanglePopUpInfo.GlobalIndex;
+                    DataRow destRow;
+
+                    // Really don't like how we are finding rows from selected Info elsewhere, passing around global indexes, hunting for values, etc.
+                    // but we aren't using an indexed database, and the DataGrid virtualisation means actual visual
+                    // DataRowView's visualisation may not yet exist to find UI elements to display them, and DataRow instances weren't matching up when comparing them directly,
+                    // so we do the below (with supporting code elsewhere). Does the job.
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        destRow = ((DataRowView)DataVisual.Items[i]).Row;
+                        if (srcGlobalIndex == (int)destRow.ItemArray[Globals.GlobalIndexColumn])
+                        {
+                            DataVisual.SelectedIndex = i;
+                            DataVisual.ScrollIntoView(DataVisual.SelectedItem);
+                            break;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.Print($"Unable to find selected info in DataVisual{ex.Message}");
+                }
         }
 
         private void Window_MouseRightButtonUp(object sender, MouseButtonEventArgs e)

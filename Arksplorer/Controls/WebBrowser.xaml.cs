@@ -26,6 +26,7 @@ namespace Arksplorer
         public bool Loading { get; set; }
         public string CurrentUrl { get; set; }
         public TabItem Tab { get; set; }
+        public WebView2 Browser { get; set; }
 
         public WebBrowser()
         {
@@ -37,10 +38,10 @@ namespace Arksplorer
 
         public void Init(string description, string defaultUrl)
         {
+            Init(description);
+
             SetBrowserSource(defaultUrl);
             SetHomeUrl(defaultUrl);
-
-            Init(description);
         }
 
         public void Init(string description)
@@ -63,6 +64,7 @@ namespace Arksplorer
                 }
             }
 
+            Browser = BrowserInstance;
             AttachWebEvents(Browser);
         }
 
@@ -157,13 +159,26 @@ namespace Arksplorer
             button.Visibility = Visibility.Visible;
         }
 
-
         private void AttachWebEvents(WebView2 browser)
         {
             browser.NavigationStarting += NavigationStarting;
             browser.SourceChanged += SourceChanged;
             browser.ContentLoading += ContentLoading;
             browser.NavigationCompleted += NavigationCompleted;
+            browser.CoreWebView2InitializationCompleted += CoreWebView2Ready;
+        }
+
+        private void CoreWebView2Ready(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        {
+            try
+            {
+                ((WebView2)sender).CoreWebView2.ProcessFailed += ProcessFailed;
+            }
+            catch (Exception ex)
+            {
+                // Note that in testing, this pretty much came down to the browser being in a disposed state (happened during testing) - but a catch is enough to handle this!
+                Debug.Print($"Error attaching ProcessFailed event to CoreWebView2: {ex.Message}");
+            }
         }
 
         public void Navigate(string url, TabItem jumpToTab = null)
@@ -218,6 +233,36 @@ namespace Arksplorer
         {
             if (Browser.CanGoForward)
                 Browser.GoForward();
+        }
+
+        private void ProcessFailed(object sender, CoreWebView2ProcessFailedEventArgs e)
+        {
+            string message = $"Browser process failed...{Environment.NewLine}Description: {Description}{Environment.NewLine}Version: { CoreWebView2Environment.GetAvailableBrowserVersionString()}{Environment.NewLine}Url: {CurrentUrl}{Environment.NewLine}Error: {e.ProcessFailedKind}";
+            MessageBox.Show($"{message}{Environment.NewLine}{Environment.NewLine}Fear not though, Arksplorer will attempt to keep going!", "Browser crashed!", MessageBoxButton.OK, MessageBoxImage.Error);
+            Globals.AddToCrashFile(message);
+            RecreateBrowser();
+            Navigate(CurrentUrl);
+        }
+
+        // Recreates browser instance - e.g. if current one has crashed (and it does occasionally!)
+        private void RecreateBrowser()
+        {
+            try
+            {
+                BrowserHolder.Content = null;
+                Browser.Dispose();
+
+                Browser = new WebView2();
+                AttachWebEvents(Browser);
+
+                BrowserHolder.Content = Browser;
+
+                Navigate(CurrentUrl);
+            }
+            catch (Exception ex)
+            {
+                Debug.Print($"Error disposing of previous browser instance: {ex.Message}");
+            }
         }
 
         private void Navigate_Click(object sender, RoutedEventArgs e)

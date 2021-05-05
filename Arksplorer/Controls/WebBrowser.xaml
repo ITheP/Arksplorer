@@ -43,7 +43,9 @@
                     </WrapPanel>
                 </WrapPanel>
             </DockPanel>
-            <wv2:WebView2 x:Name="Browser" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0" Source="" />
+            <ContentControl x:Name="BrowserHolder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,2,0,0">
+                <wv2:WebView2 x:Name="BrowserInstance" Source=""/>
+            </ContentControl>
         </DockPanel>
     </Grid>
 </UserControl>
