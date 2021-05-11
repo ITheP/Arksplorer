@@ -102,7 +102,7 @@ v1.2.3 The Snagglier Tooth - 19/04/2021
 v1.3 - The Flappy Wing - 04/05/2021
 - Level filter includes selected level rather than excluding
 - Saving a few extra settings to user settings
-- YouTube browser (as people end up watching watching loads of ark related ones)
+- YouTube browser (as people end up watching loads of ark related ones)
 - Mouse wheel zooms in and out
 - Last 3 dino's selected appear in Ark Wikipedia and Dododex webbrowser tabs quick link buttons
 - Alarm times changed a bit (removed rarely used ones)
