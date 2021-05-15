@@ -113,6 +113,10 @@ v1.3 - The Flappy Wing - 04/05/2021
 - Clicking on a mass marker will (if possible) selected the selected creature in the results list/data grid
 - Misc. optimisations
 
+v1.4 - The Fearsome Roar
+- Major update to server setup information
+- Inclusion of example batch files used on Wiredcat server
+
 ToDo:
 - More configurables saved into user settings
 - if (CurrentRectanglePopUpInfo != null) <-- need a different way of checking this, so we can still click on mass markers when popups are hidden

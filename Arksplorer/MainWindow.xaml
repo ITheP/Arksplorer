@@ -500,6 +500,9 @@
                 <TabItem Header="Dododex" x:Name="DododexTab">
                     <local:WebBrowser x:Name="DododexBrowser"/>
                 </TabItem>
+                <TabItem Header="Arkbuddy" x:Name="ArkbuddyTab">
+                    <local:WebBrowser x:Name="ArkbuddyBrowser"/>
+                </TabItem>
                 <TabItem Header="YouTube" x:Name="YouTubeTab">
                     <local:WebBrowser x:Name="YouTubeBrowser"/>
                 </TabItem>

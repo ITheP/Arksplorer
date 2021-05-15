@@ -12,11 +12,12 @@ namespace Arksplorer
     public static class Globals
     {
 
-        public const string Version = "v1.3.0 - The Flappy Wing";
+        public const string Version = "v1.4.0 - The Fearsome Roar";
 
         public static WebBrowser ArkpediaBrowser { get; set; }
 
         public static WebBrowser DododexBrowser { get; set; }
+        public static WebBrowser ArkbuddyBrowser { get; set; }
 
         public static WebBrowser YouTubeBrowser { get; set; }
 

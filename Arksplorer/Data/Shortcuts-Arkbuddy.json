@@ -1,0 +1,17 @@
+[
+    {
+        "Description": "Breeding",
+        "Details": "Breeding calculator",
+        "Value": "https://tristan.games/breeding/"
+    },
+    {
+        "Description": "Cloning",
+        "Details": "Cloning chamber calculator",
+        "Value": "https://tristan.games/apps/clonecalc/"
+    },
+    {
+        "Description": "Tek Gen",
+        "Details": "Tek generator calculator",
+        "Value": "https://tristan.games/apps/tekgen/"
+    }
+]

@@ -29,6 +29,7 @@
     <None Remove="Creature Lookup.csv" />
     <None Remove="Data\Lookup-Colors.json" />
     <None Remove="Data\Lookup-Dinos.json" />
+    <None Remove="Data\Shortcuts-Arkbuddy.json" />
     <None Remove="Data\Shortcuts-ArkWikipedia.json" />
     <None Remove="Data\Shortcuts-Dododex.json" />
     <None Remove="Images\Aberration.jpg" />
@@ -58,6 +59,9 @@
   <ItemGroup>
     <Content Include="Audio\FeedMe.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shortcuts-Arkbuddy.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Shortcuts-Dododex.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

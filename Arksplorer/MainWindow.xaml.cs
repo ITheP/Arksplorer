@@ -289,6 +289,9 @@ namespace Arksplorer
             DododexBrowser.Init("Dododex", "https://www.dododex.com/");
             DododexBrowser.InitRotatingShortcuts(3);
 
+            Globals.ArkbuddyBrowser = ArkbuddyBrowser;
+            ArkbuddyBrowser.Init("Arkbuddy", "https://tristan.games/apps/arkbuddy/"); 
+
             Globals.YouTubeBrowser = YouTubeBrowser;
             YouTubeBrowser.Init("YouTube", "https://youtube.com/");
 
