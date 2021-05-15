@@ -1608,11 +1608,6 @@ namespace Arksplorer
             ShowExtraInfo(AboutExtraInfo);
         }
 
-        private void ExternalResources_Click(object sender, RoutedEventArgs e)
-        {
-            ShowExtraInfo(ResourcesAndLinksExtraInfo);
-        }
-
         private void CustomMarker_MouseUp(object sender, MouseButtonEventArgs e)
         {
             HandleMapImageClick(e.GetPosition(MapImage));

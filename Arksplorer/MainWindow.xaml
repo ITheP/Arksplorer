@@ -14,6 +14,7 @@
         <Style TargetType="Button" x:Key="BrowserButton">
             <Setter Property="Margin" Value="3" />
             <Setter Property="Width" Value="75" />
+            <Setter Property="Width" Value="75" />
             <Setter Property="Height" Value="25" />
             <!--<Setter Property="Background" Value="Transparent" />-->
         </Style>
@@ -137,7 +138,6 @@
                             </StackPanel>
                         </Grid>
                         <Separator Margin="0,8"/>
-                        <Button x:Name="ExternalResources" Content="Resources and Links" Click="ExternalResources_Click"/>
                         <Button x:Name="About" Content="About" Margin="0,4,0,0" Click="About_Click"/>
                         <Button x:Name="Exit" Content="Exit" Click="Exit_Click" Margin="0,4,0,8"/>
                     </StackPanel>
@@ -259,29 +259,6 @@
                                     </StackPanel>
                                 </Grid>
                             </StackPanel>
-                        </ScrollViewer>
-                        <ScrollViewer x:Name="ResourcesAndLinksExtraInfo"  VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
-                            <TextBlock TextWrapping="Wrap">
-                            Handy resources and links...
-                            <LineBreak/>
-                            <LineBreak/>
-                            Brilliant source of Ark data...
-                            <LineBreak/>
-                            <Hyperlink NavigateUri="https://ark.gamepedia.com/" RequestNavigate="HandleLinkClick">ark.gamepedia.com</Hyperlink>
-                            <LineBreak/>
-                            <LineBreak/>
-                            Awesome taming calculator...
-                            <LineBreak/>
-                            <Hyperlink NavigateUri="https://www.dododex.com/" RequestNavigate="HandleLinkClick">www.Dododex.com</Hyperlink>
-                            <LineBreak/>
-                            <LineBreak/>
-                            My favorite PVE ark servers...
-                            <LineBreak/>
-                            <Hyperlink NavigateUri="http://wiredcat.hopto.org/" RequestNavigate="HandleLinkClick">wiredcat.hopto.org</Hyperlink>
-                            <LineBreak/>
-                            <LineBreak/>
-                            Visit our facebook page... <Hyperlink NavigateUri="http://facebook.com/arksplorer" RequestNavigate="HandleLinkClick">facebook.com/arksplorer</Hyperlink>
-                            </TextBlock>
                         </ScrollViewer>
                         <ScrollViewer x:Name="AboutExtraInfo" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
                             <TextBlock ScrollViewer.VerticalScrollBarVisibility="Auto" TextAlignment="Center"  TextWrapping="Wrap">
