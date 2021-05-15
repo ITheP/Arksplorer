@@ -929,7 +929,8 @@ namespace Arksplorer
                 ExtraInfo.Text = $"Total loaded: {CurrentDataPackage.Data?.Rows.Count ?? 0}";
                 ExtraInfoMapData.ItemsSource = CurrentDataPackage.IndividualMaps.ToList();  // Don't belive it should require a Tolist() but have seen the display not update without it
                 //ExtraInfoMapData.Items.Refresh();
-                ShowExtraInfo(ExtraInfo, ExtraInfoMapDataHolder);
+                ShowExtraInfo(ExtraInfoHolder, ExtraInfoMapDataHolder);
+                About.Content = "About";    // Just incase this button gets out of sync.
 
                 ExtraInfoMapDataHolder.Visibility = Visibility.Visible;
 
@@ -1329,10 +1330,9 @@ namespace Arksplorer
 
         private void ShowExtraInfo(UIElement whatToShow, UIElement whatToShow2 = null)
         {
+            AboutExtraInfo.Visibility = Visibility.Collapsed;
             ExtraInfoHolder.Visibility = Visibility.Collapsed;
             ExtraInfoMapDataHolder.Visibility = Visibility.Collapsed;
-            ResourcesAndLinksExtraInfo.Visibility = Visibility.Collapsed;
-            AboutExtraInfo.Visibility = Visibility.Collapsed;
 
             if (whatToShow != null)
                 whatToShow.Visibility = Visibility.Visible;
@@ -1605,7 +1605,17 @@ namespace Arksplorer
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            ShowExtraInfo(AboutExtraInfo);
+            if ((string)About.Content == "About")
+            {
+                ShowExtraInfo(AboutExtraInfo);
+                About.Content = "Show data info";
+            }
+            else
+            {
+                ShowExtraInfo(ExtraInfoHolder, ExtraInfoMapDataHolder);
+                About.Content = "About";
+            }
+
         }
 
         private void CustomMarker_MouseUp(object sender, MouseButtonEventArgs e)
