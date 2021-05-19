@@ -34,16 +34,10 @@
             <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="1.0" To="0.0" Duration="0:0:0.75"/>
         </Storyboard>
         <Storyboard x:Key="FlashControl">
-            <ColorAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.1" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop">
-                <DiscreteColorKeyFrame KeyTime="00:00:00" Value="Orange"/>
-            </ColorAnimationUsingKeyFrames>
-            <ColorAnimation BeginTime="00:00:00.2" Duration="00:00:00.4" From="Orange"  Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop"/>
+            <ColorAnimation BeginTime="00:00:00.0" Duration="00:00:00.4" From="Orange"  Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop"/>
         </Storyboard>
         <Storyboard x:Key="FlashTriggeredControl">
-            <ColorAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop">
-                <DiscreteColorKeyFrame KeyTime="00:00:00" Value="LightGreen"/>
-                <DiscreteColorKeyFrame KeyTime="00:00:00.2" Value="LightGray"/>
-            </ColorAnimationUsingKeyFrames>
+            <ColorAnimation BeginTime="00:00:00.0" Duration="00:00:00.4" From="LightGreen" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" FillBehavior="Stop"/>
         </Storyboard>
         <Storyboard x:Key="FlashMissingControl">
             <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="(UIElement.Visibility)" FillBehavior="Stop">
@@ -121,16 +115,34 @@
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="&#xEA8F;" FontFamily="Segoe MDL2 Assets" FontSize="18" Width="32" TextAlignment="Center" VerticalAlignment="Center"/>
-                                        <Button Content="3" Width="20" Margin="6,0,0,0" Click="SetAlarm" Tag="3" Background="Lavender"/>
-                                        <Button Content="5" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="5" Background="Lavender"/>
-                                        <Button Content="8" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="8" Background="Lavender"/>
+                                        <Button Content="5" Width="20" Margin="6,0,0,0" Click="SetAlarm" Tag="5" Background="Lavender"/>
+                                        <Button Content="10" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="10" Background="Lavender"/>
+                                        <Button Content="11" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="11" Background="Lavender"/>
                                         <Button Content="+1" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="+1"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                                         <Button x:Name="AlarmOff" Content="Off" Width="32" Click="AlarmOff_Click"/>
-                                        <Button Content="10" Width="20" Margin="6,0,0,0" Click="SetAlarm" Tag="10" Background="Lavender"/>
-                                        <Button Content="11" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="11" Background="Lavender"/>
-                                        <Button Content="15" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="15" Background="Lavender"/>
+                                        <ComboBox x:Name="AlarmList" Width="44" Margin="6,0,0,0" Background="Lavender" SelectedValuePath="Tag" SelectionChanged="AlarmList_SelectionChanged">
+                                            <ComboBoxItem Tag="1">1</ComboBoxItem>
+                                            <ComboBoxItem Tag="2">2</ComboBoxItem>
+                                            <ComboBoxItem Tag="3">3</ComboBoxItem>
+                                            <ComboBoxItem Tag="4">4</ComboBoxItem>
+                                            <ComboBoxItem Tag="5">5</ComboBoxItem>
+                                            <ComboBoxItem Tag="8">8</ComboBoxItem>
+                                            <ComboBoxItem Tag="10">10</ComboBoxItem>
+                                            <ComboBoxItem Tag="11">11</ComboBoxItem>
+                                            <ComboBoxItem Tag="12">12</ComboBoxItem>
+                                            <ComboBoxItem Tag="15">15</ComboBoxItem>
+                                            <ComboBoxItem Tag="20">20</ComboBoxItem>
+                                            <ComboBoxItem Tag="25">25</ComboBoxItem>
+                                            <ComboBoxItem Tag="30">30</ComboBoxItem>
+                                            <ComboBoxItem Tag="35">35</ComboBoxItem>
+                                            <ComboBoxItem Tag="40">40</ComboBoxItem>
+                                            <ComboBoxItem Tag="45">45</ComboBoxItem>
+                                            <ComboBoxItem Tag="50">50</ComboBoxItem>
+                                            <ComboBoxItem Tag="55">55</ComboBoxItem>
+                                        </ComboBox>
+                                        <Button Content="12" x:Name="UserDefinedAlarm" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="12" Background="Lavender"/>
                                         <Button Content="-1" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="-1"/>
                                     </StackPanel>
                                 </StackPanel>
@@ -190,16 +202,16 @@
                                     </ListView.ItemContainerStyle>
                                 </ListView>
                                 <Grid Margin="0,8,0,6">
-                                    <Button x:Name="IncludeAll" HorizontalAlignment="Left" Width="40" Click="IncludeAll_Click">All</Button>
-                                    <Button x:Name="IncludeNone" HorizontalAlignment="Left" Width="40" Margin="50,0,0,0" Click="IncludeNone_Click">None</Button>
+                                    <Button x:Name="IncludeAll" HorizontalAlignment="Left" Width="40" Click="IncludeAll_Click" ToolTip="Sets all maps to be included when downloading data">All</Button>
+                                    <Button x:Name="IncludeNone" HorizontalAlignment="Left" Width="40" Margin="50,0,0,0" Click="IncludeNone_Click" ToolTip="Clears all maps so none are selected for downloading data">None</Button>
                                 </Grid>
                                 <!--<CheckBox x:Name="AutoRefresh" Content="Auto Refresh when possible" IsChecked="True"/>-->
                                 <Separator Margin="0,8"/>
 
                                 <TextBlock Margin="0,0,0,4" FontWeight="Bold" Foreground="DarkSeaGreen" Style="{StaticResource TitleText}" HorizontalAlignment="Center">Show data for...</TextBlock>
-                                <Button x:Name="LoadTameDinos" Content="Tame Dinos" Margin="0,4,0,0" Click="TameDinos_Click" />
-                                <Button x:Name="LoadWildDinos" Content="Wild Dinos" Margin="0,4,0,0" Click="WildDinos_Click" />
-                                <Button x:Name="LoadSurvivors" Content="Survivors" Margin="0,4,0,0" Click="Survivors_Click" />
+                                <Button x:Name="LoadTameDinos" Content="Tame Dinos" Margin="0,4,0,0" Click="TameDinos_Click" ToolTip="Triggers a load request for Tame creatures" />
+                                <Button x:Name="LoadWildDinos" Content="Wild Dinos" Margin="0,4,0,0" Click="WildDinos_Click" ToolTip="Triggers a load request for Wild creatures" />
+                                <Button x:Name="LoadSurvivors" Content="Survivors" Margin="0,4,0,0" Click="Survivors_Click" ToolTip="Triggers a load request for Survivors"/>
                                 <Separator Margin="0,12,0,8"/>
                             </StackPanel>
                         </Grid>
@@ -345,14 +357,18 @@
                                         <Slider x:Name="Zoom" Value="1" Minimum="1" Maximum="25" SmallChange="0.01" LargeChange="1" TickFrequency="1" TickPlacement="BottomRight" />
                                     </DockPanel>
                                     <DockPanel Margin="0,4,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Top">
-                                            <Button x:Name="ApplyFilter" Margin="16,0,0,0" Width="75" VerticalAlignment="Center" Click="ApplyFilter_Click">Apply</Button>
-                                            <Button x:Name="ExactFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="ExactFilter_Click">Exact</Button>
-                                            <Button x:Name="RemoveFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="RemoveFilter_Click">Show all</Button>
+                                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                                            <Button x:Name="ApplyFilter" Margin="16,0,0,0" Width="75" VerticalAlignment="Center" Click="ApplyFilter_Click" ToolTip="Applies filter, including fuzzy/wildcard searches">Apply</Button>
+                                            <Button x:Name="ExactFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="ExactFilter_Click" ToolTip="Applies filter, only returning exact matching text">Exact</Button>
+                                            <Button x:Name="RemoveFilter" Margin="8,0,0,0" Width="75" VerticalAlignment="Center" Click="RemoveFilter_Click" ToolTip="Removes filter, showing everything">Show all</Button>
                                         </StackPanel>
 
                                         <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" Width="35">Filter</TextBlock>
-                                        <TextBox x:Name="FilterCriteria" HorizontalAlignment="Stretch" KeyDown="FilterCriteria_KeyDown" ToolTip="Filter criteria. Multiple criteria possible, just use , separation!"/>
+
+                                        <DockPanel>
+                                            <ComboBox x:Name="FilterCriteriaHistory" IsEditable="False" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Margin="-1,0,0,0" Width="20" SelectionChanged="FilterCriteria_SelectionChanged" ToolTip="Filter criteria history"/>
+                                            <TextBox x:Name="FilterCriteria" HorizontalAlignment="Stretch" KeyDown="FilterCriteria_KeyDown" ToolTip="Filter criteria. Multiple criteria possible, just use , separation!"/>
+                                        </DockPanel>
                                     </DockPanel>
                                     <WrapPanel Margin="35,4,4,0" Orientation="Horizontal">
                                         <ComboBox x:Name="FilterLevelType" Width="130" SelectedValuePath="Tag" SelectionChanged="FilterLevelType_SelectionChanged">
@@ -362,13 +378,13 @@
                                         </ComboBox>
                                         <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" Margin="2,0,0,0" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
                                         <StackPanel Orientation="Horizontal">
-                                            <CheckBox x:Name="ShowSameType" Content="Show matching" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" />
+                                            <CheckBox x:Name="ShowSameType" Content="Show matching" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" ToolTip="Shows markers for all dinos/creatures etc. matching the type you select" />
                                             <CheckBox x:Name="ShowPopups" Content="Show popups" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" ToolTip="Show popup information under pointer"/>
-                                            <CheckBox x:Name="IncludeDetailsInPopUps" Content="Include details" Margin="8,2,0,2" VerticalAlignment="Center" />
+                                            <CheckBox x:Name="IncludeDetailsInPopUps" Content="Include details" Margin="8,2,0,2" VerticalAlignment="Center" ToolTip="Shows extra details in popup information" />
                                         </StackPanel>
                                     </WrapPanel>
                                     <StackPanel Margin="35,4,4,0" Orientation="Horizontal">
-                                        <ComboBox x:Name="FilterColor" Width="200" SelectedValuePath="Value" SelectionChanged="FilterColor_SelectionChanged">
+                                        <ComboBox x:Name="FilterColor" Width="200" SelectedValuePath="Value" SelectionChanged="FilterColor_SelectionChanged" ToolTip="Ark color to use in filters (requires selection of which color position to search in)">
                                             <ComboBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <Border BorderThickness="1" BorderBrush="Black" Background="{Binding Path=Value.Color}" Width="182" Margin="-6,-3,-6,-2">
@@ -380,7 +396,7 @@
                                                 </DataTemplate>
                                             </ComboBox.ItemTemplate>
                                         </ComboBox>
-                                        <ComboBox x:Name="FilterColorCloseness" Width="130" SelectedValuePath="Tag" Margin="2,0,0,0" SelectionChanged="FilterColorCloseness_SelectionChanged">
+                                        <ComboBox x:Name="FilterColorCloseness" Width="130" SelectedValuePath="Tag" Margin="2,0,0,0" SelectionChanged="FilterColorCloseness_SelectionChanged" ToolTip="How close color searches should be to requested color (i.e. finds near matches too)">
                                             <ComboBoxItem Content="Exact matches only" Tag="0"/>
                                             <ComboBoxItem Content="Super close" Tag="1"/>
                                             <ComboBoxItem Content="Close" IsSelected="True" Tag="2"/>
@@ -390,19 +406,19 @@
                                             <ComboBoxItem Content="Far" Tag="10"/>
                                             <ComboBoxItem Content="Distant" Tag="20"/>
                                         </ComboBox>
-                                        <Button x:Name="FilterC0" Content="C0" Tag="C0" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
-                                        <Button x:Name="FilterC1" Content="C1" Tag="C1" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
-                                        <Button x:Name="FilterC2" Content="C2" Tag="C2" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
-                                        <Button x:Name="FilterC3" Content="C3" Tag="C3" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
-                                        <Button x:Name="FilterC4" Content="C4" Tag="C4" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
-                                        <Button x:Name="FilterC5" Content="C5" Tag="C5" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
-                                        <Button x:Name="FilterCAll" Content="All" Tag="CAll" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0"/>
+                                        <Button x:Name="FilterC0" Content="C0" Tag="C0" Click="FilterColor_Click" MouseRightButtonUp="Filter_MouseRightButtonUp" Margin="2,0,0,0" Padding="2,0" ToolTip="Apply C0 color to the filter. Right click to add to current filter."/>
+                                        <Button x:Name="FilterC1" Content="C1" Tag="C1" Click="FilterColor_Click" MouseRightButtonUp="Filter_MouseRightButtonUp" Margin="2,0,0,0" Padding="2,0" ToolTip="Apply C1 color to the filter. Right click to add to current filter."/>
+                                        <Button x:Name="FilterC2" Content="C2" Tag="C2" Click="FilterColor_Click" MouseRightButtonUp="Filter_MouseRightButtonUp" Margin="2,0,0,0" Padding="2,0" ToolTip="Apply C2 color to the filter. Right click to add to current filter."/>
+                                        <Button x:Name="FilterC3" Content="C3" Tag="C3" Click="FilterColor_Click" MouseRightButtonUp="Filter_MouseRightButtonUp" Margin="2,0,0,0" Padding="2,0" ToolTip="Apply C3 color to the filter. Right click to add to current filter."/>
+                                        <Button x:Name="FilterC4" Content="C4" Tag="C4" Click="FilterColor_Click" MouseRightButtonUp="Filter_MouseRightButtonUp" Margin="2,0,0,0" Padding="2,0" ToolTip="Apply C4 color to the filter. Right click to add to current filter."/>
+                                        <Button x:Name="FilterC5" Content="C5" Tag="C5" Click="FilterColor_Click" MouseRightButtonUp="Filter_MouseRightButtonUp" Margin="2,0,0,0" Padding="2,0" ToolTip="Apply C5 color to the filter. Right click to add to current filter."/>
+                                        <Button x:Name="FilterCAll" Content="All" Tag="CAll" Click="FilterColor_Click" Margin="2,0,0,0" Padding="2,0" ToolTip="Set color filter across all colors. Right click to add to current filter."/>
 
                                     </StackPanel>
                                     <StackPanel Margin="35,4,4,0" Orientation="Horizontal">
-                                        <Button x:Name="FilterMap" Content="Map" Padding="8,0" Click="ButtonFilter_Click"/>
-                                        <Button x:Name="FilterTribe" Content="Tribe" Padding="8,0" Margin="8,0,0,0" Click="ButtonFilter_Click"/>
-                                        <Button x:Name="FilterCreature" Content="Creature" Margin="8,0,0,0" Padding="8,0" Click="ButtonFilter_Click"/>
+                                        <Button x:Name="FilterMap" Content="Map" Padding="8,0" Click="ButtonFilter_Click" MouseRightButtonUp="ButtonFilter_MouseRightButtonUp" ToolTip="Apply this map to the filter. Right click to add to current."/>
+                                        <Button x:Name="FilterTribe" Content="Tribe" Padding="8,0" Margin="8,0,0,0" Click="ButtonFilter_Click" MouseRightButtonUp="ButtonFilter_MouseRightButtonUp" ToolTip="Apply this tribe to the filter. Right click to add to current."/>
+                                        <Button x:Name="FilterCreature" Content="Creature" Margin="8,0,0,0" Padding="8,0" Click="ButtonFilter_Click" MouseRightButtonUp="ButtonFilter_MouseRightButtonUp" ToolTip="Apply this creature to the filter. Right click to add to current."/>
                                     </StackPanel>
                                 </StackPanel>
 

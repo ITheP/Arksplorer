@@ -116,6 +116,11 @@ v1.3 - The Flappy Wing - 04/05/2021
 v1.4 - The Fearsome Roar
 - Major update to server setup information
 - Inclusion of example batch files used on Wiredcat server
+- Right click on filter buttons to append rather than replace filter value oin Colors and other relevant filter buttons
+- Filter also has a Drop Down List that remembers history of last searches you ran. Removes duplicates. Always puts latest search at top.
+- Improved some UI elements
+- Included a lot more tool tops
+- Alarm now includes a drop down of more durations, and a user specified `last selected` button to quick repeat access the last drop down duration selected
 
 ToDo:
 - More configurables saved into user settings

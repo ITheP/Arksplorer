@@ -1,10 +1,12 @@
 ﻿using Arksplorer.Properties;
+using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+//using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Media;
@@ -99,6 +101,7 @@ namespace Arksplorer
             ShowPopups.IsChecked = UserSettings.ShowPopups;
             IncludeDetailsInPopUps.IsChecked = UserSettings.IncludeDetailsInPopUps;
             Zoom.Value = UserSettings.Zoom;
+            SetUserDefinedAlarmControl(UserSettings.UserSpecificAlarmDuration);
 
             InitWebTabs();
 
@@ -225,6 +228,12 @@ namespace Arksplorer
         private void SetAlarm(object sender, RoutedEventArgs e)
         {
             string duration = (string)((Button)sender).Tag;
+
+            InitAlarm(duration);
+        }
+
+        private void InitAlarm(string duration)
+        {
             DateTime now = DateTime.Now;
 
             bool lapsed = AlarmTimestamp < now;
@@ -240,7 +249,7 @@ namespace Arksplorer
             else
                 baseTime = now;
 
-            AlarmTimestamp = baseTime.AddMinutes(double.Parse(duration));
+            AlarmTimestamp = baseTime.AddMinutes(double.Parse(duration)).AddMilliseconds(500); // We add 1/2 second to give us a nice start time. e.g. 10mins -> 10:00 start, not 9:59
             // Only reset timer if we have gone from a negative time to a positive
             if (lapsed && AlarmTimestamp > now)
                 AlarmTriggered = false;
@@ -274,6 +283,25 @@ namespace Arksplorer
             RemoveAlarm();
         }
 
+        private void SetUserDefinedAlarmControl(string value)
+        {
+            UserDefinedAlarm.Content = value;
+            UserDefinedAlarm.Tag = value;
+        }
+
+        private void AlarmList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AlarmList.SelectedItem == null)
+                return;
+
+            string duration = AlarmList.SelectedValue as string;
+            SetUserDefinedAlarmControl(duration);
+            Settings.Default.UserSpecificAlarmDuration = duration;
+            InitAlarm(duration);
+
+            AlarmList.SelectedItem = null;
+        }
+
         #endregion Timer and Alarm
 
         #region Web and WebTabs
@@ -290,7 +318,7 @@ namespace Arksplorer
             DododexBrowser.InitRotatingShortcuts(3);
 
             Globals.ArkbuddyBrowser = ArkbuddyBrowser;
-            ArkbuddyBrowser.Init("Arkbuddy", "https://tristan.games/apps/arkbuddy/"); 
+            ArkbuddyBrowser.Init("Arkbuddy", "https://tristan.games/apps/arkbuddy/");
 
             Globals.YouTubeBrowser = YouTubeBrowser;
             YouTubeBrowser.Init("YouTube", "https://youtube.com/");
@@ -491,6 +519,26 @@ namespace Arksplorer
         private void ApplyFilterCriteria(bool exactOnly = false)
         {
             string criteria = FilterCriteria.Text;
+
+            // Filter history...
+            // If it doesnt exist, add as a new bit of history
+            // else shuffle it up to the top of the list
+
+            // Stop any selection change events from occuring while we play with it
+            FilterCriteriaHistory.SelectionChanged -= FilterCriteria_SelectionChanged;
+
+            int index = FilterCriteriaHistory.Items.IndexOf(criteria);
+            if (index == -1)
+                FilterCriteriaHistory.Items.Insert(0, FilterCriteria.Text);
+            else
+            {
+                var item = FilterCriteriaHistory.Items[index];
+                FilterCriteriaHistory.Items.RemoveAt(index);
+                FilterCriteriaHistory.Items.Insert(0, item);
+            }
+
+            // And re-engage!
+            FilterCriteriaHistory.SelectionChanged += FilterCriteria_SelectionChanged;
 
             FilterDataVisual(CurrentDataPackage, criteria, exactOnly);
         }
@@ -718,6 +766,16 @@ namespace Arksplorer
 
         private void FilterColor_Click(object sender, RoutedEventArgs e)
         {
+            ProcessFilterColor(((Button)sender).Tag as string);
+        }
+
+        private void Filter_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ProcessFilterColor(((Button)sender).Tag as string, true);
+        }
+
+        private void ProcessFilterColor(string colorText, bool append = false)
+        {
             if (FilterColor.SelectedItem == null)
             {
                 if (FilterColor.SelectedItem == null)
@@ -731,10 +789,19 @@ namespace Arksplorer
             if (color == null)
                 return;
 
-            Button button = (Button)sender;
+            SetFilterCriteriaText($"{colorText}={color.Id}", append);
 
-            FilterCriteria.Text = $"{button.Tag as string}={color.Id}";
             ApplyFilterCriteria();
+        }
+
+        private void SetFilterCriteriaText(string text, bool append = false)
+        {
+            string currentText = FilterCriteria.Text;
+
+            if (append && !string.IsNullOrWhiteSpace(currentText))
+                FilterCriteria.Text = $"{currentText}, {text}";
+            else
+                FilterCriteria.Text = text;
         }
 
         private void FilterColorCloseness_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -758,6 +825,16 @@ namespace Arksplorer
                 ApplyFilterCriteria();
             }
         }
+
+        bool FilterCriteriaChanging { get; set; }
+
+        private void FilterCriteria_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FlashTriggeredControl(ApplyFilter);
+            SetFilterCriteriaText(FilterCriteriaHistory.SelectedValue as string);
+            ApplyFilterCriteria();
+        }
+
         private void FilterLevelNumber_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !IsInteger(e.Text);
@@ -785,8 +862,13 @@ namespace Arksplorer
 
         private void ButtonFilter_Click(object sender, RoutedEventArgs e)
         {
-            Button button = (Button)sender;
-            FilterCriteria.Text = button.Tag as string;
+            FlashTriggeredControl(ApplyFilter);
+            SetFilterCriteriaText(((Button)sender).Tag as string);
+            ApplyFilterCriteria(true);
+        }
+        private void ButtonFilter_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            SetFilterCriteriaText(((Button)sender).Tag as string, true);
             ApplyFilterCriteria(true);
         }
 
@@ -1047,7 +1129,7 @@ namespace Arksplorer
                 {
                     e.Column.Visibility = Visibility.Collapsed;
                 }
-                else if (column.DisplayIndex == 0)   // Hide GlobalIndex
+                else if ((string)column.Header == "GlobalIndex")   // Hide GlobalIndex
                     column.Visibility = Visibility.Collapsed;
             }
 
@@ -1135,7 +1217,7 @@ namespace Arksplorer
             }
             else
             {
-                FilterCreature.Content = info.Creature;
+                FilterCreature.Content = info.Creature ?? info.CreatureId.Replace("_Character_BP_C", "").Replace("_", " ");
                 FilterCreature.Tag = info.CreatureId;
                 FilterCreature.Visibility = Visibility.Visible;
             }
@@ -1646,6 +1728,8 @@ namespace Arksplorer
             Zoom.Value = (pos * 24.0) + 1.0;
             Debug.Print($"{Zoom.Value}");
         }
+
+
 
         #endregion Misc
 

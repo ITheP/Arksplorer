@@ -106,5 +106,20 @@ namespace Arksplorer.Properties {
                 this["Zoom"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("12")]
+        public string UserSpecificAlarmDuration
+        {
+            get
+            {
+                return ((string)(this["UserSpecificAlarmDuration"]));
+            }
+            set
+            {
+                this["UserSpecificAlarmDuration"] = value;
+            }
+        }
     }
 }
