@@ -25,7 +25,7 @@
   <ItemGroup>
     <None Remove="arksplorer.ico" />
     <None Remove="ArksplorerData.json" />
-    <None Remove="Audio\FeedMe.wav" />
+    <None Remove="Audio\Feed me.wav" />
     <None Remove="Creature Lookup.csv" />
     <None Remove="Data\Lookup-Colors.json" />
     <None Remove="Data\Lookup-Dinos.json" />
@@ -57,7 +57,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Audio\FeedMe.wav">
+    <Content Include="Audio\Feed me.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Shortcuts-Arkbuddy.json">
@@ -148,7 +148,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Audio\FeedMe.mp3">
+    <None Update="Audio\Feed me.mp3">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="Properties\Settings.settings">

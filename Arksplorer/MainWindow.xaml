@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Arksplorer"
+        xmlns:controls="clr-namespace:Arksplorer.Controls"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
         Title="Arksplorer" Height="1100" Width="800" MinWidth="800" MinHeight="950"
@@ -103,14 +104,14 @@
             IsOpen="False"
             StaysOpen="True"
             AllowsTransparency="True">
-            <local:InfoVisual x:Name="PopUpInfoVisual" />
+            <controls:InfoVisual x:Name="PopUpInfoVisual" />
         </Popup>
         <DockPanel>
             <Grid>
                 <DockPanel Width="200" Margin="10,0,10,0">
                     <StackPanel DockPanel.Dock="Bottom">
                         <Separator Margin="0,8"/>
-                        <Grid>
+                        <!--<Grid>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal">
@@ -148,7 +149,10 @@
                                 </StackPanel>
                                 <TextBlock x:Name="AlarmTimeLeft" Text="Off" FontSize="20" Width="70" VerticalAlignment="Center" TextAlignment="Center"/>
                             </StackPanel>
-                        </Grid>
+                        </Grid>-->
+                        <controls:Alarm x:Name="Alarm1"/>
+                        <Separator Margin="0,8"/>
+                        <controls:Alarm x:Name="Alarm2"/>
                         <Separator Margin="0,8"/>
                         <Button x:Name="About" Content="About" Margin="0,4,0,0" Click="About_Click"/>
                         <Button x:Name="Exit" Content="Exit" Click="Exit_Click" Margin="0,4,0,8"/>
@@ -174,7 +178,7 @@
                         <DockPanel Margin="0,4,0,0">
                             <Grid Height="32">
                                 <Viewbox x:Name="GeneralLoadingSpinner" Height="32" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                                    <local:Spinner/>
+                                    <controls:Spinner/>
                                 </Viewbox>
                                 <TextBlock x:Name="Status" FontWeight="Bold" Foreground="Red" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap">
                                     Please select a server from<LineBreak/>
@@ -346,7 +350,7 @@
                                     </Ellipse>
                                 </Grid>
                             </Viewbox>
-                            <local:InfoVisual x:Name="OverviewInfo" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="4" Padding="4" />
+                            <controls:InfoVisual x:Name="OverviewInfo" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="4" Padding="4" />
                         </Grid>
                         <Grid Grid.Row="1" VerticalAlignment="Stretch">
                             <DockPanel VerticalAlignment="Stretch">
@@ -488,19 +492,19 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="Ark Wikipedia" x:Name="ArkpediaTab">
-                    <local:WebBrowser x:Name="ArkpediaBrowser"/>
+                    <controls:WebBrowser x:Name="ArkpediaBrowser"/>
                 </TabItem>
                 <TabItem Header="Dododex" x:Name="DododexTab">
-                    <local:WebBrowser x:Name="DododexBrowser"/>
+                    <controls:WebBrowser x:Name="DododexBrowser"/>
                 </TabItem>
                 <TabItem Header="Arkbuddy" x:Name="ArkbuddyTab">
-                    <local:WebBrowser x:Name="ArkbuddyBrowser"/>
+                    <controls:WebBrowser x:Name="ArkbuddyBrowser"/>
                 </TabItem>
                 <TabItem Header="YouTube" x:Name="YouTubeTab">
-                    <local:WebBrowser x:Name="YouTubeBrowser"/>
+                    <controls:WebBrowser x:Name="YouTubeBrowser"/>
                 </TabItem>
                 <TabItem Header="Server Website" x:Name="ServerTab">
-                    <local:WebBrowser x:Name="ServerBrowser"/>
+                    <controls:WebBrowser x:Name="ServerBrowser"/>
                 </TabItem>
                 <TabItem Header="Server Info" x:Name="ServerInfoTab">
                     <StackPanel>

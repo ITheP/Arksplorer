@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="Arksplorer.Controls.Alarm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Arksplorer.Controls"
+             mc:Ignorable="d">
+    <Grid>
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xEA8F;" FontFamily="Segoe MDL2 Assets" FontSize="18" Width="32" TextAlignment="Center" VerticalAlignment="Center"/>
+                        <Button Content="5" Width="20" Margin="6,0,0,0" Click="SetAlarm" Tag="5" Background="Lavender"/>
+                        <Button Content="10" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="10" Background="Lavender"/>
+                        <Button Content="11" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="11" Background="Lavender"/>
+                        <Button Content="+1" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="+1"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <Button x:Name="AlarmOff" Content="Off" Width="32" Click="AlarmOff_Click"/>
+                        <ComboBox x:Name="AlarmList" Width="44" Margin="6,0,0,0" Background="Lavender" SelectedValuePath="Tag" SelectionChanged="AlarmList_SelectionChanged">
+                            <ComboBoxItem Tag="1">1</ComboBoxItem>
+                            <ComboBoxItem Tag="2">2</ComboBoxItem>
+                            <ComboBoxItem Tag="3">3</ComboBoxItem>
+                            <ComboBoxItem Tag="4">4</ComboBoxItem>
+                            <ComboBoxItem Tag="5">5</ComboBoxItem>
+                            <ComboBoxItem Tag="8">8</ComboBoxItem>
+                            <ComboBoxItem Tag="10">10</ComboBoxItem>
+                            <ComboBoxItem Tag="11">11</ComboBoxItem>
+                            <ComboBoxItem Tag="12">12</ComboBoxItem>
+                            <ComboBoxItem Tag="15">15</ComboBoxItem>
+                            <ComboBoxItem Tag="20">20</ComboBoxItem>
+                            <ComboBoxItem Tag="25">25</ComboBoxItem>
+                            <ComboBoxItem Tag="30">30</ComboBoxItem>
+                            <ComboBoxItem Tag="35">35</ComboBoxItem>
+                            <ComboBoxItem Tag="40">40</ComboBoxItem>
+                            <ComboBoxItem Tag="45">45</ComboBoxItem>
+                            <ComboBoxItem Tag="50">50</ComboBoxItem>
+                            <ComboBoxItem Tag="55">55</ComboBoxItem>
+                        </ComboBox>
+                        <Button Content="12" x:Name="UserDefinedAlarm" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="12" Background="Lavender"/>
+                        <Button Content="-1" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="-1"/>
+                    </StackPanel>
+                </StackPanel>
+                <TextBlock x:Name="AlarmTimeLeft" Text="Off" FontSize="20" Width="70" VerticalAlignment="Center" TextAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                <TextBlock Width="32" Text="Audio" VerticalAlignment="Center" Margin="2,0,0,0"/>
+                <ComboBox x:Name="AudioType" Width="92" Margin="4,0,0,0" SelectedValuePath="Tag">
+                    <ComboBoxItem Tag="">Nothing</ComboBoxItem>
+                    <ComboBoxItem Tag="Feed me" IsSelected="True">Feed me</ComboBoxItem>
+                    <ComboBoxItem Tag="Feed me">Gacha</ComboBoxItem>
+                </ComboBox>
+                <Grid Width="70">
+                    <CheckBox x:Name="AutoRepeat" IsChecked="False" Content="Repeat" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Grid>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

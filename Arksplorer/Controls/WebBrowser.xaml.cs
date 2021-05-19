@@ -15,7 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shell;
 
-namespace Arksplorer
+namespace Arksplorer.Controls
 {
     /// <summary>
     /// Interaction logic for WebTab.xaml

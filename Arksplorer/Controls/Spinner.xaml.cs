@@ -1,10 +1,10 @@
-﻿namespace Arksplorer
-{
-    using System;
-    using System.Diagnostics;
-    using System.Windows;
-    using System.Windows.Media;
+﻿using System;
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Media;
 
+namespace Arksplorer.Controls
+{
     /// <summary>
     /// Defines the <see cref="Angleatron" />
     /// </summary>

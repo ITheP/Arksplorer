@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Arksplorer
+namespace Arksplorer.Controls
 {
     /// <summary>
     /// Interaction logic for InfoVisual.xaml

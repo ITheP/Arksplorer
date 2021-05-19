@@ -1,4 +1,5 @@
-﻿using Arksplorer.Properties;
+﻿using Arksplorer.Controls;
+using Arksplorer.Properties;
 using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.Collections.Generic;
@@ -101,8 +102,7 @@ namespace Arksplorer
             ShowPopups.IsChecked = UserSettings.ShowPopups;
             IncludeDetailsInPopUps.IsChecked = UserSettings.IncludeDetailsInPopUps;
             Zoom.Value = UserSettings.Zoom;
-            SetUserDefinedAlarmControl(UserSettings.UserSpecificAlarmDuration);
-
+            
             InitWebTabs();
 
             // Load data and grab config from server that feeds into all this
@@ -129,11 +129,17 @@ namespace Arksplorer
                 ExitApplication();
             }
 
-            // Timer is used for both triggering any Alarm and triggering checks to see if data needs to be refreshed
+            // Timer is used for both triggering any Alarm's and triggering checks to see if data needs to be refreshed
+            // Could have a timer per alarm, but you know, why bother running lots of timers when we can run one!
             Timer = new();
             Timer.Interval = new TimeSpan(0, 0, 1);
             Timer.Tick += TimerTrigger;
             Timer.Start();
+
+            Alarms.Add(Alarm1);
+            Alarms.Add(Alarm2);
+            foreach (var alarm in Alarms)
+                alarm.SetUserDefinedAlarmControl(UserSettings.UserSpecificAlarmDuration);
         }
 
         /// <summary>
@@ -172,9 +178,11 @@ namespace Arksplorer
 
         #region Timer and Alarm
 
-        private bool AlarmEnabled { get; set; }
-        private DateTime AlarmTimestamp { get; set; }
-        private bool AlarmTriggered { get; set; }
+        private List<Alarm> Alarms { get; set; } = new();
+
+        //private bool AlarmEnabled { get; set; }
+        //private DateTime AlarmTimestamp { get; set; }
+        //private bool AlarmTriggered { get; set; }
 
         private void TimerTrigger(object sender, EventArgs e)
         {
@@ -186,121 +194,122 @@ namespace Arksplorer
             DateTime now = DateTime.Now;
             int seconds = now.Second;
 
-            if (AlarmEnabled)
-            {
-                TimeSpan timeLeft = AlarmTimestamp - now;
+            foreach (var alarm in Alarms)
+                alarm.NextTick(now);
 
-                SolidColorBrush brush;
-                FontWeight weight;
+            //if (AlarmEnabled)
+            //{
+            //    TimeSpan timeLeft = AlarmTimestamp - now;
 
-                int secondsLeft = timeLeft.Seconds;
-                int minutesLeft = timeLeft.Minutes;
-                AlarmTimeLeft.Text = $"{(timeLeft.Ticks < 0 ? "-" : "")}{Math.Abs(timeLeft.Minutes):00}:{Math.Abs(secondsLeft):00}";
+            //    SolidColorBrush brush;
+            //    FontWeight weight;
 
-                if (minutesLeft > 0 || secondsLeft > 30)
-                    brush = Brushes.ForestGreen;
-                else if (secondsLeft > 5)
-                    brush = Brushes.DarkOrange;
-                else
-                    brush = Brushes.Red;
+            //    int secondsLeft = timeLeft.Seconds;
+            //    int minutesLeft = timeLeft.Minutes;
+            //    AlarmTimeLeft.Text = $"{(timeLeft.Ticks < 0 ? "-" : "")}{Math.Abs(timeLeft.Minutes):00}:{Math.Abs(secondsLeft):00}";
 
-                if (minutesLeft < 0 || secondsLeft < 0)
-                {
-                    weight = FontWeights.Bold;
-                    if (!AlarmTriggered)
-                        TriggerAlarm();
-                }
-                else
-                    weight = FontWeights.Normal;
+            //    if (minutesLeft > 0 || secondsLeft > 30)
+            //        brush = Brushes.ForestGreen;
+            //    else if (secondsLeft > 5)
+            //        brush = Brushes.DarkOrange;
+            //    else
+            //        brush = Brushes.Red;
 
-                if (AlarmTimeLeft.Foreground != brush)
-                    AlarmTimeLeft.Foreground = brush;
+            //    if (minutesLeft < 0 || secondsLeft < 0)
+            //    {
+            //        weight = FontWeights.Bold;
+            //        if (!AlarmTriggered)
+            //            TriggerAlarm();
+            //    }
+            //    else
+            //        weight = FontWeights.Normal;
 
-                if (AlarmTimeLeft.FontWeight != weight)
-                    AlarmTimeLeft.FontWeight = weight;
-            }
+            //    if (AlarmTimeLeft.Foreground != brush)
+            //        AlarmTimeLeft.Foreground = brush;
+
+            //    if (AlarmTimeLeft.FontWeight != weight)
+            //        AlarmTimeLeft.FontWeight = weight;
+            //}
 
             // Auto check for a cache refresh every 20 - too often and its a waste of time, too little and will annoy the user. This seems like a reasonable balance.
             if (seconds % 20 == 0)
                 CheckAndRefreshCache("CacheRefresh");
         }
 
-        private void SetAlarm(object sender, RoutedEventArgs e)
+        //private void SetAlarm(object sender, RoutedEventArgs e)
+        //{
+        //    string duration = (string)((Button)sender).Tag;
+
+        //    InitAlarm(duration);
+        //}
+
+        //private void InitAlarm(string duration)
+        //{
+        //    DateTime now = DateTime.Now;
+
+        //    bool lapsed = AlarmTimestamp < now;
+        //    DateTime baseTime;
+
+        //    if (duration.StartsWith("+") || duration.StartsWith("-"))
+        //    {
+        //        if (AlarmEnabled == false)
+        //            baseTime = now;
+        //        else
+        //            baseTime = AlarmTimestamp;
+        //    }
+        //    else
+        //        baseTime = now;
+
+        //    AlarmTimestamp = baseTime.AddMinutes(double.Parse(duration)).AddMilliseconds(500); // We add 1/2 second to give us a nice start time. e.g. 10mins -> 10:00 start, not 9:59
+        //    // Only reset timer if we have gone from a negative time to a positive
+        //    if (lapsed && AlarmTimestamp > now)
+        //        AlarmTriggered = false;
+        //    else if (!lapsed && AlarmTimestamp < now)
+        //        // We have manually gone negative, cancel any alarm
+        //        AlarmTriggered = true;
+
+        //    AlarmEnabled = true;
+
+        //    TimerTrigger();
+        //}
+
+        public void TriggerAlarmVisualisation()
         {
-            string duration = (string)((Button)sender).Tag;
-
-            InitAlarm(duration);
-        }
-
-        private void InitAlarm(string duration)
-        {
-            DateTime now = DateTime.Now;
-
-            bool lapsed = AlarmTimestamp < now;
-            DateTime baseTime;
-
-            if (duration.StartsWith("+") || duration.StartsWith("-"))
-            {
-                if (AlarmEnabled == false)
-                    baseTime = now;
-                else
-                    baseTime = AlarmTimestamp;
-            }
-            else
-                baseTime = now;
-
-            AlarmTimestamp = baseTime.AddMinutes(double.Parse(duration)).AddMilliseconds(500); // We add 1/2 second to give us a nice start time. e.g. 10mins -> 10:00 start, not 9:59
-            // Only reset timer if we have gone from a negative time to a positive
-            if (lapsed && AlarmTimestamp > now)
-                AlarmTriggered = false;
-            else if (!lapsed && AlarmTimestamp < now)
-                // We have manually gone negative, cancel any alarm
-                AlarmTriggered = true;
-
-            AlarmEnabled = true;
-
-            TimerTrigger();
-        }
-
-        private void TriggerAlarm()
-        {
-            AlarmTriggered = true;
-            PlaySample("FeedMe");
             FlashAlarmStoryboard.Begin(this);
         }
 
-        private void RemoveAlarm()
-        {
-            AlarmEnabled = false;
-            Player.Stop();
-            AlarmTimeLeft.Foreground = Brushes.Black;
-            AlarmTimeLeft.FontWeight = FontWeights.Normal;
-            AlarmTimeLeft.Text = "Off";
-        }
+        //private void RemoveAlarm()
+        //{
+        //    AlarmEnabled = false;
+        //    Player.Stop();
+        //    AlarmTimeLeft.Foreground = Brushes.Black;
+        //    AlarmTimeLeft.FontWeight = FontWeights.Normal;
+        //    AlarmTimeLeft.Text = "Off";
+        //}
 
-        private void AlarmOff_Click(object sender, RoutedEventArgs e)
-        {
-            RemoveAlarm();
-        }
+        //private void AlarmOff_Click(object sender, RoutedEventArgs e)
+        //{
+        //    RemoveAlarm();
+        //}
 
-        private void SetUserDefinedAlarmControl(string value)
-        {
-            UserDefinedAlarm.Content = value;
-            UserDefinedAlarm.Tag = value;
-        }
+        //private void SetUserDefinedAlarmControl(string value)
+        //{
+        //    UserDefinedAlarm.Content = value;
+        //    UserDefinedAlarm.Tag = value;
+        //}
 
-        private void AlarmList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (AlarmList.SelectedItem == null)
-                return;
+        //private void AlarmList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    if (AlarmList.SelectedItem == null)
+        //        return;
 
-            string duration = AlarmList.SelectedValue as string;
-            SetUserDefinedAlarmControl(duration);
-            Settings.Default.UserSpecificAlarmDuration = duration;
-            InitAlarm(duration);
+        //    string duration = AlarmList.SelectedValue as string;
+        //    SetUserDefinedAlarmControl(duration);
+        //    Settings.Default.UserSpecificAlarmDuration = duration;
+        //    InitAlarm(duration);
 
-            AlarmList.SelectedItem = null;
-        }
+        //    AlarmList.SelectedItem = null;
+        //}
 
         #endregion Timer and Alarm
 
@@ -440,27 +449,27 @@ namespace Arksplorer
 
         #endregion Cache
 
-        #region Audio
+        //#region Audio
 
-        //Problems with MediaPlayer not playing. Not sure why! To retry with a different mp3?
-        //private MediaPlayer Player { get; set; } = new();
-        SoundPlayer Player { get; set; } = new();
+        ////Problems with MediaPlayer not playing. Not sure why! To retry with a different mp3?
+        ////private MediaPlayer Player { get; set; } = new();
+        //SoundPlayer Player { get; set; } = new();
 
-        private void PlaySample(string type)
-        {
-            try
-            {
-                Player.SoundLocation = $"Audio/{type}.wav";
-                Player.Play();
+        //private void PlaySample(string type)
+        //{
+        //    try
+        //    {
+        //        Player.SoundLocation = $"Audio/{type}.wav";
+        //        Player.Play();
 
-            }
-            catch (Exception ex)
-            {
-                Debug.Print($"Something went wrong playing sample {type}.mp3: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}");
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.Print($"Something went wrong playing sample {type}.mp3: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}");
+        //    }
+        //}
 
-        #endregion Audio
+     //   #endregion Audio
 
         #region Queue
 
