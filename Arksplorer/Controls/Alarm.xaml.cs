@@ -30,9 +30,11 @@ namespace Arksplorer.Controls
 
         private string LastInitDuration { get; set; }
 
-        public Alarm()
+        public Alarm(string audioType)
         {
             InitializeComponent();
+
+            AudioType.Text = audioType;
         }
         private void InitAlarm(string duration)
         {

@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.IO.Packaging;
 using System.Linq;
+using System.Threading;
+using System.Windows;
 
 namespace Arksplorer
 {
@@ -19,29 +23,55 @@ namespace Arksplorer
             if (!DataIsStale)
                 return;
 
-            Data = new DataTable();
-
             if (IndividualMaps.Count == 0)
             {
                 MapsDescription = "No maps loaded";
                 return;
             }
 
-            // Set up copy of datatable structure only (no data)
-            Data = IndividualMaps.First().Value.Data.Clone();
+            bool success = false;
+            int attempts = 1;
 
-            MapsDescription = $"Map data for {Metadata.Description}s";
-            Debug.Print($"Map data for {Metadata.Description}s is made up of...");
-
-            foreach (KeyValuePair<string, MapPackage> map in IndividualMaps)
+            while (!success)
             {
-                MapPackage mapPackage = map.Value;
-                Debug.Print($"   {Metadata.ArkEntityType}.{map.Key} - {mapPackage.Data.Rows.Count}");
-                Data.Merge(mapPackage.Data);
+                // it's possible for the data to be modified while we are processing it (e.g. background process is re-generating it)
+                // which will throw an exception here. So we catch and handle this by trying again.
+                try
+                {
+                    Data = new DataTable();
+
+                    // Set up copy of datatable structure only (no data)
+                    Data = IndividualMaps.First().Value.Data.Clone();
+
+                    MapsDescription = $"Map data for {Metadata.Description}s";
+                    Debug.Print($"Map data for {Metadata.Description}s is made up of...");
+
+                    foreach (KeyValuePair<string, MapPackage> map in IndividualMaps)
+                    {
+                        MapPackage mapPackage = map.Value;
+                        Debug.Print($"   {Metadata.ArkEntityType}.{map.Key} - {mapPackage.Data.Rows.Count}");
+                        Data.Merge(mapPackage.Data);
+                    }
+
+                    success = true;
+                }
+                catch (Exception ex)
+                {
+                    Debug.Print($"Error generating map data - restarting");
+                    attempts++;
+
+                    Thread.Sleep(attempts * 100);
+
+                    if (attempts > 5)
+                    {
+                        MessageBox.Show("Internal problem updating data. Map data might not be showing correctly. Will keep going though! Feel free to try again...", "Internal error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        success = true;
+                    }
+                }
             }
 
-            Debug.Print($"...{Data.Rows.Count} total");
-            
+            Debug.Print($"...{Data.Rows.Count} total (took {attempts} attempts");
+
             DataIsStale = false;
         }
     }

@@ -42,7 +42,12 @@
                         <Button Content="-1" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="-1"/>
                     </StackPanel>
                 </StackPanel>
-                <TextBlock x:Name="AlarmTimeLeft" Text="Off" FontSize="20" Width="70" VerticalAlignment="Center" TextAlignment="Center"/>
+                <Grid Margin="6,0,0,0" Width="54">
+                    <Button x:Name="DeleteAlarm" HorizontalAlignment="Right" Margin="0,0,-2,0" VerticalAlignment="Top" Height="10" Width="10" Background="Transparent">
+                        <Path Data="M-1,-1 L1,1 M-1,1 L1,-1" Stretch="Uniform" Stroke="Black"/>
+                    </Button>
+                    <TextBlock x:Name="AlarmTimeLeft" Text="Off" FontSize="20" VerticalAlignment="Center" TextAlignment="Center"/>
+                </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                 <TextBlock Width="32" Text="Audio" VerticalAlignment="Center" Margin="2,0,0,0"/>
@@ -51,8 +56,8 @@
                     <ComboBoxItem Tag="Feed me" IsSelected="True">Feed me</ComboBoxItem>
                     <ComboBoxItem Tag="Feed me">Gacha</ComboBoxItem>
                 </ComboBox>
-                <Grid Width="70">
-                    <CheckBox x:Name="AutoRepeat" IsChecked="False" Content="Repeat" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Grid Margin="4,0,0,0" Width="54">
+                    <CheckBox x:Name="AutoRepeat" IsChecked="False" Content="Auto" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Auto repeat alarm after triggering"/>
                 </Grid>
             </StackPanel>
         </StackPanel>

@@ -49,6 +49,8 @@ namespace Arksplorer
 
         public static ObservableCollection<MapSelection> MapList { get; set; } = new();
 
+        public static ObservableCollection<Alarm> Alarms { get; set; } = new();
+
         /// <summary>
         /// Forces use of local temp.json file as a data file. Used for debugging (rather than having to make a server trip for data we can't control)
         /// </summary>
@@ -136,8 +138,9 @@ namespace Arksplorer
             Timer.Tick += TimerTrigger;
             Timer.Start();
 
-            Alarms.Add(Alarm1);
-            Alarms.Add(Alarm2);
+            Alarms.Add(new Alarm("Feed me"));
+            Alarms.Add(new Alarm("Feed me"));
+
             foreach (var alarm in Alarms)
                 alarm.SetUserDefinedAlarmControl(UserSettings.UserSpecificAlarmDuration);
         }
@@ -177,8 +180,6 @@ namespace Arksplorer
         #endregion Init
 
         #region Timer and Alarm
-
-        private List<Alarm> Alarms { get; set; } = new();
 
         //private bool AlarmEnabled { get; set; }
         //private DateTime AlarmTimestamp { get; set; }
@@ -1016,14 +1017,15 @@ namespace Arksplorer
                     DataVisual.Visibility = Visibility.Visible;
                 }
 
-                ExtraInfoTitle.Text = CurrentDataPackage.MapsDescription;
-                ExtraInfo.Text = $"Total loaded: {CurrentDataPackage.Data?.Rows.Count ?? 0}";
-                ExtraInfoMapData.ItemsSource = CurrentDataPackage.IndividualMaps.ToList();  // Don't belive it should require a Tolist() but have seen the display not update without it
+                MapDataTitle.Text = CurrentDataPackage.MapsDescription;
+                MapDataTotal.Text = $"Total loaded: {CurrentDataPackage.Data?.Rows.Count ?? 0}";
+                MapData.ItemsSource = CurrentDataPackage.IndividualMaps.ToList();  // Don't belive it should require a Tolist() but have seen the display not update without it
                 //ExtraInfoMapData.Items.Refresh();
-                ShowExtraInfo(ExtraInfoHolder, ExtraInfoMapDataHolder);
-                About.Content = "About";    // Just incase this button gets out of sync.
+                //ShowExtraInfo(ExtraInfoHolder, MapDataHolder);
 
-                ExtraInfoMapDataHolder.Visibility = Visibility.Visible;
+                MapDataHolder.Visibility = Visibility.Visible;
+                MapDataTab.Focus();
+                //About.Content = "About";    // Just incase this button gets out of sync.
 
                 if (CurrentDataPackage.Data == null)
                 {
@@ -1419,18 +1421,18 @@ namespace Arksplorer
 
         #region Info and PopUps
 
-        private void ShowExtraInfo(UIElement whatToShow, UIElement whatToShow2 = null)
-        {
-            AboutExtraInfo.Visibility = Visibility.Collapsed;
-            ExtraInfoHolder.Visibility = Visibility.Collapsed;
-            ExtraInfoMapDataHolder.Visibility = Visibility.Collapsed;
+        //private void ShowExtraInfo(UIElement whatToShow, UIElement whatToShow2 = null)
+        //{
+        //    AboutExtraInfo.Visibility = Visibility.Collapsed;
+        //    ExtraInfoHolder.Visibility = Visibility.Collapsed;
+        //    ExtraInfoMapDataHolder.Visibility = Visibility.Collapsed;
 
-            if (whatToShow != null)
-                whatToShow.Visibility = Visibility.Visible;
+        //    if (whatToShow != null)
+        //        whatToShow.Visibility = Visibility.Visible;
 
-            if (whatToShow2 != null)
-                whatToShow2.Visibility = Visibility.Visible;
-        }
+        //    if (whatToShow2 != null)
+        //        whatToShow2.Visibility = Visibility.Visible;
+        //}
 
         private void SetSelectedInfo(Info info)
         {
@@ -1666,13 +1668,14 @@ namespace Arksplorer
             {
                 GeneralLoadingSpinner.Child = LoadingSpinner;
                 GeneralLoadingSpinner.Visibility = Visibility.Visible;
-                ExtraInfoHolder.Visibility = Visibility.Hidden;
+                MapsTab.Focus();
+         //       ExtraInfoHolder.Visibility = Visibility.Hidden;
             }
             else
             {
                 GeneralLoadingSpinner.Child = null;
                 GeneralLoadingSpinner.Visibility = Visibility.Hidden;
-                ExtraInfoHolder.Visibility = Visibility.Visible;
+         //       ExtraInfoHolder.Visibility = Visibility.Visible;
             }
         }
 
@@ -1694,20 +1697,20 @@ namespace Arksplorer
             ExitApplication();
         }
 
-        private void About_Click(object sender, RoutedEventArgs e)
-        {
-            if ((string)About.Content == "About")
-            {
-                ShowExtraInfo(AboutExtraInfo);
-                About.Content = "Show data info";
-            }
-            else
-            {
-                ShowExtraInfo(ExtraInfoHolder, ExtraInfoMapDataHolder);
-                About.Content = "About";
-            }
+        //private void About_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if ((string)About.Content == "About")
+        //    {
+        //        ShowExtraInfo(AboutExtraInfo);
+        //        About.Content = "Show data info";
+        //    }
+        //    else
+        //    {
+        //        ShowExtraInfo(ExtraInfoHolder, MapDataHolder);
+        //        About.Content = "About";
+        //    }
 
-        }
+        //}
 
         private void CustomMarker_MouseUp(object sender, MouseButtonEventArgs e)
         {

@@ -116,7 +116,7 @@ namespace Arksplorer
 
                 Debug.Print($"GetDataAsync CurrentDataPackage == dataPackage {mainWindow.CurrentDataPackage == dataPackage} to trigger visual refresh");
 
-                mainWindow.Dispatcher.Invoke(() => { mainWindow.ExtraInfoMapData.ItemsSource = mainWindow.CurrentDataPackage?.IndividualMaps.ToList(); }); //THIS should work but doesnt visually --> if (CurrentDataPackage == dataPackage) ExtraInfoMapData.Items.Refresh(); });
+                mainWindow.Dispatcher.Invoke(() => { mainWindow.MapData.ItemsSource = mainWindow.CurrentDataPackage?.IndividualMaps.ToList(); }); //THIS should work but doesnt visually --> if (CurrentDataPackage == dataPackage) ExtraInfoMapData.Items.Refresh(); });
 
                 dataPackage.DataIsStale = true;
 

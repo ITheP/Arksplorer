@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Arksplorer"
         xmlns:controls="clr-namespace:Arksplorer.Controls"
-        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
         Title="Arksplorer" Height="1100" Width="800" MinWidth="800" MinHeight="950"
         MouseMove="Window_MouseMove"
@@ -108,53 +107,34 @@
         </Popup>
         <DockPanel>
             <Grid>
-                <DockPanel Width="200" Margin="10,0,10,0">
+                <DockPanel Width="210" Margin="10,0,10,0">
                     <StackPanel DockPanel.Dock="Bottom">
-                        <Separator Margin="0,8"/>
-                        <!--<Grid>
-                            <StackPanel Orientation="Horizontal">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="&#xEA8F;" FontFamily="Segoe MDL2 Assets" FontSize="18" Width="32" TextAlignment="Center" VerticalAlignment="Center"/>
-                                        <Button Content="5" Width="20" Margin="6,0,0,0" Click="SetAlarm" Tag="5" Background="Lavender"/>
-                                        <Button Content="10" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="10" Background="Lavender"/>
-                                        <Button Content="11" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="11" Background="Lavender"/>
-                                        <Button Content="+1" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="+1"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                        <Button x:Name="AlarmOff" Content="Off" Width="32" Click="AlarmOff_Click"/>
-                                        <ComboBox x:Name="AlarmList" Width="44" Margin="6,0,0,0" Background="Lavender" SelectedValuePath="Tag" SelectionChanged="AlarmList_SelectionChanged">
-                                            <ComboBoxItem Tag="1">1</ComboBoxItem>
-                                            <ComboBoxItem Tag="2">2</ComboBoxItem>
-                                            <ComboBoxItem Tag="3">3</ComboBoxItem>
-                                            <ComboBoxItem Tag="4">4</ComboBoxItem>
-                                            <ComboBoxItem Tag="5">5</ComboBoxItem>
-                                            <ComboBoxItem Tag="8">8</ComboBoxItem>
-                                            <ComboBoxItem Tag="10">10</ComboBoxItem>
-                                            <ComboBoxItem Tag="11">11</ComboBoxItem>
-                                            <ComboBoxItem Tag="12">12</ComboBoxItem>
-                                            <ComboBoxItem Tag="15">15</ComboBoxItem>
-                                            <ComboBoxItem Tag="20">20</ComboBoxItem>
-                                            <ComboBoxItem Tag="25">25</ComboBoxItem>
-                                            <ComboBoxItem Tag="30">30</ComboBoxItem>
-                                            <ComboBoxItem Tag="35">35</ComboBoxItem>
-                                            <ComboBoxItem Tag="40">40</ComboBoxItem>
-                                            <ComboBoxItem Tag="45">45</ComboBoxItem>
-                                            <ComboBoxItem Tag="50">50</ComboBoxItem>
-                                            <ComboBoxItem Tag="55">55</ComboBoxItem>
-                                        </ComboBox>
-                                        <Button Content="12" x:Name="UserDefinedAlarm" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="12" Background="Lavender"/>
-                                        <Button Content="-1" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="-1"/>
-                                    </StackPanel>
-                                </StackPanel>
-                                <TextBlock x:Name="AlarmTimeLeft" Text="Off" FontSize="20" Width="70" VerticalAlignment="Center" TextAlignment="Center"/>
-                            </StackPanel>
-                        </Grid>-->
-                        <controls:Alarm x:Name="Alarm1"/>
+                        <Separator Margin="0,6"/>
+                        <Grid>
+                            <TextBlock Text="Alarms"/>
+                            <Button x:Name="AddAlarm" Width="14" Height="14" HorizontalAlignment="Right" Background="Transparent" Margin="0,0,0,0">
+                                <Path Data="M-1,0 L1,0 M0,-1 L0,1" Stretch="Uniform" Stroke="Black" />
+                            </Button>
+                        </Grid>
+                        <ListView x:Name="AlarmsList" ItemsSource="{Binding Alarms}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,4,0,2" Padding="0,2,0,2">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentControl Content="{Binding}" Margin="8,6,0,6" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                        <!--<controls:Alarm x:Name="Alarm1"/>
                         <Separator Margin="0,8"/>
                         <controls:Alarm x:Name="Alarm2"/>
-                        <Separator Margin="0,8"/>
-                        <Button x:Name="About" Content="About" Margin="0,4,0,0" Click="About_Click"/>
+                        <Separator Margin="0,8"/>-->
+                        <!--<Button x:Name="About" Content="About" Margin="0,4,0,0" Click="About_Click"/>-->
                         <Button x:Name="Exit" Content="Exit" Click="Exit_Click" Margin="0,4,0,8"/>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
@@ -175,7 +155,7 @@
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
-                        <DockPanel Margin="0,4,0,0">
+                        <DockPanel Margin="0,6,0,0">
                             <Grid Height="32">
                                 <Viewbox x:Name="GeneralLoadingSpinner" Height="32" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right">
                                     <controls:Spinner/>
@@ -186,127 +166,87 @@
                                 </TextBlock>
                             </Grid>
                         </DockPanel>
-                        <Separator Margin="0,6"/>
-                        <Grid x:Name="ServerLoadedControls">
+                        <Grid x:Name="ServerLoadedControls" Margin="0,6,0,0">
                             <StackPanel>
-                                <TextBlock FontWeight="Bold" Foreground="CornflowerBlue" Style="{StaticResource TitleText}" HorizontalAlignment="Center">Maps to include...</TextBlock>
-                                <ListView Margin="0,4,0,0" x:Name="MapsToInclude" ItemsSource="{Binding MapList}" BorderThickness="0">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid HorizontalAlignment="Stretch">
-                                                <CheckBox x:Name="MapsToIncludeCheckbox" Content="{Binding Name}" IsChecked="{Binding Load}" Click="MapsToIncludeCheckbox_Click"/>
-                                                <TextBlock Text="{Binding CacheState}" HorizontalAlignment="Right" Visibility="Hidden"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                    <ListView.ItemContainerStyle>
-                                        <Style TargetType="ListViewItem">
-                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                        </Style>
-                                    </ListView.ItemContainerStyle>
-                                </ListView>
-                                <Grid Margin="0,8,0,6">
-                                    <Button x:Name="IncludeAll" HorizontalAlignment="Left" Width="40" Click="IncludeAll_Click" ToolTip="Sets all maps to be included when downloading data">All</Button>
-                                    <Button x:Name="IncludeNone" HorizontalAlignment="Left" Width="40" Margin="50,0,0,0" Click="IncludeNone_Click" ToolTip="Clears all maps so none are selected for downloading data">None</Button>
-                                </Grid>
-                                <!--<CheckBox x:Name="AutoRefresh" Content="Auto Refresh when possible" IsChecked="True"/>-->
-                                <Separator Margin="0,8"/>
+                                <TabControl>
+                                    <TabItem x:Name="MapsTab" Header="Maps">
+                                        <StackPanel x:Name="MapsList" Margin="4">
+                                            <TextBlock FontWeight="Bold" Foreground="CornflowerBlue" Style="{StaticResource TitleText}" HorizontalAlignment="Center">Maps to include...</TextBlock>
+                                            <ListView Margin="0,4,0,0" x:Name="MapsToInclude" ItemsSource="{Binding MapList}" BorderThickness="0">
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid HorizontalAlignment="Stretch">
+                                                            <CheckBox x:Name="MapsToIncludeCheckbox" Content="{Binding Name}" IsChecked="{Binding Load}" Click="MapsToIncludeCheckbox_Click"/>
+                                                            <TextBlock Text="{Binding CacheState}" HorizontalAlignment="Right" Visibility="Hidden"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                                <ListView.ItemContainerStyle>
+                                                    <Style TargetType="ListViewItem">
+                                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                    </Style>
+                                                </ListView.ItemContainerStyle>
+                                            </ListView>
+                                            <StackPanel Orientation="Horizontal" Margin="4,6,0,4">
+                                                <Button x:Name="IncludeAll" HorizontalAlignment="Left" Width="40" Click="IncludeAll_Click" ToolTip="Sets all maps to be included when downloading data">All</Button>
+                                                <Button x:Name="IncludeNone" HorizontalAlignment="Left" Width="40" Margin="6,0,0,0" Click="IncludeNone_Click" ToolTip="Clears all maps so none are selected for downloading data">None</Button>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </TabItem>
+                                    <TabItem x:Name="MapDataTab" Header="Data">
+                                        <Grid>
+                                            <StackPanel x:Name="MapDataList" Height="{Binding ActualHeight, ElementName=MapsList}" Margin="4">
+                                                <TextBlock x:Name="MapDataTitle" TextAlignment="Center" FontWeight="Bold" TextWrapping="Wrap">Data</TextBlock>
+                                                <TextBlock x:Name="MapDataTotal" Margin="0,4,0,0" TextWrapping="Wrap">No data has been loaded yet. Select what maps to include, then click what you want to load.</TextBlock>
 
-                                <TextBlock Margin="0,0,0,4" FontWeight="Bold" Foreground="DarkSeaGreen" Style="{StaticResource TitleText}" HorizontalAlignment="Center">Show data for...</TextBlock>
-                                <Button x:Name="LoadTameDinos" Content="Tame Dinos" Margin="0,4,0,0" Click="TameDinos_Click" ToolTip="Triggers a load request for Tame creatures" />
-                                <Button x:Name="LoadWildDinos" Content="Wild Dinos" Margin="0,4,0,0" Click="WildDinos_Click" ToolTip="Triggers a load request for Wild creatures" />
-                                <Button x:Name="LoadSurvivors" Content="Survivors" Margin="0,4,0,0" Click="Survivors_Click" ToolTip="Triggers a load request for Survivors"/>
-                                <Separator Margin="0,12,0,8"/>
+                                                <Grid x:Name="MapDataHolder" Height="{Binding ActualHeight, ElementName=MapsList}" Visibility="Collapsed" >
+                                                    <StackPanel>
+                                                        <TextBlock TextAlignment="Right" Margin="0,0,1,0">Data updates</TextBlock>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                                            <TextBlock Text="Map name" Width="88" />
+                                                            <TextBlock Text="Count"/>
+                                                            <TextBlock Margin="14,0,0,0" Text="Last"/>
+                                                            <TextBlock Margin="14,0,0,0" Text="Next"/>
+                                                        </StackPanel>
+                                                        <Separator/>
+                                                        <ListView x:Name="MapData" Margin="-1,-2,0,0" BorderThickness="0">
+                                                            <ListView.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Grid HorizontalAlignment="Stretch" Margin="0">
+                                                                        <StackPanel Orientation="Horizontal">
+                                                                            <TextBlock Text="{Binding Key}" Width="80"/>
+                                                                            <TextBlock Text="{Binding Path=Value.Data.Rows.Count}" TextAlignment="Right" Width="40"/>
+                                                                            <TextBlock Text="{Binding Path=Value.Timestamp, StringFormat='HH:mm'}" Width="31" Margin="10,0,5,0" />
+                                                                            <TextBlock Text="{Binding Path=Value.ApproxNextServerUpdateTimestamp, StringFormat='HH:mm'}"/>
+                                                                        </StackPanel>
+                                                                    </Grid>
+                                                                </DataTemplate>
+                                                            </ListView.ItemTemplate>
+                                                            <ListView.ItemContainerStyle>
+                                                                <Style TargetType="ListViewItem">
+                                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                                    <Setter Property="Margin" Value="0"/>
+                                                                    <Setter Property="Padding" Value="0,2,0,0"/>
+                                                                </Style>
+                                                            </ListView.ItemContainerStyle>
+                                                        </ListView>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Grid>
+                                    </TabItem>
+                                </TabControl>
+                                <StackPanel>
+                                    <TextBlock Margin="0,2,0,2" FontWeight="Bold" Foreground="DarkSeaGreen" Style="{StaticResource TitleText}" HorizontalAlignment="Center">Load data for...</TextBlock>
+                                    <Button x:Name="LoadTameDinos" Content="Tame Dinos" Margin="0,4,0,0" Click="TameDinos_Click" ToolTip="Triggers a load request for Tame creatures" />
+                                    <Button x:Name="LoadWildDinos" Content="Wild Dinos" Margin="0,4,0,0" Click="WildDinos_Click" ToolTip="Triggers a load request for Wild creatures" />
+                                    <Button x:Name="LoadSurvivors" Content="Survivors" Margin="0,4,0,0" Click="Survivors_Click" ToolTip="Triggers a load request for Survivors"/>
+                                    <Separator Margin="0,10,0,6"/>
+                                </StackPanel>
                             </StackPanel>
                         </Grid>
+
                     </StackPanel>
-                    <Grid>
-                        <ScrollViewer x:Name="ExtraInfoHolder" VerticalScrollBarVisibility="Auto">
-                            <StackPanel>
-                                <TextBlock x:Name="ExtraInfoTitle" Style="{StaticResource TitleText}" Text="Instructions" HorizontalAlignment="Center" TextWrapping="Wrap"/>
-                                <TextBlock x:Name="ExtraInfo" Margin="0,2,0,0" TextWrapping="Wrap">
-                                    Select what maps to include, then click what you want to load/show. Click a result to find individuals.
-                                    <LineBreak/>
-                                    <LineBreak/>
-                                    <Span FontStyle="Italic">Filter</Span> searches by map, dino names, creature types etc.
-                                    <LineBreak/>
-                                    Press <Span FontStyle="Italic" Foreground="Brown">enter</Span> or click <Span FontStyle="Italic" Foreground="Brown">Apply</Span> to apply filter. <Span FontStyle="Italic" Foreground="Brown">Exact</Span> returns exact matches.
-                                    <LineBreak/>
-                                    <LineBreak/>
-                                    Multiple filters using , separation
-                                    <LineBreak/>
-                                    e.g. <Span FontStyle="Italic" Foreground="BlueViolet">ragn, arg</Span>ver
-                                    returns results including <Span FontStyle="Italic" Foreground="BlueViolet">arg</Span>entavis on <Span FontStyle="Italic" Foreground="BlueViolet">ragn</Span>arok.
-                                    <LineBreak/>
-                                    <LineBreak/>
-                                    Visit our facebook page... <Hyperlink NavigateUri="http://facebook.com/arksplorer" RequestNavigate="HandleLinkClick">facebook.com/arksplorer</Hyperlink>
-                                </TextBlock>
-                                <Grid x:Name="ExtraInfoMapDataHolder" Visibility="Collapsed">
-                                    <StackPanel>
-                                        <TextBlock TextAlignment="Right" Margin="0,0,1,0">Data updates</TextBlock>
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
-                                            <TextBlock Text="Map name" Width="88" />
-                                            <TextBlock Text="Count"/>
-                                            <TextBlock Margin="14,0,0,0" Text="Last"/>
-                                            <TextBlock Margin="14,0,0,0" Text="Next"/>
-                                        </StackPanel>
-                                        <Separator/>
-                                        <ListView x:Name="ExtraInfoMapData" Margin="-1,-2,0,0" BorderThickness="0">
-                                            <ListView.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Grid HorizontalAlignment="Stretch" Margin="0">
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding Key}" Width="80"/>
-                                                            <TextBlock Text="{Binding Path=Value.Data.Rows.Count}" TextAlignment="Right" Width="41"/>
-                                                            <TextBlock Text="{Binding Path=Value.Timestamp, StringFormat='HH:mm'}" Width="31" Margin="10,0,5,0" />
-                                                            <TextBlock Text="{Binding Path=Value.ApproxNextServerUpdateTimestamp, StringFormat='HH:mm'}"/>
-                                                        </StackPanel>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </ListView.ItemTemplate>
-                                            <ListView.ItemContainerStyle>
-                                                <Style TargetType="ListViewItem">
-                                                    <Setter Property="BorderThickness" Value="0"/>
-                                                    <Setter Property="Margin" Value="0"/>
-                                                    <Setter Property="Padding" Value="0,2,0,0"/>
-                                                </Style>
-                                            </ListView.ItemContainerStyle>
-                                        </ListView>
-                                    </StackPanel>
-                                </Grid>
-                            </StackPanel>
-                        </ScrollViewer>
-                        <ScrollViewer x:Name="AboutExtraInfo" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
-                            <TextBlock ScrollViewer.VerticalScrollBarVisibility="Auto" TextAlignment="Center"  TextWrapping="Wrap">
-                            <Span FontSize="16" FontWeight="Bold">Arksplorer</Span>
-                            <LineBreak/>
-                            <Span FontStyle="Italic">© 2021 MisterB @ ITheP.Rocks</Span>
-                            <LineBreak/>
-                            <LineBreak/>
-                            Simple front end Ark data visualiser that takes bits of Ark data expose
-                            by an ark server to help you find things in Ark.
-                            <LineBreak/>
-                            <LineBreak/>
-                            Also does a few other things because, why not!
-                            <LineBreak/>
-                            <LineBreak/>
-                            Provided under <Hyperlink NavigateUri="https://creativecommons.org/licenses/by-nc-sa/4.0/" RequestNavigate="HandleLinkClick">CC BY-NC-SA 4.0</Hyperlink> License.
-                            <LineBreak/>
-                            <LineBreak/>
-                            Artwork (c) respective artists - used in good faith under Creative Commons CC BY-NC-SA 3.0 License.
-                            Please check <Hyperlink NavigateUri="https://ark.gamepedia.com/" RequestNavigate="HandleLinkClick">ark.gamepedia.com</Hyperlink> for extra details.
-                            If you believe any content infringes on anything, or would like a credit adding, please contact and we will happily update accordingly!
-                            <LineBreak/>
-                            <LineBreak/>
-                            Visit our facebook page... <Hyperlink NavigateUri="http://facebook.com/arksplorer" RequestNavigate="HandleLinkClick">facebook.com/arksplorer</Hyperlink>
-                            <LineBreak/>
-                            <LineBreak/>
-                            Source code on github...
-                            <LineBreak/>
-                            <Hyperlink NavigateUri="https://github.com/ITheP/Arksplorer/" RequestNavigate="HandleLinkClick">github.com/ITheP/Arksplorer</Hyperlink>
-                            </TextBlock>
-                        </ScrollViewer>
-                    </Grid>
                 </DockPanel>
             </Grid>
             <TabControl Margin="0,0,8,8" Padding="8">
@@ -536,6 +476,66 @@
                             </ListView.ItemTemplate>
                         </ListView>
                     </StackPanel>
+                </TabItem>
+                <TabItem Header="Help">
+                    <Grid>
+                        <ScrollViewer x:Name="ExtraInfoHolder" VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TextBlock x:Name="ExtraInfoTitle" Style="{StaticResource TitleText}" Text="Instructions" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+                                <TextBlock x:Name="ExtraInfo" Margin="0,2,0,0" TextWrapping="Wrap">
+                                    Select what maps to include, then click what you want to load/show.
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    Click a row in the results to find where that creature is on a map.
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    <Span FontStyle="Italic">Filter</Span> searches by map, dino names, creature types etc.
+                                    <LineBreak/>
+                                    Press <Span FontStyle="Italic" Foreground="Brown">enter</Span> or click <Span FontStyle="Italic" Foreground="Brown">Apply</Span> to apply filter. <Span FontStyle="Italic" Foreground="Brown">Exact</Span> returns exact matches.                                   
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    You can filter on multiple keywords at once using a , separated list
+                                    <LineBreak/>
+                                    e.g. <Span FontStyle="Italic" Foreground="BlueViolet">ragn, arg</Span>ver
+                                    returns results including <Span FontStyle="Italic" Foreground="BlueViolet">arg</Span>entavis on <Span FontStyle="Italic" Foreground="BlueViolet">ragn</Span>arok.
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    Add an Alarm (or multiple alarms) for handy warnings! Imprinting dinos? Remind yourself in 11 minutes that they need feeding. Got a gacha farm with some crystals that
+                                    need picking up every 15 minutes? Not a problem - set a repeating reminder every 14 minutes to give you time to get there.
+                                    <LineBreak/>
+                                </TextBlock>
+                                <TextBlock TextAlignment="Center">
+                                    <Span FontSize="16" FontWeight="Bold">Arksplorer</Span>
+                                    <LineBreak/>
+                                    <Span FontStyle="Italic">© 2021 MisterB @ ITheP.Rocks</Span>
+                                </TextBlock>
+                                <TextBlock>
+                                    <LineBreak/>
+                                    Simple front end Ark data visualiser that takes bits of Ark data expose
+                                    by an ark server to help you find things in Ark.
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    Also does a few other things because, why not!
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    Provided under <Hyperlink NavigateUri="https://creativecommons.org/licenses/by-nc-sa/4.0/" RequestNavigate="HandleLinkClick">CC BY-NC-SA 4.0</Hyperlink> License.
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    Artwork (c) respective artists - used in good faith under Creative Commons CC BY-NC-SA 3.0 License.
+                                    Please check <Hyperlink NavigateUri="https://ark.gamepedia.com/" RequestNavigate="HandleLinkClick">ark.gamepedia.com</Hyperlink> for extra details.
+                                    If you believe any content infringes on anything, or would like a credit adding, please contact and we will happily update accordingly!
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    Visit our facebook page... <Hyperlink NavigateUri="http://facebook.com/arksplorer" RequestNavigate="HandleLinkClick">facebook.com/arksplorer</Hyperlink>
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    Source code on github...
+                                    <LineBreak/>
+                                    <Hyperlink NavigateUri="https://github.com/ITheP/Arksplorer/" RequestNavigate="HandleLinkClick">github.com/ITheP/Arksplorer</Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
                 </TabItem>
                 <!--<TabItem Header="Debug">
                     <StackPanel>
