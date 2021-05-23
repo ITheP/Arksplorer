@@ -1,20 +1,10 @@
 ﻿using Arksplorer.Properties;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Arksplorer.Controls
 {
@@ -30,12 +20,24 @@ namespace Arksplorer.Controls
 
         private string LastInitDuration { get; set; }
 
-        public Alarm(string audioType)
+        public static ObservableCollection<ListInfoItem> AudioFiles { get; set; }
+
+        public Alarm(int index)
         {
             InitializeComponent();
 
-            AudioType.Text = audioType;
+            AudioType.SelectedIndex = index;
         }
+
+        public static void InitAudioFiles(string folder)
+        {
+            AudioFiles = new();
+            AudioFiles.Add(new() { Description = "None", Value = null });
+
+            foreach (var filename in Directory.GetFiles("./Audio/", "*.wav"))
+                AudioFiles.Add(new() { Description = Path.GetFileNameWithoutExtension(filename), Value = filename });
+        }
+
         private void InitAlarm(string duration)
         {
             LastInitDuration = duration;
@@ -128,9 +130,9 @@ namespace Arksplorer.Controls
             AlarmTriggered = true;
             Globals.MainWindow.TriggerAlarmVisualisation();
 
-            string audioType = (string)AudioType.SelectedValue;
-            if (audioType != null)
-                Audio.PlaySample(audioType);
+            string filename = (string)AudioType.SelectedValue;
+            if (filename != null)
+                Audio.PlaySample(filename);
         }
 
         private void RemoveAlarm()
@@ -164,6 +166,11 @@ namespace Arksplorer.Controls
             InitAlarm(duration);
 
             AlarmList.SelectedItem = null;
+        }
+
+        private void DeleteAlarm_Click(object sender, RoutedEventArgs e)
+        {
+            Globals.MainWindow.DeleteAlarm(this);
         }
     }
 }

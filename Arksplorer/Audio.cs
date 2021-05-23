@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Media;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Arksplorer
 {
@@ -15,9 +10,9 @@ namespace Arksplorer
         private static SoundPlayer Player { get; set; } = new();
         private const string Extention = ".wav";
 
-        public static void PlaySample(string type)
+        public static void PlaySample(string filename)
         {
-            string filename = $"Audio/{type}{Extention}";
+            //string filename = $"Audio/{type}{Extention}";
             try
             {
                 Player.SoundLocation = filename;
@@ -26,7 +21,8 @@ namespace Arksplorer
             }
             catch (Exception ex)
             {
-                Debug.Print($"Something went wrong playing sample '{filename}': {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}");
+                string extraDescription = $"Something went wrong playing sample '{filename}'";
+                Errors.ReportProblem(ex, extraDescription);
             }
         }
     }

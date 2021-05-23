@@ -124,19 +124,19 @@ namespace Arksplorer
             }
             catch (HttpRequestException ex)
             {
-                MessageBox.Show($"Error: {ex.StatusCode}", $"Error retrieving JSON data for {MetaData.Description}", MessageBoxButton.OK, MessageBoxImage.Error);
+                Errors.ReportProblem(ex, $"Error retrieving JSON data for { MetaData.Description}: {ex.StatusCode}");
             }
             catch (NotSupportedException ex)
             {
-                MessageBox.Show($"Invalid content type: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}", $"Error retrieving JSON data for {MetaData.Description}", MessageBoxButton.OK, MessageBoxImage.Error);
+                Errors.ReportProblem(ex,$"Invalid content type in JSON data for { MetaData.Description}");
             }
             catch (JsonException ex)
             {
-                MessageBox.Show($"Invalid JSON: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}", $"Error retrieving JSON data for {MetaData.Description}", MessageBoxButton.OK, MessageBoxImage.Error);
+                Errors.ReportProblem(ex,$"Invalid JSON retrieving JSON data for { MetaData.Description}");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Problem loading data: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}", $"Error retrieving JSON data for {MetaData.Description}", MessageBoxButton.OK, MessageBoxImage.Error);
+                Errors.ReportProblem(ex, $"Problem loading JSON data for { MetaData.Description}");
             }
 
             return -1;

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using System.Windows.Media;
 
 namespace Arksplorer

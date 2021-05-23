@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.IO.Packaging;
 using System.Linq;
 using System.Threading;
-using System.Windows;
 
 namespace Arksplorer
 {
@@ -64,7 +62,8 @@ namespace Arksplorer
 
                     if (attempts > 5)
                     {
-                        MessageBox.Show("Internal problem updating data. Map data might not be showing correctly. Will keep going though! Feel free to try again...", "Internal error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        Errors.ReportProblem(ex, "Internal problem updating data. Map data might not be showing correctly. Will keep going though! Feel free to try again...");
+
                         success = true;
                     }
                 }

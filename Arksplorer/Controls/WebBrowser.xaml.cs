@@ -3,17 +3,11 @@ using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Policy;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shell;
 
 namespace Arksplorer.Controls
 {
@@ -238,8 +232,8 @@ namespace Arksplorer.Controls
         private void ProcessFailed(object sender, CoreWebView2ProcessFailedEventArgs e)
         {
             string message = $"Browser process failed...{Environment.NewLine}Description: {Description}{Environment.NewLine}Version: { CoreWebView2Environment.GetAvailableBrowserVersionString()}{Environment.NewLine}Url: {CurrentUrl}{Environment.NewLine}Error: {e.ProcessFailedKind}";
-            MessageBox.Show($"{message}{Environment.NewLine}{Environment.NewLine}Fear not though, Arksplorer will attempt to keep going!", "Browser crashed!", MessageBoxButton.OK, MessageBoxImage.Error);
-            Globals.AddToCrashFile(message);
+            Errors.AddToCrashFile(message);
+            Errors.ReportProblem(message, "Fear not though, Arksplorer will attempt to keep going!", "Browser crashed!");
             RecreateBrowser();
             Navigate(CurrentUrl);
         }
@@ -261,7 +255,7 @@ namespace Arksplorer.Controls
             }
             catch (Exception ex)
             {
-                Debug.Print($"Error disposing of previous browser instance: {ex.Message}");
+                Errors.ReportProblem(ex, "Error disposing of previous browser instance");
             }
         }
 

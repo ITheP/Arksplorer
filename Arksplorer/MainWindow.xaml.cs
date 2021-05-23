@@ -1,16 +1,13 @@
 ﻿using Arksplorer.Controls;
 using Arksplorer.Properties;
-using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-//using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Media;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -18,7 +15,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -26,7 +22,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using System.Xml.Linq;
 
 namespace Arksplorer
 {
@@ -41,7 +36,7 @@ namespace Arksplorer
         private static Dictionary<string, BitmapImage> MapImages { get; } = new();
         private static string CurrentMapImage { get; set; } = "";
         private static UIElement LoadingSpinner { get; set; }
-        public static ServerConfig ServerConfig { get; set; }
+        public ServerConfig ServerConfig { get; set; }
 
         private static List<Server> KnownServers { get; set; }
 
@@ -92,7 +87,8 @@ namespace Arksplorer
 
             DataContext = this;
 
-            Version.Text = Globals.Version;
+            //Version.Text = Globals.Version;
+            Title = $"Arksplorer - {Globals.Version}";
 
             // We drag the loading effect out the page when not visible,
             // so it's not being calculated while hidden/collapsed (have seen overhead happen even when not visible if its linked into the page)
@@ -124,12 +120,17 @@ namespace Arksplorer
 
                 // If we have a previous server, then setting the ServerList will trigger loading of the server on its SelectionChanged event
                 ServerList.SelectedValue = lastServer;
+
+                Alarm.InitAudioFiles("/Audio/");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"There was a problem during start up...{Environment.NewLine}{ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}{Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Errors.ReportProblem(ex, "There was a problem during start up", "Application will now exit.");
                 ExitApplication();
             }
+
+
+            InitAlarms();
 
             // Timer is used for both triggering any Alarm's and triggering checks to see if data needs to be refreshed
             // Could have a timer per alarm, but you know, why bother running lots of timers when we can run one!
@@ -137,12 +138,6 @@ namespace Arksplorer
             Timer.Interval = new TimeSpan(0, 0, 1);
             Timer.Tick += TimerTrigger;
             Timer.Start();
-
-            Alarms.Add(new Alarm("Feed me"));
-            Alarms.Add(new Alarm("Feed me"));
-
-            foreach (var alarm in Alarms)
-                alarm.SetUserDefinedAlarmControl(UserSettings.UserSpecificAlarmDuration);
         }
 
         /// <summary>
@@ -184,6 +179,30 @@ namespace Arksplorer
         //private bool AlarmEnabled { get; set; }
         //private DateTime AlarmTimestamp { get; set; }
         //private bool AlarmTriggered { get; set; }
+
+        public void InitAlarms()
+        {
+            Alarms.Add(new Alarm(1));
+            Alarms.Add(new Alarm(2));
+
+            foreach (var alarm in Alarms)
+                alarm.SetUserDefinedAlarmControl(UserSettings.UserSpecificAlarmDuration);
+        }
+
+        public void AddNewAlarm()
+        {
+            Alarms.Add(new Alarm(0));
+        }
+
+        public void DeleteAlarm(Alarm alarm)
+        {
+            Alarms.Remove(alarm);
+        }
+
+        private void AddAlarm_Click(object sender, RoutedEventArgs e)
+        {
+            AddNewAlarm();
+        }
 
         private void TimerTrigger(object sender, EventArgs e)
         {
@@ -386,13 +405,13 @@ namespace Arksplorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"There was a problem loading server information from {server.Url}{Environment.NewLine}{ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}{Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Errors.ReportProblem(ex, $"There was a problem loading server information from {server.Url}", "Applicatoin will now exit.");
                 LoadableControlsEnabled(false);
                 return false;
             }
         }
 
-        private static bool IsServerConfigLoaded()
+        private bool IsServerConfigLoaded()
         {
             return (ServerConfig != null);
         }
@@ -449,28 +468,6 @@ namespace Arksplorer
         }
 
         #endregion Cache
-
-        //#region Audio
-
-        ////Problems with MediaPlayer not playing. Not sure why! To retry with a different mp3?
-        ////private MediaPlayer Player { get; set; } = new();
-        //SoundPlayer Player { get; set; } = new();
-
-        //private void PlaySample(string type)
-        //{
-        //    try
-        //    {
-        //        Player.SoundLocation = $"Audio/{type}.wav";
-        //        Player.Play();
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.Print($"Something went wrong playing sample {type}.mp3: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}");
-        //    }
-        //}
-
-     //   #endregion Audio
 
         #region Queue
 
@@ -730,7 +727,7 @@ namespace Arksplorer
             }
             catch (Exception ex)
             {
-                Debug.Print($"Error: {ex.Message}");
+                Errors.ReportProblem(ex, $"Error filtering data, sorry! Filter was set as...{Environment.NewLine}{finalFilter}");
             }
 
             Mouse.OverrideCursor = PrevCursor;
@@ -1328,22 +1325,22 @@ namespace Arksplorer
             }
             catch (HttpRequestException ex)
             {
-                error = $"Error: {ex.StatusCode}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
+                error = $"Error: {ex.StatusCode}";
             }
-            catch (NotSupportedException ex)
+            catch (NotSupportedException)
             {
-                error = $"Invalid content type: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
+                error = $"Invalid content type";
             }
-            catch (JsonException ex)
+            catch (JsonException)
             {
-                error = $"Invalid JSON: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
+                error = $"Invalid JSON";
             }
             catch (Exception ex)
             {
-                error = $"Problem loading data: {ex.Message}{(ex.InnerException == null ? "" : $" ({ex.InnerException.Message})")}";
+                error = $"Problem loading data: {ex.Message}";
             }
 
-            MessageBox.Show($"There was a problem during start up...{Environment.NewLine}{error}){Environment.NewLine}Application will now exit.", "Start up error", MessageBoxButton.OK, MessageBoxImage.Error);
+            Errors.ReportProblem($"There was a problem during start up loading server configuration for {server.Name} from {server.Url}...{Environment.NewLine}{error}", "Application will now exit.");
             ExitApplication();
         }
 
@@ -1597,7 +1594,7 @@ namespace Arksplorer
                 }
                 catch (Exception ex)
                 {
-                    Debug.Print($"Unable to find selected info in DataVisual{ex.Message}");
+                    Errors.ReportProblem(ex, "Unable to find selected info in DataVisual");
                 }
         }
 
@@ -1697,21 +1694,6 @@ namespace Arksplorer
             ExitApplication();
         }
 
-        //private void About_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if ((string)About.Content == "About")
-        //    {
-        //        ShowExtraInfo(AboutExtraInfo);
-        //        About.Content = "Show data info";
-        //    }
-        //    else
-        //    {
-        //        ShowExtraInfo(ExtraInfoHolder, MapDataHolder);
-        //        About.Content = "About";
-        //    }
-
-        //}
-
         private void CustomMarker_MouseUp(object sender, MouseButtonEventArgs e)
         {
             HandleMapImageClick(e.GetPosition(MapImage));
@@ -1727,21 +1709,15 @@ namespace Arksplorer
             // Very basic easing function to make the zoom usably faster
             double pos = Zoom.Value;
 
-            pos = (Zoom.Value - 1.0d) / 24.0d;              // 1->25 -> 0->1
+            pos = (Zoom.Value - 1.0d) / 24.0d;              // 1->25 maps to 0->1
 
             if (e.Delta > 0)
                 pos += pos + 0.01;
             else if (e.Delta < 0)
                 pos -= (pos * 0.5);
 
-            Debug.Print($"{pos}");
-
-            Debug.Print($"{pos}");
             Zoom.Value = (pos * 24.0) + 1.0;
-            Debug.Print($"{Zoom.Value}");
         }
-
-
 
         #endregion Misc
 

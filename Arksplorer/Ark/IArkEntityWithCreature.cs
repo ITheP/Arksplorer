@@ -1,6 +1,4 @@
-﻿//using System.Windows.Shapes;
-
-namespace Arksplorer
+﻿namespace Arksplorer
 {
     public interface IArkEntityWithCreature : IArkEntity
     {

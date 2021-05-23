@@ -1,12 +1,4 @@
 ﻿using Arksplorer.Controls;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-//using System.Windows.Controls;
 
 namespace Arksplorer
 {
@@ -27,8 +19,6 @@ namespace Arksplorer
         /// </summary>
         public static MainWindow MainWindow { get; set; }
 
-        public static string CrashFile { get; } = "./crash.txt";
-
         /// <summary>
         /// Common across all datasets
         /// </summary>
@@ -45,17 +35,5 @@ namespace Arksplorer
         /// </summary>
         public static int GlobalIndex { get; set; }
 
-        public static void AddToCrashFile(string content)
-        {
-            try
-            {
-                content = $"===[Arksplorer {Version} @ {DateTime.Now}]================================{Environment.NewLine}{content}{Environment.NewLine}";
-                File.AppendAllText(CrashFile, content);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Unable to write log to {CrashFile}. Not going so well is it!{Environment.NewLine}{ex.Message}", "Error logging an error!");
-            }
-        }
     }
 }

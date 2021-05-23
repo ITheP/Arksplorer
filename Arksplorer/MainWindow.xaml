@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Arksplorer"
         xmlns:controls="clr-namespace:Arksplorer.Controls"
         mc:Ignorable="d"
-        Title="Arksplorer" Height="1100" Width="800" MinWidth="800" MinHeight="950"
+        Title="Arksplorer" Height="950" Width="800" MinWidth="800" MinHeight="950"
         MouseMove="Window_MouseMove"
         MouseUp="Window_MouseUp"
         MouseRightButtonUp="Window_MouseRightButtonUp" Background="White">
@@ -112,7 +112,7 @@
                         <Separator Margin="0,6"/>
                         <Grid>
                             <TextBlock Text="Alarms"/>
-                            <Button x:Name="AddAlarm" Width="14" Height="14" HorizontalAlignment="Right" Background="Transparent" Margin="0,0,0,0">
+                            <Button x:Name="AddAlarm" Width="14" Height="14" HorizontalAlignment="Right" Background="Transparent" Margin="0,0,0,0" Click="AddAlarm_Click">
                                 <Path Data="M-1,0 L1,0 M0,-1 L0,1" Stretch="Uniform" Stroke="Black" />
                             </Button>
                         </Grid>
@@ -138,10 +138,10 @@
                         <Button x:Name="Exit" Content="Exit" Click="Exit_Click" Margin="0,4,0,8"/>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
-                        <Image Source="/Images/Arksplorer.png" Margin="0,2,0,0" />
-                        <TextBlock x:Name="AppTitle" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>
-                        <TextBlock x:Name="Version" Text="Version" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>
-                        <Separator Margin="0,7,0,8"/>
+                        <Image Source="/Images/Arksplorer.png" Margin="0,2,0,6" Width="180" />
+                        <!--<TextBlock x:Name="AppTitle" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>-->
+                        <!--<TextBlock x:Name="Version" Text="Version" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>-->
+                        <!--<Separator Margin="0,7,0,8"/>-->
                         <ComboBox x:Name="ServerList" IsEditable="False" SelectedValuePath="Name" SelectionChanged="ServerList_SelectionChanged">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
@@ -241,11 +241,10 @@
                                     <Button x:Name="LoadTameDinos" Content="Tame Dinos" Margin="0,4,0,0" Click="TameDinos_Click" ToolTip="Triggers a load request for Tame creatures" />
                                     <Button x:Name="LoadWildDinos" Content="Wild Dinos" Margin="0,4,0,0" Click="WildDinos_Click" ToolTip="Triggers a load request for Wild creatures" />
                                     <Button x:Name="LoadSurvivors" Content="Survivors" Margin="0,4,0,0" Click="Survivors_Click" ToolTip="Triggers a load request for Survivors"/>
-                                    <Separator Margin="0,10,0,6"/>
+                                    <!--<Separator Margin="0,10,0,6"/>-->
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
-
                     </StackPanel>
                 </DockPanel>
             </Grid>
@@ -496,8 +495,8 @@
                                     <LineBreak/>
                                     You can filter on multiple keywords at once using a , separated list
                                     <LineBreak/>
-                                    e.g. <Span FontStyle="Italic" Foreground="BlueViolet">ragn, arg</Span>ver
-                                    returns results including <Span FontStyle="Italic" Foreground="BlueViolet">arg</Span>entavis on <Span FontStyle="Italic" Foreground="BlueViolet">ragn</Span>arok.
+                                    e.g. <Span FontStyle="Italic" Foreground="DarkOrange">ragn, arg</Span>
+                                    returns results including <Span FontStyle="Italic" Foreground="DarkOrange">arg</Span>entavis on <Span FontStyle="Italic" Foreground="DarkOrange">ragn</Span>arok.
                                     <LineBreak/>
                                     <LineBreak/>
                                     Add an Alarm (or multiple alarms) for handy warnings! Imprinting dinos? Remind yourself in 11 minutes that they need feeding. Got a gacha farm with some crystals that
@@ -509,29 +508,27 @@
                                     <LineBreak/>
                                     <Span FontStyle="Italic">© 2021 MisterB @ ITheP.Rocks</Span>
                                 </TextBlock>
-                                <TextBlock>
+                                <TextBlock TextWrapping="Wrap">
                                     <LineBreak/>
-                                    Simple front end Ark data visualiser that takes bits of Ark data expose
+                                    Front end Ark data visualiser that takes bits of Ark data expose
                                     by an ark server to help you find things in Ark.
                                     <LineBreak/>
                                     <LineBreak/>
                                     Also does a few other things because, why not!
                                     <LineBreak/>
                                     <LineBreak/>
-                                    Provided under <Hyperlink NavigateUri="https://creativecommons.org/licenses/by-nc-sa/4.0/" RequestNavigate="HandleLinkClick">CC BY-NC-SA 4.0</Hyperlink> License.
+                                    Visit our facebook page at <Hyperlink NavigateUri="http://facebook.com/arksplorer" RequestNavigate="HandleLinkClick">facebook.com/arksplorer</Hyperlink>
                                     <LineBreak/>
                                     <LineBreak/>
-                                    Artwork (c) respective artists - used in good faith under Creative Commons CC BY-NC-SA 3.0 License.
+                                    Code + logo provided under <Hyperlink NavigateUri="https://creativecommons.org/licenses/by-nc-sa/4.0/" RequestNavigate="HandleLinkClick">CC BY-NC-SA 4.0</Hyperlink> License.
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    Source code on github at <Hyperlink NavigateUri="https://github.com/ITheP/Arksplorer/" RequestNavigate="HandleLinkClick">github.com/ITheP/Arksplorer</Hyperlink>
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    Other Artwork (c) respective artists - used in good faith under Creative Commons CC BY-NC-SA 3.0 License.
                                     Please check <Hyperlink NavigateUri="https://ark.gamepedia.com/" RequestNavigate="HandleLinkClick">ark.gamepedia.com</Hyperlink> for extra details.
                                     If you believe any content infringes on anything, or would like a credit adding, please contact and we will happily update accordingly!
-                                    <LineBreak/>
-                                    <LineBreak/>
-                                    Visit our facebook page... <Hyperlink NavigateUri="http://facebook.com/arksplorer" RequestNavigate="HandleLinkClick">facebook.com/arksplorer</Hyperlink>
-                                    <LineBreak/>
-                                    <LineBreak/>
-                                    Source code on github...
-                                    <LineBreak/>
-                                    <Hyperlink NavigateUri="https://github.com/ITheP/Arksplorer/" RequestNavigate="HandleLinkClick">github.com/ITheP/Arksplorer</Hyperlink>
                                 </TextBlock>
                             </StackPanel>
                         </ScrollViewer>

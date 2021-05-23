@@ -114,13 +114,21 @@ v1.3 - The Flappy Wing - 04/05/2021
 - Misc. optimisations
 
 v1.4 - The Fearsome Roar
-- Major update to server setup information
+- Major update to server setup information (to help people set up their servers)
 - Inclusion of example batch files used on Wiredcat server
 - Right click on filter buttons to append rather than replace filter value oin Colors and other relevant filter buttons
 - Filter also has a Drop Down List that remembers history of last searches you ran. Removes duplicates. Always puts latest search at top.
 - Improved some UI elements
-- Included a lot more tool tops
+- Included a lot more tool tips
 - Alarm now includes a drop down of more durations, and a user specified `last selected` button to quick repeat access the last drop down duration selected
+- Can add and remove alarms
+- Dynamically picks up alarm audio types from /audio/ folder
+- Shrunk UI on left hand side for alarm space and to help with people with lower vertical resolutions
+- Move and update of instructions/help and about information into a Help tab
+- Added non-crash exception logging to crash file
+- Various refactoring
+- Improved error handling, reporting and logging with more detail
+- Extra exception handling
 
 ToDo:
 - More configurables saved into user settings

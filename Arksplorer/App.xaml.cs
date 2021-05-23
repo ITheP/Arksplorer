@@ -1,13 +1,7 @@
 ﻿using Arksplorer.Properties;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Arksplorer
 {
@@ -63,7 +57,7 @@ namespace Arksplorer
         /// <param name="@event">The event<see cref="string"/></param>
         private static void LogUnhandledException(Exception exception, string @event)
         {
-            MessageBox.Show($"Arksplorer generated a critical exception. For debugging purposes, it will attempt to dump details of this in {Globals.CrashFile}. We will now do our best to continue!", "Critical error");
+            MessageBox.Show($"Arksplorer generated a critical exception. For debugging purposes, it will attempt to dump details of this in {Errors.CrashFile}. We will now do our best to continue!", "Critical error");
 
             string result = $"Arksplorer experienced an itsy bitsy problem...{Environment.NewLine}{Environment.NewLine}Exception:{Environment.NewLine}{exception.Message}";
 
@@ -73,7 +67,7 @@ namespace Arksplorer
             if (exception.StackTrace != null)
                 result += $"{Environment.NewLine}{Environment.NewLine}Stack Trace:{Environment.NewLine}{exception.StackTrace}";
 
-            Globals.AddToCrashFile(result);
+            Errors.AddToCrashFile(result);
         }
     }
 }

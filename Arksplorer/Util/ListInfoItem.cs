@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Arksplorer
+﻿namespace Arksplorer
 {
     public struct ListInfoItem
     {

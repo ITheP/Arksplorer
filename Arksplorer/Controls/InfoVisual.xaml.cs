@@ -1,18 +1,6 @@
-﻿using Microsoft.Web.WebView2.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Arksplorer.Controls
 {
@@ -155,7 +143,7 @@ namespace Arksplorer.Controls
 
         private void Dododex_Click(object sender, RoutedEventArgs e)
         {
-            var serverConfig = MainWindow.ServerConfig;
+            var serverConfig = Globals.MainWindow.ServerConfig;
             string url = $"https://www.dododex.com/taming/{CurrentDinoData.DododexUrl}#level={CurrentDino.Level}&taming={serverConfig.TamingSpeedMultiplier}&consumption={serverConfig.FoodDrainMultiplier}";
             Globals.DododexBrowser.Navigate( url, Globals.MainWindow.DododexTab);
             Globals.DododexBrowser.UpdateRotatingShortcuts(CurrentDino.Creature, $"Load info for {CurrentDino.Creature}", url);

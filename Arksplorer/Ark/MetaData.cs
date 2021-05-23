@@ -1,6 +1,4 @@
-﻿//using System.Windows.Shapes;
-
-using System;
+﻿using System;
 
 namespace Arksplorer
 {

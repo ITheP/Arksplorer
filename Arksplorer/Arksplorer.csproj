@@ -26,6 +26,7 @@
     <None Remove="arksplorer.ico" />
     <None Remove="ArksplorerData.json" />
     <None Remove="Audio\Feed me.wav" />
+    <None Remove="Audio\Gacha.wav" />
     <None Remove="Creature Lookup.csv" />
     <None Remove="Data\Lookup-Colors.json" />
     <None Remove="Data\Lookup-Dinos.json" />
@@ -58,6 +59,9 @@
 
   <ItemGroup>
     <Content Include="Audio\Feed me.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\Gacha.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Shortcuts-Arkbuddy.json">
@@ -148,9 +152,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Audio\Feed me.mp3">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

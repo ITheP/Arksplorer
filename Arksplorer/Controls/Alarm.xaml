@@ -5,6 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Arksplorer.Controls"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <!--<ObjectDataProvider x:Key="AudioFiles" ObjectType="{x:Type ListInfoItem}" MethodName="GetObservableCollection" />-->
+    </UserControl.Resources>
     <Grid>
         <StackPanel>
             <StackPanel Orientation="Horizontal">
@@ -43,18 +46,22 @@
                     </StackPanel>
                 </StackPanel>
                 <Grid Margin="6,0,0,0" Width="54">
-                    <Button x:Name="DeleteAlarm" HorizontalAlignment="Right" Margin="0,0,-2,0" VerticalAlignment="Top" Height="10" Width="10" Background="Transparent">
+                    <Button x:Name="DeleteAlarm" HorizontalAlignment="Right" Margin="0,0,-2,0" VerticalAlignment="Top" Height="10" Width="10" Background="Transparent" Click="DeleteAlarm_Click">
                         <Path Data="M-1,-1 L1,1 M-1,1 L1,-1" Stretch="Uniform" Stroke="Black"/>
                     </Button>
-                    <TextBlock x:Name="AlarmTimeLeft" Text="Off" FontSize="20" VerticalAlignment="Center" TextAlignment="Center"/>
+                    <TextBlock x:Name="AlarmTimeLeft" Text="Off" FontSize="18" VerticalAlignment="Center" TextAlignment="Center"/>
                 </Grid>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                 <TextBlock Width="32" Text="Audio" VerticalAlignment="Center" Margin="2,0,0,0"/>
-                <ComboBox x:Name="AudioType" Width="92" Margin="4,0,0,0" SelectedValuePath="Tag">
-                    <ComboBoxItem Tag="">Nothing</ComboBoxItem>
-                    <ComboBoxItem Tag="Feed me" IsSelected="True">Feed me</ComboBoxItem>
-                    <ComboBoxItem Tag="Feed me">Gacha</ComboBoxItem>
+                <ComboBox x:Name="AudioType" Width="92" Margin="4,0,0,0" ItemsSource="{x:Static local:Alarm.AudioFiles}" DisplayMemberPath="Description" SelectedValuePath="Value">
+                    <!--<ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Stretch">
+                                <TextBlock Text="{Binding Description}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>-->
                 </ComboBox>
                 <Grid Margin="4,0,0,0" Width="54">
                     <CheckBox x:Name="AutoRepeat" IsChecked="False" Content="Auto" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Auto repeat alarm after triggering"/>

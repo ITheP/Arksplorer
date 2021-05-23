@@ -1,8 +1,4 @@
-﻿//using System.Windows.Shapes;
-
-using System.Text.Json.Serialization;
-
-namespace Arksplorer
+﻿namespace Arksplorer
 {
     public interface IArkEntity
     {
