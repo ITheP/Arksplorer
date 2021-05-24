@@ -1689,11 +1689,6 @@ namespace Arksplorer
             Application.Current.Shutdown();
         }
 
-        private void Exit_Click(object sender, RoutedEventArgs e)
-        {
-            ExitApplication();
-        }
-
         private void CustomMarker_MouseUp(object sender, MouseButtonEventArgs e)
         {
             HandleMapImageClick(e.GetPosition(MapImage));

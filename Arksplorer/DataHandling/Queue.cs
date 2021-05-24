@@ -133,8 +133,12 @@ namespace Arksplorer
                 count = 0;
             }
 
-            mainWindow.LoadableControlsEnabled(true);
-            mainWindow.LoadingVisualEnabled(false);
+
+            mainWindow.Dispatcher.Invoke(() =>
+            {
+                mainWindow.LoadableControlsEnabled(true);
+                mainWindow.LoadingVisualEnabled(false);
+            });
 
             return count;
         }

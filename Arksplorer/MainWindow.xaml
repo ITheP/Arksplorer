@@ -116,7 +116,7 @@
                                 <Path Data="M-1,0 L1,0 M0,-1 L0,1" Stretch="Uniform" Stroke="Black" />
                             </Button>
                         </Grid>
-                        <ListView x:Name="AlarmsList" ItemsSource="{Binding Alarms}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,4,0,2" Padding="0,2,0,2">
+                        <ListView x:Name="AlarmsList" ItemsSource="{Binding Alarms}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,4,0,8" Padding="0,2,0,2">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <ContentControl Content="{Binding}" Margin="8,6,0,6" />
@@ -130,18 +130,9 @@
                                 </Style>
                             </ListView.ItemContainerStyle>
                         </ListView>
-                        <!--<controls:Alarm x:Name="Alarm1"/>
-                        <Separator Margin="0,8"/>
-                        <controls:Alarm x:Name="Alarm2"/>
-                        <Separator Margin="0,8"/>-->
-                        <!--<Button x:Name="About" Content="About" Margin="0,4,0,0" Click="About_Click"/>-->
-                        <Button x:Name="Exit" Content="Exit" Click="Exit_Click" Margin="0,4,0,8"/>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
                         <Image Source="/Images/Arksplorer.png" Margin="0,2,0,6" Width="180" />
-                        <!--<TextBlock x:Name="AppTitle" Text="Arksplorer" FontSize="16" HorizontalAlignment="Center" Margin="0,-16,0,0"/>-->
-                        <!--<TextBlock x:Name="Version" Text="Version" FontSize="10" HorizontalAlignment="Center" Margin="0,3,0,0"/>-->
-                        <!--<Separator Margin="0,7,0,8"/>-->
                         <ComboBox x:Name="ServerList" IsEditable="False" SelectedValuePath="Name" SelectionChanged="ServerList_SelectionChanged">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
