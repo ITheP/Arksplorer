@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Arksplorer"
         xmlns:controls="clr-namespace:Arksplorer.Controls"
         mc:Ignorable="d"
-        Title="Arksplorer" Height="950" Width="800" MinWidth="800" MinHeight="950"
+        Title="Arksplorer" Height="800" Width="800" MinWidth="000" MinHeight="800"
         MouseMove="Window_MouseMove"
         MouseUp="Window_MouseUp"
         MouseRightButtonUp="Window_MouseRightButtonUp" Background="White">
@@ -108,29 +108,6 @@
         <DockPanel>
             <Grid>
                 <DockPanel Width="210" Margin="10,0,10,0">
-                    <StackPanel DockPanel.Dock="Bottom">
-                        <Separator Margin="0,6"/>
-                        <Grid>
-                            <TextBlock Text="Alarms"/>
-                            <Button x:Name="AddAlarm" Width="14" Height="14" HorizontalAlignment="Right" Background="Transparent" Margin="0,0,0,0" Click="AddAlarm_Click">
-                                <Path Data="M-1,0 L1,0 M0,-1 L0,1" Stretch="Uniform" Stroke="Black" />
-                            </Button>
-                        </Grid>
-                        <ListView x:Name="AlarmsList" ItemsSource="{Binding Alarms}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,4,0,8" Padding="0,2,0,2">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <ContentControl Content="{Binding}" Margin="8,6,0,6" />
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="Padding" Value="0"/>
-                                    <Setter Property="Margin" Value="0"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                        </ListView>
-                    </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
                         <Image Source="/Images/Arksplorer.png" Margin="0,2,0,6" Width="180" />
                         <ComboBox x:Name="ServerList" IsEditable="False" SelectedValuePath="Name" SelectionChanged="ServerList_SelectionChanged">
@@ -237,6 +214,35 @@
                             </StackPanel>
                         </Grid>
                     </StackPanel>
+                    <DockPanel VerticalAlignment="Bottom">
+                        <StackPanel DockPanel.Dock="Top">
+                            <Separator Margin="0,12,0,0"/>
+                            <Grid>
+                                <Label ContentStringFormat="Alarms x{0}" FontWeight="Bold" Margin="-4,0,0,0">
+                                    <Label.Content>
+                                        <Binding Path="Alarms.Count" Mode="OneWay" UpdateSourceTrigger="Default"/>
+                                    </Label.Content>
+                                </Label>
+                                <Button x:Name="AddAlarm" Width="14" Height="14" HorizontalAlignment="Right" Background="Transparent" Margin="0,0,0,0" Click="AddAlarm_Click">
+                                    <Path Data="M-1,0 L1,0 M0,-1 L0,1" Stretch="Uniform" Stroke="Black" />
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                        <ListView x:Name="AlarmsList" ItemsSource="{Binding Alarms}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False" Margin="0,0,0,8" Padding="0,2,0,2" MouseEnter="AlarmsList_MouseEnter" MouseLeave="AlarmsList_MouseLeave">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentControl Content="{Binding}" Margin="4,2,0,6" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </DockPanel>
                 </DockPanel>
             </Grid>
             <TabControl Margin="0,0,8,8" Padding="8">
@@ -246,9 +252,9 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <Grid Grid.Row="0" DockPanel.Dock="Top" Margin="0,0,0,8">
+                        <Grid Grid.Row="0" DockPanel.Dock="Top" Margin="0,0,0,8" ClipToBounds="True">
                             <Image x:Name="SplashImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
-                            <Viewbox Stretch="Uniform" RenderTransformOrigin="0.5,0.5" ClipToBounds="True">
+                            <Viewbox Stretch="Uniform" RenderTransformOrigin="0.5,0.5" ClipToBounds="False">
                                 <Grid x:Name="MapHolder" Width="100" Height="100" MouseWheel="MapHolder_MouseWheel">
                                     <Grid.RenderTransform>
                                         <TransformGroup>

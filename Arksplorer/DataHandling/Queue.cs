@@ -125,7 +125,7 @@ namespace Arksplorer
 
                     string serverName = Globals.MainWindow?.ServerConfig == null ? "" : $" {Globals.MainWindow.ServerConfig.Description}";
 
-                    Errors.ReportProblem(ex, $"There was an error trying to fetch data from the {serverName}server. " +
+                    Errors.ReportProblem(ex, $"There was an error trying to fetch data from the '{serverName}' server. " +
                         $"Could be a network or server problem. You can always try again in a minute. " +
                         $"If thing's still don't work, you might just have to sit it out for a while.");
                 });

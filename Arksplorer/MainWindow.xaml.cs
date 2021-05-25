@@ -176,9 +176,7 @@ namespace Arksplorer
 
         #region Timer and Alarm
 
-        //private bool AlarmEnabled { get; set; }
-        //private DateTime AlarmTimestamp { get; set; }
-        //private bool AlarmTriggered { get; set; }
+        private ScrollViewer AlarmScrollViewer { get; set; }
 
         public void InitAlarms()
         {
@@ -217,119 +215,37 @@ namespace Arksplorer
             foreach (var alarm in Alarms)
                 alarm.NextTick(now);
 
-            //if (AlarmEnabled)
-            //{
-            //    TimeSpan timeLeft = AlarmTimestamp - now;
-
-            //    SolidColorBrush brush;
-            //    FontWeight weight;
-
-            //    int secondsLeft = timeLeft.Seconds;
-            //    int minutesLeft = timeLeft.Minutes;
-            //    AlarmTimeLeft.Text = $"{(timeLeft.Ticks < 0 ? "-" : "")}{Math.Abs(timeLeft.Minutes):00}:{Math.Abs(secondsLeft):00}";
-
-            //    if (minutesLeft > 0 || secondsLeft > 30)
-            //        brush = Brushes.ForestGreen;
-            //    else if (secondsLeft > 5)
-            //        brush = Brushes.DarkOrange;
-            //    else
-            //        brush = Brushes.Red;
-
-            //    if (minutesLeft < 0 || secondsLeft < 0)
-            //    {
-            //        weight = FontWeights.Bold;
-            //        if (!AlarmTriggered)
-            //            TriggerAlarm();
-            //    }
-            //    else
-            //        weight = FontWeights.Normal;
-
-            //    if (AlarmTimeLeft.Foreground != brush)
-            //        AlarmTimeLeft.Foreground = brush;
-
-            //    if (AlarmTimeLeft.FontWeight != weight)
-            //        AlarmTimeLeft.FontWeight = weight;
-            //}
-
             // Auto check for a cache refresh every 20 - too often and its a waste of time, too little and will annoy the user. This seems like a reasonable balance.
             if (seconds % 20 == 0)
                 CheckAndRefreshCache("CacheRefresh");
         }
-
-        //private void SetAlarm(object sender, RoutedEventArgs e)
-        //{
-        //    string duration = (string)((Button)sender).Tag;
-
-        //    InitAlarm(duration);
-        //}
-
-        //private void InitAlarm(string duration)
-        //{
-        //    DateTime now = DateTime.Now;
-
-        //    bool lapsed = AlarmTimestamp < now;
-        //    DateTime baseTime;
-
-        //    if (duration.StartsWith("+") || duration.StartsWith("-"))
-        //    {
-        //        if (AlarmEnabled == false)
-        //            baseTime = now;
-        //        else
-        //            baseTime = AlarmTimestamp;
-        //    }
-        //    else
-        //        baseTime = now;
-
-        //    AlarmTimestamp = baseTime.AddMinutes(double.Parse(duration)).AddMilliseconds(500); // We add 1/2 second to give us a nice start time. e.g. 10mins -> 10:00 start, not 9:59
-        //    // Only reset timer if we have gone from a negative time to a positive
-        //    if (lapsed && AlarmTimestamp > now)
-        //        AlarmTriggered = false;
-        //    else if (!lapsed && AlarmTimestamp < now)
-        //        // We have manually gone negative, cancel any alarm
-        //        AlarmTriggered = true;
-
-        //    AlarmEnabled = true;
-
-        //    TimerTrigger();
-        //}
 
         public void TriggerAlarmVisualisation()
         {
             FlashAlarmStoryboard.Begin(this);
         }
 
-        //private void RemoveAlarm()
-        //{
-        //    AlarmEnabled = false;
-        //    Player.Stop();
-        //    AlarmTimeLeft.Foreground = Brushes.Black;
-        //    AlarmTimeLeft.FontWeight = FontWeights.Normal;
-        //    AlarmTimeLeft.Text = "Off";
-        //}
+        private void InitAlarmScrollViewer()
+        {
+            Decorator alarmBorder = VisualTreeHelper.GetChild(AlarmsList, 0) as Decorator;
+            AlarmScrollViewer = alarmBorder.Child as ScrollViewer;
+        }
 
-        //private void AlarmOff_Click(object sender, RoutedEventArgs e)
-        //{
-        //    RemoveAlarm();
-        //}
+        private void AlarmsList_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (AlarmScrollViewer == null)
+                InitAlarmScrollViewer();
 
-        //private void SetUserDefinedAlarmControl(string value)
-        //{
-        //    UserDefinedAlarm.Content = value;
-        //    UserDefinedAlarm.Tag = value;
-        //}
+            AlarmScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+        }
 
-        //private void AlarmList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    if (AlarmList.SelectedItem == null)
-        //        return;
+        private void AlarmsList_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (AlarmScrollViewer == null)
+                InitAlarmScrollViewer();
 
-        //    string duration = AlarmList.SelectedValue as string;
-        //    SetUserDefinedAlarmControl(duration);
-        //    Settings.Default.UserSpecificAlarmDuration = duration;
-        //    InitAlarm(duration);
-
-        //    AlarmList.SelectedItem = null;
-        //}
+            AlarmScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+        }
 
         #endregion Timer and Alarm
 

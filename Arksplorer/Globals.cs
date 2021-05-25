@@ -5,7 +5,7 @@ namespace Arksplorer
     public static class Globals
     {
 
-        public const string Version = "v1.4.0 - The Fearsome Roar";
+        public const string Version = "v1.4.2 - The Fearsome Roar";
 
         public static WebBrowser ArkpediaBrowser { get; set; }
 

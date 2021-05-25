@@ -12,14 +12,17 @@
         <StackPanel>
             <StackPanel Orientation="Horizontal">
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xEA8F;" FontFamily="Segoe MDL2 Assets" FontSize="18" Width="32" TextAlignment="Center" VerticalAlignment="Center"/>
-                        <Button Content="5" Width="20" Margin="6,0,0,0" Click="SetAlarm" Tag="5" Background="Lavender"/>
-                        <Button Content="10" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="10" Background="Lavender"/>
-                        <Button Content="11" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="11" Background="Lavender"/>
-                        <Button Content="+1" Width="20" Margin="4,0,0,0" Click="SetAlarm" Tag="+1"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="DeleteAlarm" HorizontalAlignment="Left" VerticalAlignment="Top" Height="10" Width="10" Background="Transparent" Click="DeleteAlarm_Click">
+                                <Path Data="M-1,-1 L1,1 M-1,1 L1,-1" Stretch="Uniform" Stroke="Black"/>
+                            </Button>
+                            <TextBlock Text="&#xEA8F;" FontFamily="Segoe MDL2 Assets" FontSize="18" Width="32" Margin="-6,4,6,0" TextAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Content="5" Width="20" Margin="0,4,0,0" Click="SetAlarm" Tag="5" Background="Lavender"/>
+                            <Button Content="10" Width="20" Margin="4,4,0,0" Click="SetAlarm" Tag="10" Background="Lavender"/>
+                            <Button Content="11" Width="20" Margin="4,4,0,0" Click="SetAlarm" Tag="11" Background="Lavender"/>
+                            <Button Content="+1" Width="20" Margin="4,4,0,0" Click="SetAlarm" Tag="+1"/>
+                        </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="4,4,0,0">
                         <Button x:Name="AlarmOff" Content="Off" Width="32" Click="AlarmOff_Click"/>
                         <ComboBox x:Name="AlarmList" Width="44" Margin="6,0,0,0" Background="Lavender" SelectedValuePath="Tag" SelectionChanged="AlarmList_SelectionChanged">
                             <ComboBoxItem Tag="1">1</ComboBoxItem>
@@ -46,13 +49,10 @@
                     </StackPanel>
                 </StackPanel>
                 <Grid Margin="6,0,0,0" Width="54">
-                    <Button x:Name="DeleteAlarm" HorizontalAlignment="Right" Margin="0,0,-2,0" VerticalAlignment="Top" Height="10" Width="10" Background="Transparent" Click="DeleteAlarm_Click">
-                        <Path Data="M-1,-1 L1,1 M-1,1 L1,-1" Stretch="Uniform" Stroke="Black"/>
-                    </Button>
                     <TextBlock x:Name="AlarmTimeLeft" Text="Off" FontSize="18" VerticalAlignment="Center" TextAlignment="Center"/>
                 </Grid>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+            <StackPanel Orientation="Horizontal" Margin="4,4,0,0">
                 <TextBlock Width="32" Text="Audio" VerticalAlignment="Center" Margin="2,0,0,0"/>
                 <ComboBox x:Name="AudioType" Width="92" Margin="4,0,0,0" ItemsSource="{x:Static local:Alarm.AudioFiles}" DisplayMemberPath="Description" SelectedValuePath="Value"/>
                 <Grid Margin="4,0,0,0" Width="54">

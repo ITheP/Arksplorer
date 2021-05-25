@@ -116,7 +116,7 @@ v1.3 - The Flappy Wing - 04/05/2021
 v1.4 - The Fearsome Roar
 - Major update to server setup information (to help people set up their servers)
 - Inclusion of example batch files used on Wiredcat server
-- Right click on filter buttons to append rather than replace filter value oin Colors and other relevant filter buttons
+- Right click on filter buttons to append rather than replace filter value on Colors and other relevant filter buttons
 - Filter also has a Drop Down List that remembers history of last searches you ran. Removes duplicates. Always puts latest search at top.
 - Improved some UI elements
 - Included a lot more tool tips
@@ -129,6 +129,13 @@ v1.4 - The Fearsome Roar
 - Various refactoring
 - Improved error handling, reporting and logging with more detail
 - Extra exception handling
+
+v1.4.1
+- UI shrink test for user with screen space problems
+
+v1.4.2
+- Side bar tweaks to help with spacing, scrollable alarm area and count
+- Zoom in to map now fills all of map area with image, rather than region map origionally appears in
 
 ToDo:
 - More configurables saved into user settings
