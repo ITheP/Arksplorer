@@ -9,38 +9,35 @@ using System.Net.Http.Json;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace Arksplorer.Util
 {
-    public class VersionInfo
-    {
-        [JsonPropertyName("latestVersion")]
-        public string LatestVersion { get; set; }
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
-        [JsonPropertyName("url")]
-        public string Url { get; set; }
-    }
 
     /// <summary>
     /// Version checking
     /// </summary>
     public class Updates
     {
-        private const string ServerVersionUrl = "https://ithep.github.io/Test/version.json";
+        private const string ServerVersionUrl = "https://ithep.github.io/Arksplorer/version.json";
 
         public async void CheckForUpdate()
         {
             try
             {
-                VersionInfo versionInfo = await Web.HttpClient.GetFromJsonAsync<VersionInfo>(ServerVersionUrl);
+                LatestVersionInfo latestVersionInfo = await Web.HttpClient.GetFromJsonAsync<LatestVersionInfo>(ServerVersionUrl);
 
-                if (string.Compare(versionInfo.LatestVersion, Globals.VersionNumber) == 1)
+                if (string.Compare(latestVersionInfo.LatestVersion, Globals.VersionNumber) == 1)
                 {
-                    Debug.Print($"Newer version flagged on github: {versionInfo.LatestVersion} - {versionInfo.Name} ({versionInfo.Url})");
+                    Debug.Print($"Newer version flagged on github: {latestVersionInfo.LatestVersion} - {latestVersionInfo.Name} ({latestVersionInfo.Url})");
                     // Newer version available, we don't force anything here but give the user an option to upgrade
+
+                    Globals.MainWindow.Dispatcher.Invoke(() =>
+                    {
+                        Update update = new(latestVersionInfo);
+                        update.ShowDialog();
+                    });
                 }
                 else
                 {

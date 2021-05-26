@@ -1,0 +1,100 @@
+﻿<Window x:Class="Arksplorer.Update"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Arksplorer"
+        xmlns:controls="clr-namespace:Arksplorer.Controls"
+        mc:Ignorable="d"
+        Title="Update"
+        Width="400" Height="370">
+    <Window.Resources>
+        <Storyboard x:Key="AnimatedPoop">
+            <DoubleAnimation
+                Storyboard.TargetProperty="(FrameworkElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)"
+                Storyboard.TargetName="Poop"
+                RepeatBehavior="Forever"
+                AutoReverse="True"
+                From="-20" To="20"
+                Duration="00:00:00.6">
+            </DoubleAnimation>
+            <DoubleAnimation 
+                Storyboard.TargetProperty="(FrameworkElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
+                Storyboard.TargetName="Stink"
+                RepeatBehavior="Forever"
+                AutoReverse="True"
+                From="0.8" To="1"
+                Duration="00:00:00.237">
+            </DoubleAnimation>
+        </Storyboard>
+    </Window.Resources>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource AnimatedPoop}"/>
+        </EventTrigger>
+    </Window.Triggers>
+    <Grid>
+        <StackPanel>
+            <TextBlock HorizontalAlignment="Center" FontSize="16" Margin="16,0">There is a new version of Arksplorer available!</TextBlock>
+
+            <Grid Margin="0,8,0,0">
+                <controls:Star HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <controls:Star Margin="40,-20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <controls:Star Margin="-50,-20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <controls:Star Margin="90,20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <controls:Star Margin="-90,30,0,0"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                <controls:Star Margin="130,-20,0,0"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <controls:Star Margin="-130,-30,0,0"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <controls:Star Margin="180,20,0,0"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <controls:Star Margin="-180,15,0,0"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <controls:Star Margin="230,-25,0,0"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <controls:Star Margin="-230,-15,0,0"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <controls:Star Margin="25,30,0,0"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock FontWeight="Bold">New version:</TextBlock>
+                    <TextBlock x:Name="NewVersion" Margin="6,0,0,0" />
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,18,0,0">
+                <TextBlock FontWeight="Bold">Your version:</TextBlock>
+                <TextBlock x:Name="CurrentVersion" Margin="6,0,0,0" Text="{x:Static local:Globals.Version}"/>
+            </StackPanel>
+            <Grid Width="96" Height="96">
+                <Image x:Name="Poop" Source="Images/Poop.png" Width="64" RenderTransformOrigin="0.5,0.5" >
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="0"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+                <Image x:Name="Stink" Source="Images/Poop Stink.png" Width="96" RenderTransformOrigin="0.5,0.5"  >
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1" ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX}"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+            </Grid>
+
+            <TextBlock Margin="0,0,0,0" TextAlignment="Center">
+                Grab the update from <Hyperlink x:Name="UpdateUrl" NavigateUri="" RequestNavigate="HandleLinkClick">here</Hyperlink>
+                <LineBreak/>
+                <LineBreak/>
+                Visit our facebook page at <Hyperlink NavigateUri="http://facebook.com/arksplorer" RequestNavigate="HandleLinkClick">facebook.com/arksplorer</Hyperlink>
+                <LineBreak/><LineBreak/>
+                Visit the project on github at <Hyperlink NavigateUri="https://github.com/ITheP/Arksplorer/" RequestNavigate="HandleLinkClick">github.com/ITheP/Arksplorer</Hyperlink>
+            </TextBlock>
+            <Button x:Name="Cancel" IsCancel="True" Content="Cancel" Width="100" Margin="0,18,0,0" />
+
+        </StackPanel>
+    </Grid>
+</Window>

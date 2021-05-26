@@ -4,7 +4,7 @@ namespace Arksplorer
 {
     public static class Globals
     {
-        public static string VersionNumber = "v1.4.03";
+        public static string VersionNumber = "v1.4.3";
         public static string VersionName = "The Distant Roar";
         public static string Version = $"{VersionNumber} - {VersionName}";
 

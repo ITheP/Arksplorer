@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="Arksplorer.Controls.Star"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Arksplorer.Controls"
+             mc:Ignorable="d"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <UserControl.Resources>
+        <Storyboard x:Key="AnimatedStar">
+            <DoubleAnimation x:Name="RotateAnimation"
+                Storyboard.TargetProperty="(FrameworkElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)"
+                Storyboard.TargetName="ActualStar"
+                RepeatBehavior="Forever"
+                From="{Binding FromAngle}" To="{Binding ToAngle}"
+                Duration="{Binding SpinSpeed}">
+            </DoubleAnimation>
+            <DoubleAnimation x:Name="ZoomAnimation"
+                Storyboard.TargetProperty="(FrameworkElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
+                Storyboard.TargetName="ActualStar"
+                RepeatBehavior="Forever"
+                AutoReverse="True"
+                From="0.0" To="{Binding MaxSize}"
+                Duration="{Binding ZoomSpeed}">
+            </DoubleAnimation>
+        </Storyboard>
+    </UserControl.Resources>
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource AnimatedStar}"/>
+        </EventTrigger>
+    </UserControl.Triggers>
+    <Grid>
+        <Grid x:Name="ActualStar" RenderTransformOrigin="0.5,0.55" >
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform x:Name="Scale" ScaleX="1" ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX}"/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.RenderTransform>
+            <TextBlock Text="&#xE735;" FontFamily="Segoe MDL2 Assets" Foreground="Yellow" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
+            <TextBlock Text="&#xE734;" FontFamily="Segoe MDL2 Assets" Foreground="Gold" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
+        </Grid>
+    </Grid>
+</UserControl>
+

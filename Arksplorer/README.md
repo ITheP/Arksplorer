@@ -133,9 +133,13 @@ v1.4 - The Fearsome Roar
 v1.4.1
 - UI shrink test for user with screen space problems
 
-v1.4.2
+v1.4.2 - The Even Bigger Roar
 - Side bar tweaks to help with spacing, scrollable alarm area and count
 - Zoom in to map now fills all of map area with image, rather than region map originally appears in
+
+v1.4.3 - The Distant Roar
+- Autochecks with a server for new versions + links through if found
+- Minor refactoring
 
 ToDo:
 - More configurables saved into user settings
