@@ -135,7 +135,7 @@ v1.4.1
 
 v1.4.2
 - Side bar tweaks to help with spacing, scrollable alarm area and count
-- Zoom in to map now fills all of map area with image, rather than region map origionally appears in
+- Zoom in to map now fills all of map area with image, rather than region map originally appears in
 
 ToDo:
 - More configurables saved into user settings

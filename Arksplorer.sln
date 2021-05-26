@@ -5,6 +5,13 @@ VisualStudioVersion = 16.0.31004.235
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arksplorer", "Arksplorer\Arksplorer.csproj", "{1D7564D8-1DB3-463B-B11A-DCEB469970AC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub Pages", "GitHub Pages", "{7718BED0-0896-4CA0-86DC-2817E2BA5495}"
+	ProjectSection(SolutionItems) = preProject
+		docs\_config.yml = docs\_config.yml
+		docs\index.md = docs\index.md
+		docs\version.json = docs\version.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

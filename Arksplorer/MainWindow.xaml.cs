@@ -1,5 +1,6 @@
 ﻿using Arksplorer.Controls;
 using Arksplorer.Properties;
+using Arksplorer.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -138,6 +139,8 @@ namespace Arksplorer
             Timer.Interval = new TimeSpan(0, 0, 1);
             Timer.Tick += TimerTrigger;
             Timer.Start();
+
+            CheckForNewerVersion();
         }
 
         /// <summary>
@@ -170,6 +173,11 @@ namespace Arksplorer
 
             // ...except we re-enable the one control that will let us specify a server location :)
             ServerList.IsEnabled = true;
+        }
+
+        private async void CheckForNewerVersion()
+        {
+            await Task.Run(() => new Updates().CheckForUpdate());
         }
 
         #endregion Init
