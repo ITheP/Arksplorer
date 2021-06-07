@@ -69,7 +69,7 @@ namespace Arksplorer
                 }
             }
 
-            Debug.Print($"...{Data.Rows.Count} total (took {attempts} attempts");
+            Debug.Print($"...{Data.Rows.Count} total (took {attempts} attempts)");
 
             DataIsStale = false;
         }

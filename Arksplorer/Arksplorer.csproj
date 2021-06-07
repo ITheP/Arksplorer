@@ -42,8 +42,10 @@
     <None Remove="Images\Dododex.png" />
     <None Remove="Images\Extinction.jpg" />
     <None Remove="Images\Female.png" />
+    <None Remove="Images\Genesis 2.jpg" />
     <None Remove="Images\Genesis.jpg" />
     <None Remove="Images\Male.png" />
+    <None Remove="Images\NA.png" />
     <None Remove="Images\Poop Stink.png" />
     <None Remove="Images\Poop.png" />
     <None Remove="Images\Radnarock-01.jpg" />
@@ -96,7 +98,13 @@
     <Content Include="Images\Female.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Images\Genesis 2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\Male.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\NA.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Poop Stink.png">

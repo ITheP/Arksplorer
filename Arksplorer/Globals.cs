@@ -4,8 +4,8 @@ namespace Arksplorer
 {
     public static class Globals
     {
-        public static string VersionNumber = "v1.4.3";
-        public static string VersionName = "The Distant Roar";
+        public static string VersionNumber = "v1.5.0";
+        public static string VersionName = "The Shiny New Scale";
         public static string Version = $"{VersionNumber} - {VersionName}";
 
         public static WebBrowser ArkpediaBrowser { get; set; }

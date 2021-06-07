@@ -7,6 +7,7 @@ namespace Arksplorer
     {
         public static BitmapImage Male { get; } = LoadImage("Images/Male.png");
         public static BitmapImage Female { get; } = LoadImage("Images/Female.png");
+        public static BitmapImage NA { get; } = LoadImage("Images/NA.png");
         public static BitmapImage Cryopod { get; } = LoadImage("Images/Cryopod.png");
 
         private static BitmapImage LoadImage(string filename)

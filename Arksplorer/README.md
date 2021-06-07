@@ -141,6 +141,14 @@ v1.4.3 - The Distant Roar
 - Autochecks with a server for new versions + links through if found
 - Minor refactoring
 
+v1.5.0 - The Shiny New Scale
+- Updated data handling for genesis 2 problem with sex
+- Put in new Genesis 2 map
+- Put in new Gensis 2 Dino lookup data (first version, info out there on these is not all complete yet it seems, Arkpedia + Dododex links included)
+- Put in some other Dino lookup data that was also missing
+- Put in new icon for non male/female sex (N/A)
+
 ToDo:
 - More configurables saved into user settings
 - if (CurrentRectanglePopUpInfo != null) <-- need a different way of checking this, so we can still click on mass markers when popups are hidden
+- Nursing Effectiveness

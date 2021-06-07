@@ -3283,5 +3283,275 @@
         "DododexUrl": "",
         "Maps": "",
         "Habitat": ""
+    },
+    "Allo_Character_BP_Rockwell_C": {
+        "Arksplorer": "Rockwell Allosaurus",
+        "Arkpedia": "Allosaurus",
+        "ArkpediaUrl": "Allosaurus",
+        "Dododex": "Allosaurus",
+        "DododexUrl": "allosaurus",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Terrestrial"
+    },
+    "Carno_Character_BP_Rockwell_C": {
+        "Arksplorer": "Rockwell Carno",
+        "Arkpedia": "Carnotaurus",
+        "ArkpediaUrl": "Carnotaurus",
+        "Dododex": "Carnotaurus",
+        "DododexUrl": "carnotaurus",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Terrestrial, Subterranean"
+    },
+    "Dilo_Character_BP_Rockwell_C": {
+        "Arksplorer": "Rockwell Dilo",
+        "Arkpedia": "Dilophosaur",
+        "ArkpediaUrl": "Dilophosaur",
+        "Dododex": "Dilophosaur",
+        "DododexUrl": "dilophosaur",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Subterranean, Terrestrial"
+    },
+    "Xenomorph_Character_BP_Male_Gen2_C": {
+        "Arksplorer": "Rockwell Reaper Male",
+        "Arkpedia": "Reaper King",
+        "ArkpediaUrl": "Reaper_King",
+        "Dododex": "Reaper",
+        "DododexUrl": "reaper",
+        "Maps": "Genesis: Part 2",
+        "Habitat": ""
+    },
+    "Xenomorph_Character_BP_Female_Gen2_C": {
+        "Arksplorer": "Rockwell Reaper Female",
+        "Arkpedia": "Reaper Queen",
+        "ArkpediaUrl": "Reaper_Queen",
+        "Dododex": "Reaper",
+        "DododexUrl": "reaper",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Subterranean, Fossorial"
+    },
+    "Sauropod_Character_BP_Rockwell_C": {
+        "Arksplorer": "Rockwell Bronto",
+        "Arkpedia": "Brontosaurus",
+        "ArkpediaUrl": "Brontosaurus",
+        "Dododex": "Brontosaurus",
+        "DododexUrl": "brontosaurus",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Terrestrial"
+    },
+    "Gigant_Character_BP_Rockwell_C": {
+        "Arksplorer": "Rockwell Giganotosaurus",
+        "Arkpedia": "Giganotosaurus",
+        "ArkpediaUrl": "Giganotosaurus",
+        "Dododex": "Giganotosaurus",
+        "DododexUrl": "giganotosaurus",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Terrestrial"
+    },
+    "Quetz_Character_BP_Rockwell_C": {
+        "Arksplorer": "Rockwell Quetzal",
+        "Arkpedia": "Quetzal",
+        "ArkpediaUrl": "Quetzal",
+        "Dododex": "Quetzal",
+        "DododexUrl": "quetzal",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Aerial"
+    },
+    "Spindles_Character_BP_Rockwell_C": {
+        "Arksplorer": "Rockwell Velonasaur",
+        "Arkpedia": "Velonasaur",
+        "ArkpediaUrl": "Velonasaur",
+        "Dododex": "Velonasaur",
+        "DododexUrl": "velonasaur",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Subterranean"
+    },
+    "Turtle_Character_BP_Rockwell_C": {
+        "Arksplorer": "Rockwell Turtle",
+        "Arkpedia": "Carbonemys",
+        "ArkpediaUrl": "Carbonemys",
+        "Dododex": "Carbonemys",
+        "DododexUrl": "carbonemys",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Aquatic, Terrestrial, Subterranean"
+    },
+    "Daeodon_Character_BP_Eden_C": {
+        "Arksplorer": "Rockwell Daeodon",
+        "Arkpedia": "Daeodon",
+        "ArkpediaUrl": "Daeodon",
+        "Dododex": "Daeodon",
+        "DododexUrl": "daeodon",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Terrestrial"
+    },
+    "Direwolf_Character_BP_Eden_C": {
+        "Arksplorer": "Rockwell Direwolf",
+        "Arkpedia": "Direwolf",
+        "ArkpediaUrl": "Direwolf",
+        "Dododex": "Direwolf",
+        "DododexUrl": "direwolf",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Subterranean, Terrestrial"
+    },
+    "Equus_Character_BP_Eden_C": {
+        "Arksplorer": "Rockwell Equus",
+        "Arkpedia": "Equus",
+        "ArkpediaUrl": "Equus",
+        "Dododex": "Equus",
+        "DododexUrl": "equus",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Terrestrial, Subterranean"
+    },
+    "GasBags_Character_BP_Eden_C": {
+        "Arksplorer": "Rockwell Gasbag",
+        "Arkpedia": "Gasbags",
+        "ArkpediaUrl": "Gasbags",
+        "Dododex": "Gasbags",
+        "DododexUrl": "gasbags",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Aerial"
+    },
+    "Megatherium_Character_BP_Eden_C": {
+        "Arksplorer": "Rockwell Megatherium",
+        "Arkpedia": "Megatherium",
+        "ArkpediaUrl": "Megatherium",
+        "Dododex": "Megatherium",
+        "DododexUrl": "megatherium",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Terrestrial"
+    },
+    "Owl_Character_BP_Eden_C": {
+        "Arksplorer": "Rockwell Owl",
+        "Arkpedia": "Snow Owl",
+        "ArkpediaUrl": "Snow_Owl",
+        "Dododex": "Snow Owl",
+        "DododexUrl": "snowowl",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Aerial"
+    },
+    "Para_Character_BP_Eden_C": {
+        "Arksplorer": "Rockwell Parasaur",
+        "Arkpedia": "Parasaur",
+        "ArkpediaUrl": "Parasaur",
+        "Dododex": "Parasaur",
+        "DododexUrl": "parasaur",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Terrestrial, Subterranean"
+    },
+    "Procoptodon_Character_BP_Eden_C": {
+        "Arksplorer": "Rockwell Procoptodon",
+        "Arkpedia": "Procoptodon",
+        "ArkpediaUrl": "Procoptodon",
+        "Dododex": "Procoptodon",
+        "DododexUrl": "procoptodon",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Terrestrial"
+    },
+    "Thylacoleo_Character_BP_Eden_C": {
+        "Arksplorer": "Rockwell Thylacoleo",
+        "Arkpedia": "Thylacoleo",
+        "ArkpediaUrl": "Thylacoleo",
+        "Dododex": "Thylacoleo",
+        "DododexUrl": "thylacoleo",
+        "Maps": "Genesis: Part 2",
+        "Habitat": "Arboreal"
+    },
+    "MilkGlider_Character_BP_C": {
+        "Arksplorer": "Maewing",
+        "Arkpedia": "Maewing",
+        "ArkpediaUrl": "Maewing",
+        "Dododex": "Maewing",
+        "DododexUrl": "maewing",
+        "Maps": "Genesis: Part 2",
+        "Habitat": ""
+    },
+    "SpaceDolphin_Character_BP_C": {
+        "Arksplorer": "Astrodelphis",
+        "Arkpedia": "Astrodelphis",
+        "ArkpediaUrl": "Astrodelphis",
+        "Dododex": "Astrodelphis",
+        "DododexUrl": "astrodelphis",
+        "Maps": "Genesis: Part 2",
+        "Habitat": ""
+    },
+    "Summoner_Character_BP_C": {
+        "Arksplorer": "Summoner",
+        "Arkpedia": "Summoner",
+        "ArkpediaUrl": "Summoner",
+        "Dododex": "Summoner",
+        "DododexUrl": "summoner",
+        "Maps": "Genesis: Part 2",
+        "Habitat": ""
+    },
+    "Macrophage_Swarm_Character_C": {
+        "Arksplorer": "Macrophage",
+        "Arkpedia": "Macrophage",
+        "ArkpediaUrl": "Macrophage",
+        "Dododex": "",
+        "DododexUrl": "",
+        "Maps": "Genesis: Part 2",
+        "Habitat": ""
+    },
+    "LionfishLion_Character_BP_C": {
+        "Arksplorer": "Shadowmane",
+        "Arkpedia": "Shadowmane",
+        "ArkpediaUrl": "Shadowmane",
+        "Dododex": "Shadowmane",
+        "DododexUrl": "shadowmane",
+        "Maps": "Genesis: Part 2",
+        "Habitat": ""
+    },
+    "TekStrider_Character_BP_C": {
+        "Arksplorer": "Tek Stryder",
+        "Arkpedia": "Tek Stryder",
+        "ArkpediaUrl": "Tek_Stryder",
+        "Dododex": "Tek Stryder",
+        "DododexUrl": "stryder",
+        "Maps": "Genesis: Part 2",
+        "Habitat": ""
+    },
+    "TekWyvern_Character_BP_C": {
+        "Arksplorer": "Voidwyrm",
+        "Arkpedia": "Voidwyrm",
+        "ArkpediaUrl": "Voidwyrm",
+        "Dododex": "Voidwyrm",
+        "DododexUrl": "voidwyrm",
+        "Maps": "Genesis: Part 2",
+        "Habitat": ""
+    },
+    "HoneyBee_Character_BP_C": {
+        "Arksplorer": "Giant Bee",
+        "Arkpedia": "Giant Bee",
+        "ArkpediaUrl": "Giant_Bee",
+        "Dododex": "Giant Bee",
+        "DododexUrl": "giantbee",
+        "Maps": "The Island, The Center, Ragnarok, Extinction, Valguero, Genesis: Part 1, Crystal Isles, Genesis: Part 2, Mobile",
+        "Habitat": ""
+    },
+    "Defender_Character_BP_C": {
+        "Arksplorer": "Defense Unit",
+        "Arkpedia": "Defense Unit",
+        "ArkpediaUrl": "Defense_Unit",
+        "Dododex": "Defense Unit",
+        "DododexUrl": "defense-unit",
+        "Maps": "Extinction",
+        "Habitat": ""
+    },
+    "Megalosaurus_Character_BP_TekCave_C": {
+        "Arksplorer": "Tek Cave Megalosaurus",
+        "Arkpedia": "Megalosaurus",
+        "ArkpediaUrl": "Megalosaurus",
+        "Dododex": "Tek Cave Megalosaurus",
+        "DododexUrl": "tek-cave-megalosaurus",
+        "Maps": "The Island, The Center, Scorched Earth, Ragnarok, Aberration, Extinction, Genesis: Part 1, Crystal Isles, Mobile",
+        "Habitat": ""
+    },
+    "Snow_Otter_Character_BP_C": {
+        "Arksplorer": "X-Otter",
+        "Arkpedia": "Otter",
+        "ArkpediaUrl": "Otter",
+        "Dododex": "Otter",
+        "DododexUrl": "otter",
+        "Maps": "Genesis: Part 1, Genesis: Part 2",
+        "Habitat": ""
     }
 }

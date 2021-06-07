@@ -11,10 +11,13 @@ namespace Arksplorer
 
         public override BitmapImage Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.GetInt16() == 0)
+            string sex = reader.GetString();
+            if (sex == "Male")
                 return IconImages.Male;
-            else
+            else if (sex == "Female")
                 return IconImages.Female;
+            else
+                return IconImages.NA;
         }
         public override void Write(Utf8JsonWriter writer, BitmapImage value, JsonSerializerOptions options)
         {
