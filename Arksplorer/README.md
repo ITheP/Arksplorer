@@ -146,8 +146,8 @@ v1.5.0 - The Shiny New Scale
 - Put in new Genesis 2 map
 - Put in new Gensis 2 Dino lookup data (first version, info out there on these is not all complete yet it seems, Arkpedia + Dododex links included)
 - Put in some other Dino lookup data that was also missing
-- Put in new icon for non male/female sex (N/A)
-- Note: Appears that there are some bugs in the app that creates the data Arksplorer uses, untill these are worked out, we can't add much other new stuff in
+- Put in new icon for non male/female sex (N/A) - though this data isn't feeding through yet from the server
+- Note: Appears that there are some bugs in the app that creates the data Arksplorer uses, until these are worked out, we can't add much other new stuff in
 
 ToDo:
 - More configurables saved into user settings
