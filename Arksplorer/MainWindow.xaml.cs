@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,7 +33,7 @@ namespace Arksplorer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static bool Initialisting { get; set; }
+        private static bool Initialising { get; set; }
 
         private static Dictionary<string, BitmapImage> MapImages { get; } = new();
         private static string CurrentMapImage { get; set; } = "";
@@ -71,14 +72,16 @@ namespace Arksplorer
 
         public MainWindow()
         {
-            Initialisting = true;
+            Initialising = true;
             InitializeComponent();
-            Initialisting = false;
+            // Sometimes general init of settings can trigger events, so we keep it wrapped in the initialising = true section
+            InitSettings();
+            Initialising = false;
 
             Init();
         }
 
-        #region Init
+        #region Init and Settings
 
         private void Init()
         {
@@ -101,7 +104,7 @@ namespace Arksplorer
             ShowPopups.IsChecked = UserSettings.ShowPopups;
             IncludeDetailsInPopUps.IsChecked = UserSettings.IncludeDetailsInPopUps;
             Zoom.Value = UserSettings.Zoom;
-            
+
             InitWebTabs();
 
             // Load data and grab config from server that feeds into all this
@@ -143,6 +146,22 @@ namespace Arksplorer
             CheckForNewerVersion();
         }
 
+        private void InitSettings()
+        {
+            var settings = Settings.Default;
+
+            if (settings.Window_Left > 0)
+                this.Left = settings.Window_Left;
+            if (settings.Window_Top > 0)
+                this.Top = settings.Window_Top;
+            if (settings.Window_Width > 0)
+                this.Width = settings.Window_Width;
+            if (settings.Window_Height > 0)
+                this.Height = settings.Window_Height;
+            if (settings.Map_Height > 0)
+                MapGridArea.RowDefinitions[0].Height = new GridLength(settings.Map_Height, GridUnitType.Pixel);
+        }
+
         /// <summary>
         /// Lists of related UI components - defined for e.g triggering highlighting of related controls easily
         /// </summary>
@@ -180,7 +199,29 @@ namespace Arksplorer
             await Task.Run(() => new Updates().CheckForUpdate());
         }
 
-        #endregion Init
+        private void SaveUserSettings()
+        {
+            // Any non-specifically saved UserSettings, update here incase they have changed
+            UserSettings.Zoom = Zoom.Value;
+            UserSettings.ShowPopups = ShowPopups.IsChecked ?? false;
+            UserSettings.IncludeDetailsInPopUps = IncludeDetailsInPopUps.IsChecked ?? false;
+
+            Settings.Default.Window_Left = this.Left;
+            Settings.Default.Window_Top = this.Top;
+            Settings.Default.Window_Width = Application.Current.MainWindow.Width;
+            Settings.Default.Window_Height = Application.Current.MainWindow.Height;
+
+            Settings.Default.Map_Height = MapGridArea.RowDefinitions[0].ActualHeight;
+
+            SaveAlarms();
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            SaveUserSettings();
+        }
+
+        #endregion Init and Settings
 
         #region Timer and Alarm
 
@@ -188,8 +229,22 @@ namespace Arksplorer
 
         public void InitAlarms()
         {
-            Alarms.Add(new Alarm(1));
-            Alarms.Add(new Alarm(2));
+            string alarms = Settings.Default.Alarms;
+
+            if (string.IsNullOrEmpty(alarms))
+            {
+                Alarms.Add(new Alarm(1));
+                Alarms.Add(new Alarm(2, true));
+            }
+            else
+            {
+                string[] alarmConfigs = alarms.Split(';');
+                foreach (string config in alarmConfigs)
+                {
+                    if (!string.IsNullOrWhiteSpace(config))
+                        Alarms.Add(new Alarm(config));
+                }
+            }
 
             foreach (var alarm in Alarms)
                 alarm.SetUserDefinedAlarmControl(UserSettings.UserSpecificAlarmDuration);
@@ -253,6 +308,15 @@ namespace Arksplorer
                 InitAlarmScrollViewer();
 
             AlarmScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+        }
+
+        private void SaveAlarms()
+        {
+            string config = "";
+            foreach (var alarm in Alarms)
+                config += alarm.GetConfig();
+
+            Settings.Default.Alarms = config;
         }
 
         #endregion Timer and Alarm
@@ -737,7 +801,7 @@ namespace Arksplorer
 
         private void FilterColorCloseness_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Initialisting)
+            if (Initialising)
                 return;
 
             FlashFilterColorButtons();
@@ -785,7 +849,7 @@ namespace Arksplorer
 
         private void FilterLevelType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Initialisting)
+            if (Initialising)
                 return;
 
             ApplyFilterCriteria();
@@ -805,7 +869,7 @@ namespace Arksplorer
 
         private void FilterColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Initialisting)
+            if (Initialising)
                 return;
 
             FlashFilterColorButtons();
@@ -1069,7 +1133,7 @@ namespace Arksplorer
 
         private void DataVisual_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Initialisting)
+            if (Initialising)
                 return;
 
             DataRowView entity = (DataRowView)(DataVisual.SelectedItem);
@@ -1270,7 +1334,7 @@ namespace Arksplorer
 
         private void ServerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Initialisting)
+            if (Initialising)
                 return;
 
             Server server = (Server)(ServerList.SelectedItem);
@@ -1590,22 +1654,14 @@ namespace Arksplorer
                 GeneralLoadingSpinner.Child = LoadingSpinner;
                 GeneralLoadingSpinner.Visibility = Visibility.Visible;
                 MapsTab.Focus();
-         //       ExtraInfoHolder.Visibility = Visibility.Hidden;
+                //       ExtraInfoHolder.Visibility = Visibility.Hidden;
             }
             else
             {
                 GeneralLoadingSpinner.Child = null;
                 GeneralLoadingSpinner.Visibility = Visibility.Hidden;
-         //       ExtraInfoHolder.Visibility = Visibility.Visible;
+                //       ExtraInfoHolder.Visibility = Visibility.Visible;
             }
-        }
-
-        private void SaveUserSettings()
-        {
-            // Any non-specifically saved UserSettings, update here incase they have changed
-            UserSettings.Zoom = Zoom.Value;
-            UserSettings.ShowPopups = ShowPopups.IsChecked ?? false;
-            UserSettings.IncludeDetailsInPopUps = IncludeDetailsInPopUps.IsChecked ?? false;
         }
 
         private static void ExitApplication()

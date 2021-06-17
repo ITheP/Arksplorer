@@ -7,6 +7,8 @@
         xmlns:controls="clr-namespace:Arksplorer.Controls"
         mc:Ignorable="d"
         Title="Arksplorer" Height="800" Width="800" MinWidth="000" MinHeight="800"
+        
+        Closing="Window_Closing"
         MouseMove="Window_MouseMove"
         MouseUp="Window_MouseUp"
         MouseRightButtonUp="Window_MouseRightButtonUp" Background="White">
@@ -247,7 +249,7 @@
             </Grid>
             <TabControl Margin="0,0,8,8" Padding="8">
                 <TabItem Header="Main" IsSelected="True">
-                    <Grid>
+                    <Grid x:Name="MapGridArea">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*" />
@@ -424,7 +426,7 @@
                             <!--<local:InfoVisual x:Name="PopUpInfoVisual" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4" Padding="4" />-->
                         </Grid>
 
-                        <GridSplitter Grid.Row="0" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" ShowsPreview="False" Background="Black"/>
+                        <GridSplitter Grid.Row="0" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" ShowsPreview="False" Background="Black" />
                     </Grid>
                 </TabItem>
                 <TabItem Header="Ark Wikipedia" x:Name="ArkpediaTab">
