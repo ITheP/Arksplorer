@@ -1,6 +1,7 @@
 ﻿using Arksplorer.Properties;
 using System;
 using System.Collections.ObjectModel;
+using System.Configuration.Internal;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,6 +9,11 @@ using System.Windows.Media;
 
 namespace Arksplorer.Controls
 {
+    //public class AlarmConfig
+    //{
+    //    public string Description { get; set; }
+    //    public bool AutoRepeat { get; set; }
+    //}
 
     /// <summary>
     /// Interaction logic for Alarm.xaml
@@ -22,11 +28,34 @@ namespace Arksplorer.Controls
 
         public static ObservableCollection<ListInfoItem> AudioFiles { get; set; }
 
-        public Alarm(int index)
+        public Alarm(int index, bool setAutoRepeat = false)
         {
             InitializeComponent();
 
             AudioType.SelectedIndex = index;
+            AutoRepeat.IsChecked = setAutoRepeat;
+        }
+
+        public Alarm(string config)
+        {
+            InitializeComponent();
+
+            if (config.EndsWith(",Repeat"))
+            {
+                AutoRepeat.IsChecked = true;
+                config = config.Remove(config.Length - 7);
+            }
+
+            var item = (ComboBoxItem)AudioType.FindName(config);
+            if (item == null)
+                AudioType.SelectedIndex = 0;
+            else
+                AudioType.SelectedItem = item;
+        }
+
+        public string GetConfig()
+        {
+            return $"{(string)AudioType.SelectedValue},{(AutoRepeat.IsChecked ?? false ? ",Repeat" : "")};";
         }
 
         public static void InitAudioFiles(string folder)
