@@ -477,7 +477,7 @@ namespace Arksplorer
             foreach (var selection in MapList)
             {
                 if (selection.Load)
-                    queue.AddNewItem(selection.Name, type, ForceRefreshOfData, ServerConfig);
+                    queue.AddNewItem(selection, type, ForceRefreshOfData, ServerConfig);
             }
 
             LoadQueue(queue, true);
@@ -1291,7 +1291,7 @@ namespace Arksplorer
                     MapList.Clear();
                     string lastMaps = UserSettings.LastMaps;
                     foreach (var mapName in ServerConfig.Maps)
-                        MapList.Add(new() { Name = mapName, CacheState = "Not loaded", Load = lastMaps.Contains(mapName) });
+                        MapList.Add(new() { Name = mapName, CacheState = "Not loaded", DisplayState=string.Empty, Load = lastMaps.Contains(mapName) });
 
                     DataVisual.DataContext = null; // Clear any current results list
                     Status.Text = $"Welcome! This server updates data every {ServerConfig.RefreshRate}ish minutes.";
@@ -1402,6 +1402,18 @@ namespace Arksplorer
 
             MapsToInclude.Items.Refresh();
         }
+
+        public MapSelection GetMapSelection(string mapName)
+        {
+            foreach (var item in MapList)
+            {
+                if (item.Name == mapName)
+                    return item;
+            }
+
+            return null;
+        }
+
         #endregion Maps
 
         #region Info and PopUps

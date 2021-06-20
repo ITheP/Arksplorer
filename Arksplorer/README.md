@@ -153,8 +153,9 @@ v1.5.1 - The Shinier New Scale
 - Remembers last window position and size, and Map area size
 - Zoom, popups and detail prefs now saving
 - Alarms now saving if you change them
+- Loading status shown next to map selection list
 
 ToDo:
-- More configurables saved into user settings
+- Loading status not using WPF bound updates, cheaty refresh method used. Nice to do this properly.
 - if (CurrentRectanglePopUpInfo != null) <-- need a different way of checking this, so we can still click on mass markers when popups are hidden
 - Nursing Effectiveness

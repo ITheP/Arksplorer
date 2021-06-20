@@ -16,6 +16,7 @@ namespace Arksplorer
     public class QueueDataItem
     {
         public string MapName { get; set; }
+        public MapSelection UIMapSelection { get; set; }
         public MetaData MetaData { get; set; }
         public Uri DataUri { get; set; }
         public Uri TimestampUri { get; set; }
@@ -45,6 +46,7 @@ namespace Arksplorer
                 if (dataPackages.ContainsKey(metaDataType))
                 {
                     dataPackage = dataPackages[metaDataType];
+                    UIMapSelection.CacheState = "Updating existing data package";
                 }
                 else
                 {
@@ -54,12 +56,17 @@ namespace Arksplorer
                         IndividualMaps = new Dictionary<string, MapPackage>()
                     };
                     dataPackages.Add(metaDataType, dataPackage);
+
+                    UIMapSelection.CacheState = "New data package";
                 }
 
                 string mapName = MapName;
+                UIMapSelection.DisplayState = "...Loading";
+                mainWindow.Dispatcher.Invoke(() => Globals.MainWindow.MapsToInclude.Items.Refresh());
 
                 IEnumerable<IArkEntity> result;
 #if DEBUG
+                // Local debugging test - load data from local file
                 if (forceLocalLoad)
                     result = (IEnumerable<IArkEntity>)JsonSerializer.Deserialize(File.ReadAllText("./temp.json"), typeof(List<>).MakeGenericType(MetaData.JsonClassType));
                 else
@@ -82,10 +89,15 @@ namespace Arksplorer
                     }
                 }
 
+                UIMapSelection.DisplayState = "...Decoding";
+                mainWindow.Dispatcher.Invoke(() => Globals.MainWindow.MapsToInclude.Items.Refresh());
 
                 DataTable newData = DataTableExtensions.AddToDataTable(result, MetaData.JsonClassType, mapName, MetaData, null);
                 MapPackage newMapPackage = new();
                 newMapPackage.Data = newData;
+
+                UIMapSelection.DisplayState = "Loaded";
+                mainWindow.Dispatcher.Invoke(() => Globals.MainWindow.MapsToInclude.Items.Refresh());
 
                 // Only calculate timestamps if they haven't already just been snagged
                 if (rawServerTimestamp == string.Empty)
@@ -98,7 +110,11 @@ namespace Arksplorer
                         newMapPackage.Timestamp = serverTimestamp;
                     }
                     else
+                    {
                         MessageBox.Show($"Error reading timestamp for {mapName}.{metaDataType}, value returned: '{rawServerTimestamp}'", "Date error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        UIMapSelection.CacheState = "Timestamp error";
+                        mainWindow.Dispatcher.Invoke(() => Globals.MainWindow.MapsToInclude.Items.Refresh());
+                    }
                 }
                 else
                 {
@@ -128,11 +144,11 @@ namespace Arksplorer
             }
             catch (NotSupportedException ex)
             {
-                Errors.ReportProblem(ex,$"Invalid content type in JSON data for { MetaData.Description}");
+                Errors.ReportProblem(ex, $"Invalid content type in JSON data for { MetaData.Description}");
             }
             catch (JsonException ex)
             {
-                Errors.ReportProblem(ex,$"Invalid JSON retrieving JSON data for { MetaData.Description}");
+                Errors.ReportProblem(ex, $"Invalid JSON retrieving JSON data for { MetaData.Description}");
             }
             catch (Exception ex)
             {

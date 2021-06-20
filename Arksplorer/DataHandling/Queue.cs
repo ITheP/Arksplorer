@@ -12,16 +12,31 @@ namespace Arksplorer
     {
         public List<QueueDataItem> Items { get; set; } = new();
 
-        public void AddNewItem(string map, MetaData metaData, bool forceRefresh, ServerConfig serverConfig)
+        public void AddNewItem(string mapName, MetaData metaData, bool forceRefresh, ServerConfig serverConfig)
         {
+            MapSelection mapSelection = Globals.MainWindow.GetMapSelection(mapName);
+
+            AddNewItem(mapSelection, metaData, forceRefresh, serverConfig);
+        }
+
+        // MapSelection is referenced to hook back into the interface - to show update progress
+        public void AddNewItem(MapSelection mapSelection, MetaData metaData, bool forceRefresh, ServerConfig serverConfig)
+        {
+            mapSelection.CacheState = "Queued";
+            mapSelection.DisplayState = "Queued";
+            string mapName = mapSelection.Name;
+
             Items.Add(new QueueDataItem()
             {
-                MapName = map,
+                MapName = mapName,
+                UIMapSelection = mapSelection,
                 MetaData = metaData,
-                DataUri = serverConfig.GetUri($"{map}.{metaData.ArkEntityType}"),
-                TimestampUri = serverConfig.GetUri($"{map}.timestamp"),
+                DataUri = serverConfig.GetUri($"{mapName}.{metaData.ArkEntityType}"),
+                TimestampUri = serverConfig.GetUri($"{mapName}.timestamp"),
                 ForceRefresh = forceRefresh
             });
+
+            Globals.MainWindow.MapsToInclude.Items.Refresh();
         }
 
         public async Task<int> Process(bool autoUpdateVisualDataGrid, Dictionary<string, DataPackage> dataPacakges, MainWindow mainWindow, ServerConfig serverConfig, bool forceLocalLoad)
@@ -44,6 +59,9 @@ namespace Arksplorer
                     bool grabData = false;
                     string rawServerTimestamp = string.Empty;
                     DateTime serverTimestamp = DateTime.MinValue;
+
+                    item.UIMapSelection.DisplayState = "...Checking";
+                    mainWindow.Dispatcher.Invoke(() => Globals.MainWindow.MapsToInclude.Items.Refresh());
 
                     bool dataExists = (dataPacakges.ContainsKey(type) && dataPacakges[type].IndividualMaps.ContainsKey(mapName));
 
@@ -90,6 +108,8 @@ namespace Arksplorer
                     {
                         Debug.Print($"Load of data skipped, already exists for {type}.{mapName} and is up to date");
                         Debug.Print($"{type}.{mapName}.{serverTimestamp} Already using latest available data, loading skipped");
+                        item.UIMapSelection.DisplayState = "Loaded";
+                        mainWindow.Dispatcher.Invoke(() => Globals.MainWindow.MapsToInclude.Items.Refresh());
                     }
                 }
 
@@ -118,7 +138,7 @@ namespace Arksplorer
             }
             catch (Exception ex)
             {
-                
+
                 mainWindow.Dispatcher.Invoke(() =>
                 {
                     mainWindow.Status.Text = $"Error loading data!";
