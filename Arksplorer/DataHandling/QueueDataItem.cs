@@ -38,6 +38,9 @@ namespace Arksplorer
         /// <returns></returns>
         public async Task<int> GetDataAsync(string rawServerTimestamp, DateTime serverTimestamp, Dictionary<string, DataPackage> dataPackages, ServerConfig serverConfig, MainWindow mainWindow, bool forceLocalLoad)
         {
+            // Note we DON'T do any parallel loading of data from the server to help cut down on parallel server traffic. Lovely that we might
+            // download data for all maps at once - unless its eaten all the servers bandwidth and players are affected!
+
             try
             {
                 string metaDataType = MetaData.ArkEntityType;
@@ -61,7 +64,7 @@ namespace Arksplorer
                 }
 
                 string mapName = MapName;
-                UIMapSelection.DisplayState = "...Loading";
+                UIMapSelection.DisplayState = "...Downloading";
                 mainWindow.Dispatcher.Invoke(() => Globals.MainWindow.MapsToInclude.Items.Refresh());
 
                 IEnumerable<IArkEntity> result;

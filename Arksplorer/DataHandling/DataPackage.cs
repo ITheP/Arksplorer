@@ -41,7 +41,7 @@ namespace Arksplorer
                     // Set up copy of datatable structure only (no data)
                     Data = IndividualMaps.First().Value.Data.Clone();
 
-                    MapsDescription = $"Map data for {Metadata.Description}s";
+                    MapsDescription = $"Showing data for {Metadata.Description}s";
                     Debug.Print($"Map data for {Metadata.Description}s is made up of...");
 
                     foreach (KeyValuePair<string, MapPackage> map in IndividualMaps)

@@ -13,14 +13,14 @@
         MouseUp="Window_MouseUp"
         MouseRightButtonUp="Window_MouseRightButtonUp" Background="White">
     <Window.Resources>
-        <Style TargetType="Button" x:Key="BrowserButton">
+        <!--<Style TargetType="Button" x:Key="BrowserButton">
             <Setter Property="Margin" Value="3" />
             <Setter Property="Width" Value="75" />
             <Setter Property="Width" Value="75" />
             <Setter Property="Height" Value="25" />
-            <!--<Setter Property="Background" Value="Transparent" />-->
-        </Style>
-        <Style TargetType="Button" x:Key="BrowserIconButton">
+            --><!--<Setter Property="Background" Value="Transparent" />--><!--
+        </Style>-->
+        <Style TargetType="Button" x:Key="IconButton">
             <Setter Property="Margin" Value="3" />
             <Setter Property="Width" Value="25" />
             <Setter Property="Height" Value="25" />
@@ -364,9 +364,31 @@
                                     </StackPanel>
                                 </StackPanel>
 
-                                <Grid DockPanel.Dock="Bottom" Margin="0,4,0,0">
-                                    <TextBlock x:Name="DataVisualCount" HorizontalAlignment="Right"/>
-                                </Grid>
+                                <StackPanel DockPanel.Dock="Bottom" Margin="0,4,0,0">
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button x:Name="ShowSecondDataVisual" Content="&#xE70E;" Height="20" Margin="0" Style="{StaticResource IconButton}" Click="ShowSecondDataVisual_Click" />
+                                            <Button x:Name="CopyToSecondDataVisual" Margin="8,0,0,0" Width="75" Content="Copy Data" Click="CopyToSecondDataVisual_Click" />
+                                        </StackPanel>
+                                        <TextBlock x:Name="DataVisualCount" HorizontalAlignment="Right"/>
+                                    </Grid>
+
+                                    <DataGrid x:Name="SecondDataVisual"  Height="150"   
+                                        Margin="0,4,0,0"
+                                        CellStyle="{DynamicResource DataGridCellStyle1}"
+                                        AutoGenerateColumns="True"
+                                        ItemsSource="{Binding}"
+                                        IsReadOnly="True"
+                                        AlternatingRowBackground="#FFF4F4F4"
+                                        SelectionMode="Single"
+                                        SelectionUnit="FullRow"
+                                        SelectionChanged="DataVisual_SelectionChanged"
+                                        AutoGeneratingColumn="DataVisual_AutoGeneratingColumn"
+                                        Sorting="SecondDataVisual_Sorting"
+                                        VerticalAlignment="Stretch"
+                                        EnableRowVirtualization="True"
+                                        CanUserResizeColumns="True"/>
+                                </StackPanel>
 
                                 <Grid>
                                     <DataGrid x:Name="DataVisual"      
