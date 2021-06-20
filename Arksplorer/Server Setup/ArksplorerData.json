@@ -1,20 +1,20 @@
 {
-    "Description": "WiredCat PvE Server",
-    "Website": "http://wiredcat.hopto.org/",
-    "Message": "Hello, from the WiredCat team!",
+    "Description": "Your PvE Server",
+    "Website": "http://your.server.com/",
+    "Message": "Hello, from the server team!",
     "Status": "Enabled",
     "RefreshRate": 63,
     "FoodDrainMultiplier": 1.0,
     "HarvestAmountMultiplier": 3.0,
     "TamingSpeedMultiplier": 5.0,
     "XPMultiplier": 3.0,
-    "DinoCountMultiplier":  1.0,
+    "DinoCountMultiplier": 1.0,
     "DayTimeSpeedScale": 0.5,
-    "NightTimeSpeedScale":  1.0,
+    "NightTimeSpeedScale": 1.0,
     "HexagonRewardMultiplier": 1.5,
     "KickIdlePlayersPeriod": 3600,
     "MatingIntervalMultiplier": 0.5,
-    "EggHatchSpeedMultiplier":  50.0,
+    "EggHatchSpeedMultiplier": 50.0,
     "Types": [
         {
             "Name": "Timestamp",
@@ -36,39 +36,43 @@
     "Maps": [
         {
             "Name": "The Island",
-            "BaseUrl": "http://wiredcat.hopto.org/WiredcatIsland/"
+            "BaseUrl": "http://your.server.com/WiredcatIsland/"
         },
         {
             "Name": "Aberration",
-            "BaseUrl": "http://wiredcat.hopto.org/WiredcatAberration/"
+            "BaseUrl": "http://your.server.com/WiredcatAberration/"
         },
         {
             "Name": "Ragnarok",
-            "BaseUrl": "http://wiredcat.hopto.org/WiredcatRagnarok/"
+            "BaseUrl": "http://your.server.com/WiredcatRagnarok/"
         },
         {
             "Name": "The Center",
-            "BaseUrl": "http://wiredcat.hopto.org/WiredcatCenter/"
+            "BaseUrl": "http://your.server.com/WiredcatCenter/"
         },
         {
             "Name": "Crystal Isles",
-            "BaseUrl": "http://wiredcat.hopto.org/WiredcatCrystal/"
+            "BaseUrl": "http://your.server.com/WiredcatCrystal/"
         },
         {
             "Name": "Valguero",
-            "BaseUrl": "http://wiredcat.hopto.org/WiredcatValguero/"
+            "BaseUrl": "http://your.server.com/WiredcatValguero/"
         },
         {
             "Name": "Scorched Earth",
-            "BaseUrl": "http://wiredcat.hopto.org/WiredcatScorchedEarth/"
+            "BaseUrl": "http://your.server.com/WiredcatScorchedEarth/"
         },
         {
             "Name": "Extinction",
-            "BaseUrl": "http://wiredcat.hopto.org/WiredcatExtinction/"
+            "BaseUrl": "http://your.server.com/WiredcatExtinction/"
         },
         {
             "Name": "Genesis",
-            "BaseUrl": "http://wiredcat.hopto.org/WiredcatGenesis/"
+            "BaseUrl": "http://your.server.com/WiredcatGenesis/"
+        },
+        {
+            "Name": "Genesis 2",
+            "BaseUrl": "http://your.server.com/WiredcatGenesis2/"
         }
     ]
 }

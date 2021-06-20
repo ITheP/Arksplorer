@@ -99,16 +99,18 @@ Data will be exported with the following path structure...
 
 How your web site presents these files will of course be specific to how you have your web site set up.
 
-In our case, e.g. for the Ragnarok map our URL is<br>
+In our case, e.g. for the Ragnarok map our URL is
 - http://wiredcat.hopto.org/WiredcatRagnarok/
 
-The data files above appear as...<br>
-- http://wiredcat.hopto.org/WiredcatRagnarok/Wild.json<br>
-- http://wiredcat.hopto.org/WiredcatRagnarok/Dinos.json<br>
-- http://wiredcat.hopto.org/WiredcatRagnarok/Survivors.json<br>
-- http://wiredcat.hopto.org/WiredcatRagnarok/timestamp.json<br>
+The data files above appear as...
+- http://wiredcat.hopto.org/WiredcatRagnarok/Wild.json
+- http://wiredcat.hopto.org/WiredcatRagnarok/Dinos.json
+- http://wiredcat.hopto.org/WiredcatRagnarok/Survivors.json
+- http://wiredcat.hopto.org/WiredcatRagnarok/timestamp.json
 
 There are equivalent URL's for other maps.
+
+Make sure you use your own server URL's instead of the above!
 
 ## Arksplorer server side configuration
 
@@ -123,6 +125,8 @@ An example `ArksplorerData.json` is included in the same folder as this file. Yo
     - The .json filenames for the types of data generated (realistically you won't touch this unless you change your batch files to export to different filenames)
     - The maps - take away any maps you dont support, add in any extra maps that are missing
         - The BaseUrl points to your web sites folder for each map. In our case, for example, http://wiredcat.hopto.org/WiredcatIsland/ for our island map
+
+Make sure you use your own server URL's instead of the above!
 
 ## Letting the client know about your server
 
@@ -156,7 +160,7 @@ You can specify as many servers as you want in a multi-server variant - it is no
 You can also pass on the Name, Website and Url details to us, and we can add this to our predefined list of servers. Your players won't need to copy anything to anywhere then,
 just a version of Arksplorer with this data put into it.
 
-We highly recommend you try the *do it yourself* version described earlier first to make sure it works before passing the details on to us.
+We highly recommend you try the *do it yourself* version described earlier first to make sure it works before passing any details on to us.
 
 ### Arksplorer process overview
 
