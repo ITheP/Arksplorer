@@ -266,6 +266,16 @@
                                     <Image x:Name="MapImage" Source="/Images/WiredCat.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill" MouseUp="MapImage_MouseUp" />
                                     <Grid x:Name="MassMarkerHolder">
                                     </Grid>
+                                    <Ellipse x:Name="SecondMarker" Width="5" Height="5" Fill="#CC99FF" Stroke="White" StrokeThickness="0.55" RenderTransformOrigin="0.5,0.5">
+                                        <Ellipse.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform x:Name="SecondMarkerScale" ScaleX="1.0" ScaleY="1.0"/>
+                                                <SkewTransform/>
+                                                <RotateTransform/>
+                                                <TranslateTransform x:Name="SecondMarkerOffset" X="25" Y="25"/>
+                                            </TransformGroup>
+                                        </Ellipse.RenderTransform>
+                                    </Ellipse>
                                     <Ellipse x:Name="Marker" Width="5" Height="5" Fill="CornflowerBlue" Stroke="White" StrokeThickness="0.55" RenderTransformOrigin="0.5,0.5">
                                         <Ellipse.RenderTransform>
                                             <TransformGroup>
@@ -364,7 +374,7 @@
                                     </StackPanel>
                                 </StackPanel>
 
-                                <StackPanel DockPanel.Dock="Bottom" Margin="0,4,0,0">
+                                <StackPanel x:Name="SecondDataVisualHolder" DockPanel.Dock="Bottom" Margin="0,4,0,0">
                                     <Grid>
                                         <StackPanel Orientation="Horizontal">
                                             <Button x:Name="ShowSecondDataVisual" Content="&#xE70E;" Height="20" Margin="0" Style="{StaticResource IconButton}" Click="ShowSecondDataVisual_Click" />
@@ -373,7 +383,7 @@
                                         <TextBlock x:Name="DataVisualCount" HorizontalAlignment="Right"/>
                                     </Grid>
 
-                                    <DataGrid x:Name="SecondDataVisual"  Height="150"   
+                                    <DataGrid x:Name="SecondDataVisual" Height="150"   
                                         Margin="0,4,0,0"
                                         CellStyle="{DynamicResource DataGridCellStyle1}"
                                         AutoGenerateColumns="True"
@@ -382,7 +392,7 @@
                                         AlternatingRowBackground="#FFF4F4F4"
                                         SelectionMode="Single"
                                         SelectionUnit="FullRow"
-                                        SelectionChanged="DataVisual_SelectionChanged"
+                                        SelectionChanged="SecondDataVisual_SelectionChanged"
                                         AutoGeneratingColumn="DataVisual_AutoGeneratingColumn"
                                         Sorting="SecondDataVisual_Sorting"
                                         VerticalAlignment="Stretch"

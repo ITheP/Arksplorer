@@ -176,6 +176,7 @@ namespace Arksplorer
             // These are visible at design time to aid design, but want to hide them when window first opens
             MapImage.Visibility = Visibility.Collapsed;
             Marker.Visibility = Visibility.Collapsed;
+            SecondMarker.Visibility = Visibility.Collapsed;
             CustomMarker.Visibility = Visibility.Collapsed;
             ServerLoadedControls.Visibility = Visibility.Collapsed;
             DataVisual.Visibility = Visibility.Collapsed;
@@ -183,6 +184,8 @@ namespace Arksplorer
             FilterMap.Visibility = Visibility.Collapsed;
             FilterTribe.Visibility = Visibility.Collapsed;
             FilterCreature.Visibility = Visibility.Collapsed;
+            SecondDataVisualHolder.Visibility = Visibility.Collapsed;
+            SecondDataVisual.Visibility = Visibility.Collapsed;
 
             SetFilterLevelEnabled(false);
             SetFilterColorEnabled(false);
@@ -908,6 +911,7 @@ namespace Arksplorer
         private void AnimateMarkers()
         {
             AnimatedMarkerStoryboard.Begin(Marker);
+            AnimatedMarkerStoryboard.Begin(SecondMarker);
             AnimatedMarkerStoryboard.Begin(CustomMarker);
         }
 
@@ -999,6 +1003,7 @@ namespace Arksplorer
                 if (updateVisualDataGrid)
                 {
                     SetDataVisualData(CurrentDataPackage.Data);
+                    SecondDataVisualHolder.Visibility = Visibility.Visible;
                     DataVisual.Visibility = Visibility.Visible;
                 }
 
@@ -1128,7 +1133,6 @@ namespace Arksplorer
                 else if ((string)column.Header == "GlobalIndex")   // Hide GlobalIndex
                     column.Visibility = Visibility.Collapsed;
             }
-
         }
 
         private void DataVisual_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1193,6 +1197,14 @@ namespace Arksplorer
                 MapImage.Visibility = Visibility.Visible;
             }
 
+            if (ShowSecondMarker)
+            {
+                if (SecondMarkerMap == mapName)
+                    SecondMarker.Visibility = Visibility.Visible;
+                else
+                    SecondMarker.Visibility = Visibility.Collapsed;
+            }
+
             if (info.CreatureId != LastCreatureId || mapName != LastSelected_Map)
             {
                 // Visualisation of things, only do when the selected type has changed
@@ -1242,10 +1254,89 @@ namespace Arksplorer
 
         }
 
+        private bool ShowSecondMarker { get; set; }
+        private string SecondMarkerMap { get; set; }
+
+        private void SecondDataVisual_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Initialising)
+                return;
+
+            DataRowView entity = (DataRowView)(SecondDataVisual.SelectedItem);
+
+            if (entity == null)
+            {
+                //                    SetSelectedInfo(null);
+                return;
+            }
+
+            Info info = new(entity.Row);
+
+            // Marker offset
+            // translate 0->100 to -50->50
+            double lat = info.Lat;
+            double lon = info.Lon;
+
+            if (lat > -1 && lon > -1)
+            {
+                double yPos = lat - 50.0f;
+                double xPos = lon - 50.0f;
+
+                SecondMarkerOffset.X = xPos;
+                SecondMarkerOffset.Y = yPos;
+
+                ShowSecondMarker = true;
+                SecondMarker.Visibility = Visibility.Visible;
+            }
+
+            // BUT we only show if we are looking at the correct map!
+            // We still set up the second marker, in case the map changes and we can show it
+            SecondMarkerMap = (string)entity[Globals.MapColumn];
+            TryShowSecondMarker();
+
+        }
+
+        private void TryShowSecondMarker()
+        {
+            if (SecondMarkerMap == CurrentMapImage)
+                SecondMarker.Visibility = Visibility.Visible;
+            else
+                SecondMarker.Visibility = Visibility.Collapsed;
+        }
+
         private void DataVisual_Sorting(object sender, DataGridSortingEventArgs e)
         {
-            DataGridColumn column = e.Column;
-            DataTable data = (DataTable)DataVisual.DataContext;
+            // DataGridColumn column = e.Column;
+            bool customHandling = SortDataVisual(DataVisual, e.Column);
+            e.Handled = customHandling;
+
+            //DataTable data = (DataTable)DataVisual.DataContext;
+            //var columnType = data.Columns[column.DisplayIndex].DataType;
+            //if (columnType == typeof(ArkColor))
+            //{
+            //    // Sorting on our own custom colours is an absolute pain in the rear
+            //    // Also - colours - how do you sort on a colour? Namne? Id? RGB value?
+            //    // So we have custom sort column for each for just this purpose - how a sort code is stuck in here, well, we can be flexible!
+            //    // We intercept the sorting so we can specify the sort column here instead
+            //    ICollectionView dataView = CollectionViewSource.GetDefaultView(DataVisual.ItemsSource);
+            //    dataView.SortDescriptions.Clear();
+            //    dataView.SortDescriptions.Add(new SortDescription($"{column.Header}_Sort", column.SortDirection ?? ListSortDirection.Ascending));
+
+            //    e.Handled = true;
+            //}
+            //else
+            //    return;
+        }
+
+        private void SecondDataVisual_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            bool customHandling = SortDataVisual(SecondDataVisual, e.Column);
+            e.Handled = customHandling;
+        }
+
+        private bool SortDataVisual(DataGrid dataGrid, DataGridColumn column)
+        {
+            DataTable data = (DataTable)dataGrid.DataContext;
             var columnType = data.Columns[column.DisplayIndex].DataType;
             if (columnType == typeof(ArkColor))
             {
@@ -1253,14 +1344,14 @@ namespace Arksplorer
                 // Also - colours - how do you sort on a colour? Namne? Id? RGB value?
                 // So we have custom sort column for each for just this purpose - how a sort code is stuck in here, well, we can be flexible!
                 // We intercept the sorting so we can specify the sort column here instead
-                ICollectionView dataView = CollectionViewSource.GetDefaultView(DataVisual.ItemsSource);
+                ICollectionView dataView = CollectionViewSource.GetDefaultView(dataGrid.ItemsSource);
                 dataView.SortDescriptions.Clear();
                 dataView.SortDescriptions.Add(new SortDescription($"{column.Header}_Sort", column.SortDirection ?? ListSortDirection.Ascending));
 
-                e.Handled = true;
+                return true;
             }
             else
-                return;
+                return false;
         }
 
         #endregion DataVisual
@@ -1291,7 +1382,7 @@ namespace Arksplorer
                     MapList.Clear();
                     string lastMaps = UserSettings.LastMaps;
                     foreach (var mapName in ServerConfig.Maps)
-                        MapList.Add(new() { Name = mapName, CacheState = "Not loaded", DisplayState=string.Empty, Load = lastMaps.Contains(mapName) });
+                        MapList.Add(new() { Name = mapName, CacheState = "Not loaded", DisplayState = string.Empty, Load = lastMaps.Contains(mapName) });
 
                     DataVisual.DataContext = null; // Clear any current results list
                     Status.Text = $"Welcome! This server updates data every {ServerConfig.RefreshRate}ish minutes.";
@@ -1350,6 +1441,8 @@ namespace Arksplorer
 
         public static BitmapImage LoadMapImage(string mapName)
         {
+            CurrentMapImage = mapName;
+
             if (MapImages.ContainsKey(mapName))
                 return MapImages[mapName];
 
@@ -1704,6 +1797,30 @@ namespace Arksplorer
                 pos -= (pos * 0.5);
 
             Zoom.Value = (pos * 24.0) + 1.0;
+        }
+
+        private void ShowSecondDataVisual_Click(object sender, RoutedEventArgs e)
+        {
+            if (SecondDataVisual.Visibility == Visibility.Collapsed)
+            {
+                SecondDataVisual.Visibility = Visibility.Visible;
+                ShowSecondDataVisual.Content = "\xE70D";
+                TryShowSecondMarker();
+            }
+            else
+            {
+                SecondDataVisual.Visibility = Visibility.Collapsed;
+                ShowSecondDataVisual.Content = "\xE70E";
+                SecondMarker.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void CopyToSecondDataVisual_Click(object sender, RoutedEventArgs e)
+        {
+            SecondDataVisual.DataContext = DataVisual.DataContext;
+
+            SecondDataVisual.Visibility = Visibility.Visible;
+            ShowSecondDataVisual.Content = "\xE70D";
         }
 
         #endregion Misc

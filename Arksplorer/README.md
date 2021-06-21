@@ -149,11 +149,13 @@ v1.5.0 - The Shiny New Scale
 - Put in new icon for non male/female sex (N/A) - though this data isn't feeding through yet from the server
 - Note: Appears that there are some bugs in the app that creates the data Arksplorer uses, until these are worked out, we can't add much other new stuff in
 
-v1.5.1 - The Shinier Scale
+v1.6.0 - The Large Feather
 - Remembers last window position and size, and Map area size
 - Zoom, popups and detail prefs now saving
 - Alarms now saving if you change them
 - Loading status shown next to map selection list
+- Secondary data result area, copying data from main result area (allows for comparisons)
+- Second marker for secondary result area selected dinos (assuming same map visible)
 
 ToDo:
 - Loading status not using WPF bound updates, cheaty refresh method used. Nice to do this properly.
