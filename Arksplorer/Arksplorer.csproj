@@ -174,4 +174,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Cache\Images\CreatureImages\" />
+  </ItemGroup>
+
 </Project>

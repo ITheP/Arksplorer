@@ -1,4 +1,5 @@
-﻿using Arksplorer.Controls;
+﻿using Arksplorer.Caches;
+using Arksplorer.Controls;
 using Arksplorer.Properties;
 using Arksplorer.Util;
 using System;
@@ -110,6 +111,8 @@ namespace Arksplorer
             // Load data and grab config from server that feeds into all this
             try
             {
+                CreatureImages.EnsureFoldersExist();
+
                 Lookup.LoadDataFromLookupFiles();
 
                 FilterColor.ItemsSource = Lookup.ArkColors;
@@ -1455,11 +1458,22 @@ namespace Arksplorer
             }
 
             var uri = new Uri(path);
-            var bitmap = new BitmapImage(uri);
 
-            MapImages.Add(mapName, bitmap);
+            try
+            {
+                // Exceptions happening for some users, so we trap and handle!
+                var bitmap = new BitmapImage(uri);
 
-            return bitmap;
+                MapImages.Add(mapName, bitmap);
+
+                return bitmap;
+            }
+            catch (Exception ex)
+            {
+                Errors.ReportProblem(ex, $"There was a problem trying to load the image '{path}'. You might want to check this opens in windows file explorer, to see if works at all!");
+            }
+
+            return null;
         }
 
         private void MapsToIncludeCheckbox_Click(object sender, RoutedEventArgs e)

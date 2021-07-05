@@ -157,6 +157,13 @@ v1.6.0 - The Large Feather
 - Secondary data result area, copying data from main result area (allows for comparisons)
 - Second marker for secondary result area selected dinos (assuming same map visible)
 
+v1.6.1 - The Fluffy Feather
+- Something up with the Genesis 2 map image (looks like it was corrupt) - replaced
+- Better handling of corrupt images for maps
+... Saving/loading of timers includes audio
+- Show image of selected dino in pop up (from Dododex) - first version, some what fragile!
+... Searches will ignore unticked maps
+
 ToDo:
 - Loading status not using WPF bound updates, cheaty refresh method used. Nice to do this properly.
 - if (CurrentRectanglePopUpInfo != null) <-- need a different way of checking this, so we can still click on mass markers when popups are hidden
