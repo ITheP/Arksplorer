@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Arksplorer.Caches;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -83,10 +84,15 @@ namespace Arksplorer.Controls
             Arkpedia.Visibility = Visibility.Collapsed;
             Dododex.Visibility = Visibility.Collapsed;
 
-            if (ShowLinks && info.CreatureId != null)
+            if (info.CreatureId == null)
+            {
+                CurrentDinoData = null;
+            }
+            else
             {
                 CurrentDinoData = Lookup.FindDino(info.CreatureId);
-                if (CurrentDinoData != null)
+                
+                if (ShowLinks && CurrentDinoData != null)
                 {
                     if (!string.IsNullOrWhiteSpace(CurrentDinoData.ArkpediaUrl))
                         Arkpedia.Visibility = Visibility.Visible;
@@ -94,6 +100,25 @@ namespace Arksplorer.Controls
                     if (!string.IsNullOrWhiteSpace(CurrentDinoData.DododexUrl))
                         Dododex.Visibility = Visibility.Visible;
                 }
+            }
+
+            if (CurrentDinoData != null && !string.IsNullOrWhiteSpace(CurrentDinoData.DododexUrl))
+            {
+                var image = CreatureImages.RequestImage(CurrentDinoData.DododexUrl);
+
+                if (image == null)
+                {
+                    CreatureImage.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    CreatureImage.Source = image;
+                    CreatureImage.Visibility = Visibility.Visible;
+                }
+            }
+            else
+            {
+                CreatureImage.Visibility = Visibility.Collapsed;
             }
 
             if (info.C0 == null && info.C1 == null && info.C2 == null && info.C3 == null && info.C4 == null && info.C5 == null)
@@ -145,7 +170,7 @@ namespace Arksplorer.Controls
         {
             var serverConfig = Globals.MainWindow.ServerConfig;
             string url = $"https://www.dododex.com/taming/{CurrentDinoData.DododexUrl}#level={CurrentDino.Level}&taming={serverConfig.TamingSpeedMultiplier}&consumption={serverConfig.FoodDrainMultiplier}";
-            Globals.DododexBrowser.Navigate( url, Globals.MainWindow.DododexTab);
+            Globals.DododexBrowser.Navigate(url, Globals.MainWindow.DododexTab);
             Globals.DododexBrowser.UpdateRotatingShortcuts(CurrentDino.Creature, $"Load info for {CurrentDino.Creature}", url);
         }
     }

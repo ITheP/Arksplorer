@@ -101,10 +101,15 @@ namespace Arksplorer
 
             UserSettings = Settings.Default;
 
-            ShowSameType.IsChecked = UserSettings.ShowSameType;
+            // ShowSameType.IsChecked = UserSettings.ShowSameType;
             ShowPopups.IsChecked = UserSettings.ShowPopups;
             IncludeDetailsInPopUps.IsChecked = UserSettings.IncludeDetailsInPopUps;
             Zoom.Value = UserSettings.Zoom;
+
+            // Settings we don't want to run selection change events just yet
+            Initialising = true;
+            ShowMatchesType.SelectedValue = UserSettings.ShowMatchesType;
+            Initialising = false;
 
             InitWebTabs();
 
@@ -344,7 +349,7 @@ namespace Arksplorer
             ArkbuddyBrowser.Init("Arkbuddy", "https://tristan.games/apps/arkbuddy/");
 
             Globals.YouTubeBrowser = YouTubeBrowser;
-            YouTubeBrowser.Init("YouTube", "https://youtube.com/");
+            YouTubeBrowser.Init("YouTube", "https://youtube.com/results?search_query=ark+evolved");
 
             ServerBrowser.Init("Server");
         }
@@ -1208,16 +1213,20 @@ namespace Arksplorer
                     SecondMarker.Visibility = Visibility.Collapsed;
             }
 
-            if (info.CreatureId != LastCreatureId || mapName != LastSelected_Map)
+            if (info.CreatureId != LastSelected_CreatureId || mapName != LastSelected_Map)
             {
                 // Visualisation of things, only do when the selected type has changed
-                if (ShowSameType.IsChecked == true)
+                MassMarkerType type = (MassMarkerType)UserSettings.ShowMatchesType;
+
+                if (type != MassMarkerType.None)
                 {
                     LastSelected_Map = mapName;
                     LastSelected_CreatureId = info.CreatureId;
-
-                    ShowMassMarkers(info.CreatureId, mapName);
                 }
+
+                //ShowMassMarkers(info.CreatureId, mapName);
+                HandleMassMarkerType(type);
+
             }
 
             SetSelectedInfo(info);
@@ -1717,26 +1726,26 @@ namespace Arksplorer
 
         // Note: at the moment mass markers are based around CreatureId's, but could be used in the future for other purposes (e.g. resources)
 
-        private void ShowMassMarkers(string creatureId, string mapName)
-        {
-            Info.ShowMassMarkers(creatureId, mapName, (DataTable)DataVisual.DataContext, MassMarkerHolder);
-        }
+        //private void ShowMassMarkers(string creatureId, string mapName)
+        //{
+        //    Info.ShowMassMarkers(creatureId, mapName, (DataTable)DataVisual.DataContext, MassMarkerHolder, MassMarkerColours.Colours);
+        //}
 
         private void RemoveMassMarkers()
         {
             Info.RemoveMassMarkers(MassMarkerHolder);
         }
 
-        private void ShowSameType_Click(object sender, RoutedEventArgs e)
-        {
-            bool showSameType = ShowSameType.IsChecked ?? false;
-            UserSettings.ShowSameType = showSameType;
+        //private void ShowSameType_Click(object sender, RoutedEventArgs e)
+        //{
+        //    bool showSameType = ShowSameType.IsChecked ?? false;
+        //    UserSettings.ShowSameType = showSameType;
 
-            if (showSameType)
-                ShowMassMarkers(LastSelected_CreatureId, LastSelected_Map);
-            else
-                RemoveMassMarkers();
-        }
+        //    if (showSameType)
+        //        ShowMassMarkers(LastSelected_CreatureId, LastSelected_Map);
+        //    else
+        //        RemoveMassMarkers();
+        //}
 
         #endregion MassMarkers
 
@@ -1835,6 +1844,29 @@ namespace Arksplorer
 
             SecondDataVisual.Visibility = Visibility.Visible;
             ShowSecondDataVisual.Content = "\xE70D";
+        }
+
+        private void ShowMatchesType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Initialising)
+                return;
+
+            MassMarkerType type = (MassMarkerType)(int.Parse((string)ShowMatchesType.SelectedValue));
+
+            UserSettings.ShowMatchesType = (int)type;
+
+            HandleMassMarkerType(type);
+        }
+
+        private void HandleMassMarkerType(MassMarkerType selectedMatchesType)
+        {
+            if (selectedMatchesType == MassMarkerType.None)
+                RemoveMassMarkers();
+            else
+            {
+                Info.ShowMassMarkers(LastSelected_CreatureId,LastSelected_Map, (DataTable)DataVisual.DataContext, MassMarkerHolder, selectedMatchesType);
+            }
+
         }
 
         #endregion Misc

@@ -163,6 +163,7 @@ v1.6.1 - The Fluffy Feather
 ... Saving/loading of timers includes audio
 - Show image of selected dino in pop up (from Dododex) - first version, some what fragile!
 ... Searches will ignore unticked maps
+- Selection of Mass Marker mode colouration - sex/level or creature colours
 
 ToDo:
 - Loading status not using WPF bound updates, cheaty refresh method used. Nice to do this properly.

@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Reflection.Emit;
 using System.Windows.Controls;
+using System.Windows.Ink;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Arksplorer
 {
@@ -222,7 +225,7 @@ namespace Arksplorer
         }
 
         // ToDo: Regeneration of extra info all the time is a needless overhead. Cache once generated and reuse
-        public static void ShowMassMarkers(string creatureId, string mapName, DataTable data, Grid massMarkerHolder)
+        public static void ShowMassMarkers(string creatureId, string mapName, DataTable data, Grid massMarkerHolder, MassMarkerType colourType)
         {
             RemoveMassMarkers(massMarkerHolder);    // Make sure any previous markers are no longer there
 
@@ -237,9 +240,9 @@ namespace Arksplorer
 
             double lat, lon;
             int level;
-            // Translate level from 0->150+ to 0->1%
-            double levelPerc;
-            byte g;
+            //// Translate level from 0->150+ to 0->1%
+            //double levelPerc;
+            //byte g;
 
             foreach (DataRow row in data.Rows)
             {
@@ -259,21 +262,23 @@ namespace Arksplorer
                             double yPos = lat - 50.0f;
                             double xPos = lon - 50.0f;
 
-                            levelPerc = level / 150.0d; // e.g. 120 out of max 150 = 80% <-- this will need to become dynamic e.g. if its a Tek dino and max wild level is 180
-                            if (levelPerc > 1.0)
-                                levelPerc = 1.0;
+                            //levelPerc = level / 150.0d; // e.g. 120 out of max 150 = 80% <-- this will need to become dynamic e.g. if its a Tek dino and max wild level is 180
+                            //if (levelPerc > 1.0)
+                            //    levelPerc = 1.0;
 
-                            g = (byte)(255 * (1.0 - levelPerc));
+                            //g = (byte)(255 * (1.0 - levelPerc));
 
                             var rec = new System.Windows.Shapes.Rectangle()
                             {
-                                Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 255, g, 0)),
-                                Stroke = (info.Sex == "M" ? Brushes.DarkBlue : Brushes.DarkRed),
-                                StrokeThickness = 0.2,
+                                //Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 255, g, 0)),
+                                //Stroke = (info.Sex == "M" ? Brushes.DarkBlue : Brushes.DarkRed),
+                                //StrokeThickness = 0.2,
                                 Width = 1.4,
                                 Height = 1.4,
                                 RenderTransform = new TranslateTransform(xPos, yPos)
                             };
+
+                            SetMassMarkerColour(rec, info, colourType);
 
                             rec.Tag = info;
 
@@ -284,10 +289,94 @@ namespace Arksplorer
             }
         }
 
+        //public static void SetMassMarkersColours(Grid massMarkerHolder, MassMarkerColours colourType)
+        //{
+        //    foreach (var marker in massMarkerHolder.Children)
+        //    {
+        //        ((Rectangle)marker).Fill = 
+        //    }
+        //}
+
+        private static System.Windows.Point GradientStartPoint = new System.Windows.Point(0.5, 0);
+        private static System.Windows.Point GradientEndPoint = new System.Windows.Point(0.5, 1);
+
+        public static void SetMassMarkerColour(Rectangle rectangle, Info info, MassMarkerType colourType)
+        {
+            switch (colourType)
+            {
+                case MassMarkerType.Sex:
+                    double levelPerc = info.Level / 150.0d; // e.g. 120 out of max 150 = 80% <-- this will need to become dynamic e.g. if its a Tek dino and max wild level is 180
+                    if (levelPerc > 1.0)
+                        levelPerc = 1.0;
+
+                    byte g = (byte)(255 * (1.0 - levelPerc));
+
+                    rectangle.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 255, g, 0));
+
+                    rectangle.Stroke = (info.Sex == "M" ? Brushes.DarkBlue : Brushes.DarkRed);
+                    rectangle.StrokeThickness = 0.2;
+
+                    break;
+                case MassMarkerType.Colours:
+                    GradientStopCollection gradientStops = new();
+
+                    if (info.C0 != null)
+                    {
+                        gradientStops.Add(new GradientStop(((SolidColorBrush)info.C0.Color).Color, 0d));
+                        gradientStops.Add(new GradientStop(((SolidColorBrush)info.C0.Color).Color, 0.1667d));
+                    }
+                    if (info.C1 != null)
+                    {
+                        gradientStops.Add(new GradientStop(((SolidColorBrush)info.C1.Color).Color, 0.1667d));
+                        gradientStops.Add(new GradientStop(((SolidColorBrush)info.C1.Color).Color, 0.3333d));
+                    }
+                    if (info.C2 != null)
+                    {
+                        gradientStops.Add(new GradientStop(((SolidColorBrush)info.C2.Color).Color, 0.3333d));
+                        gradientStops.Add(new GradientStop(((SolidColorBrush)info.C2.Color).Color, 0.5d));
+                    }
+                    if (info.C3 != null)
+                    {
+                        gradientStops.Add(new GradientStop(((SolidColorBrush)info.C3.Color).Color, 0.5d));
+                        gradientStops.Add(new GradientStop(((SolidColorBrush)info.C3.Color).Color, 0.6667d));
+                    }
+                    if (info.C4 != null)
+                    {
+                        gradientStops.Add(new GradientStop(((SolidColorBrush)info.C4.Color).Color, 0.6667d));
+                        gradientStops.Add(new GradientStop(((SolidColorBrush)info.C4.Color).Color, 0.8333d));
+                    }
+                    if (info.C5 != null)
+                    {
+                        gradientStops.Add(new GradientStop(((SolidColorBrush)info.C5.Color).Color, 0.8333d));
+                        gradientStops.Add(new GradientStop(((SolidColorBrush)info.C5.Color).Color, 1.0d));
+                    }
+
+                    rectangle.Fill = new LinearGradientBrush(gradientStops)
+                    {
+                        StartPoint = new System.Windows.Point(0.5, 0),
+                        EndPoint = new System.Windows.Point(0.5, 1)
+                    };
+
+                    rectangle.Stroke = Brushes.Black;
+                    rectangle.StrokeThickness = 0.1;
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
         public static void RemoveMassMarkers(Grid massMarkerHolder)
         {
             massMarkerHolder.Children.Clear();
         }
 
+    }
+
+    public enum MassMarkerType
+    {
+        None = 0,
+        Colours = 1,
+        Sex = 2
     }
 }

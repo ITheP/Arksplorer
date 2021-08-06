@@ -330,10 +330,15 @@
                                         </ComboBox>
                                         <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" Margin="2,0,0,0" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
                                         <StackPanel Orientation="Horizontal">
-                                            <CheckBox x:Name="ShowSameType" Content="Show matching" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" ToolTip="Shows markers for all dinos/creatures etc. matching the type you select" />
-                                            <CheckBox x:Name="ShowPopups" Content="Show popups" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" ToolTip="Show popup information under pointer"/>
-                                            <CheckBox x:Name="IncludeDetailsInPopUps" Content="Include details" Margin="8,2,0,2" VerticalAlignment="Center" ToolTip="Shows extra details in popup information" />
+                                            <!--<CheckBox x:Name="ShowSameType" Content="Show matching" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" ToolTip="Shows markers for all dinos/creatures etc. matching the type you select" />-->
+                                            <CheckBox x:Name="ShowPopups" Content="Popups" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" ToolTip="Show popup information under pointer"/>
+                                            <CheckBox x:Name="IncludeDetailsInPopUps" Content="Details" Margin="8,2,0,2" VerticalAlignment="Center" ToolTip="Shows extra details in popup information" />
                                         </StackPanel>
+                                        <ComboBox x:Name="ShowMatchesType" Width="130" Margin="8,0,0,0" SelectedValuePath="Tag" SelectionChanged="ShowMatchesType_SelectionChanged" ToolTip="Show other creatures on map matching selected">
+                                            <ComboBoxItem Content="No matches" Tag="0"/>
+                                            <ComboBoxItem Content="Similar + Colours" Tag="1"/>
+                                            <ComboBoxItem Content="Similar + Sex/Level" IsSelected="True" Tag="2"/>
+                                        </ComboBox>
                                     </WrapPanel>
                                     <StackPanel Margin="35,4,4,0" Orientation="Horizontal">
                                         <ComboBox x:Name="FilterColor" Width="200" SelectedValuePath="Value" SelectionChanged="FilterColor_SelectionChanged" ToolTip="Ark color to use in filters (requires selection of which color position to search in)">

@@ -36,21 +36,42 @@
                         <TextBlock Text="Lon" FontSize="10"  VerticalAlignment="Center" Margin="12,0,0,0" />
                         <TextBlock x:Name="Lon" FontStyle="Italic" FontSize="14" VerticalAlignment="Center"  Margin="4,0,0,0"/>
                     </StackPanel>
-                    <ListView x:Name="InfoList" BorderThickness="0" Background="Transparent">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="2,-2,2,0" HorizontalAlignment="Stretch" Width="150">
-                                    <TextBlock Text="{Binding Path=Description}" HorizontalAlignment="Left" FontSize="10" Width="80" />
-                                    <TextBlock Text="{Binding Value}" FontWeight="Bold" FontSize="10" MaxWidth="80" HorizontalAlignment="Right" TextAlignment="Right" TextWrapping="Wrap"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                    <Grid>
+                        <Image x:Name="CreatureImage" Width="90" Height="120" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20,20,0,0"/>
+                        <ListView x:Name="InfoList" BorderThickness="0" Background="Transparent">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Focusable" Value="False"/>
+                                    <!--<Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>-->
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="2,-2,2,0" HorizontalAlignment="Stretch" Width="150">
+                                        <TextBlock Text="{Binding Path=Description}" HorizontalAlignment="Left" FontSize="10" Width="80" />
+                                        <TextBlock Text="{Binding Value}" FontWeight="Bold" FontSize="10" MaxWidth="80" HorizontalAlignment="Right" TextAlignment="Right" TextWrapping="Wrap"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4,0,4">
-                        <Button x:Name="Arkpedia" Margin="2,0" Click="Arkpedia_Click" Background="White">
+                        <Button x:Name="Arkpedia" Margin="2,0" Click="Arkpedia_Click" Background="White" ToolTip="Ark Wikipedia page">
                             <Image Source="/Images/Arkpedia.png" Width="24" Height="20" />
                         </Button>
                         <ListView x:Name="IconList" BorderThickness="0" HorizontalAlignment="Center" Background="Transparent">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Focusable" Value="False"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <StackPanel Orientation="Horizontal"></StackPanel>
@@ -62,7 +83,7 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
-                        <Button x:Name="Dododex" Margin="2,0" Click="Dododex_Click" Background="White">
+                        <Button x:Name="Dododex" Margin="2,0" Click="Dododex_Click" Background="White" ToolTip="Dododex page">
                             <Image Source="/Images/Dododex.png" Width="24" Height="20" />
                         </Button>
                     </StackPanel>

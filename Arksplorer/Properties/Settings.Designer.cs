@@ -74,18 +74,6 @@ namespace Arksplorer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowSameType {
-            get {
-                return ((bool)(this["ShowSameType"]));
-            }
-            set {
-                this["ShowSameType"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ShowPopups {
             get {
                 return ((bool)(this["ShowPopups"]));
@@ -188,6 +176,18 @@ namespace Arksplorer.Properties {
             }
             set {
                 this["Alarms"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int ShowMatchesType {
+            get {
+                return ((int)(this["ShowMatchesType"]));
+            }
+            set {
+                this["ShowMatchesType"] = value;
             }
         }
     }
