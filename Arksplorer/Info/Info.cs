@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Arksplorer;
+using System.Collections.Generic;
 using System.Data;
 using System.Reflection.Emit;
 using System.Windows.Controls;
@@ -28,6 +29,8 @@ namespace Arksplorer
         public int Level { get; set; } = -1;
         public int BaseLevel { get; set; } = -1;
         public string Tribe { get; set; }
+        public string Tamer { get; set; }
+        public string Imprinter { get; set; }
         public string Sex { get; set; }
         public bool Cryoed { get; set; }
         public ArkColor C0 { get; set; }
@@ -50,179 +53,205 @@ namespace Arksplorer
         public Info(DataRow row)
         {
             GlobalIndex = (int)row[Globals.GlobalIndexColumn];
-            Lat = (float)row[LatColumn];
-            Lon = (float)row[LonColumn];
+            ColumnPositions columnPositions = ((DataTablePlus)row[Globals.DataColumn]).ColumnPositions; // ((DataTablePlus)row[Globals.DataColumn]).ColumnPositions;
 
-            if (NameColumn > -1)
-                Name = row[NameColumn] as string;
+            Lat = (float)row[columnPositions.LatColumn];
+            Lon = (float)row[columnPositions.LonColumn];
 
-            if (CreatureColumn > -1)
-                Creature = row[CreatureColumn] as string;
+            if (columnPositions.NameColumn > -1)
+                Name = row[columnPositions.NameColumn] as string;
 
-            if (CreatureIdColumn > -1)
-                CreatureId = row[CreatureIdColumn] as string;
+            if (columnPositions.CreatureColumn > -1)
+                Creature = row[columnPositions.CreatureColumn] as string;
 
-            if (SexColumn > -1)
+            if (columnPositions.CreatureIdColumn > -1)
+                CreatureId = row[columnPositions.CreatureIdColumn] as string;
+
+            if (columnPositions.SexColumn > -1)
             {
-                BitmapImage sex = row[SexColumn] as BitmapImage;
+                BitmapImage sex = row[columnPositions.SexColumn] as BitmapImage;
                 Sex = (sex == IconImages.Male ? "M" : "F");
                 AddIcon(sex);
             }
 
-            if (BaseColumn > -1)
+            if (columnPositions.BaseColumn > -1)
             {
-                int baseLevel = (row[BaseColumn] as int? ?? -1);
+                int baseLevel = (row[columnPositions.BaseColumn] as int? ?? -1);
                 if (baseLevel > 0)
                 {
                     BaseLevel = baseLevel;
-                    Add("Base level", $"{row[BaseColumn] as int?}");
+                    Add("Base level", $"{row[columnPositions.BaseColumn] as int?}");
                 }
             }
 
-            int level = (int)row[LvlColumn];
+            int level = (int)row[columnPositions.LvlColumn];
             Add("Level", $"{level}");
             Level = level;
 
-            if (HpColumn > -1)
-                Add("Health", $"{row[WeightColumn]}");
-            if (StamColumn > -1)
-                Add("Stamina", $"{row[StamColumn]}");
-            if (MeleeColumn > -1)
-                Add("Melee", $"{row[MeleeColumn]}");
-            if (WeightColumn > -1)
-                Add("Weight", $"{row[WeightColumn]}");
-            if (SpeedColumn > -1)
-                Add("Speed", $"{row[SpeedColumn]}");
-            if (FoodColumn > -1)
-                Add("Food", $"{row[FoodColumn]}");
-            if (OxyColumn > -1)
-                Add("Oxygen", $"{row[OxyColumn]}");
-            if (CraftColumn > -1)
-                Add("Crafting", $"{row[CraftColumn]}");
-            if (StamColumn > -1)
-                Add("Stamina", $"{row[StamColumn]}");
+            if (columnPositions.HpColumn > -1)
+                Add("Health", $"{row[columnPositions.WeightColumn]}");
 
-            if (TamerColumn > -1)
+            if (columnPositions.StamColumn > -1)
+                Add("Stamina", $"{row[columnPositions.StamColumn]}");
+
+            if (columnPositions.MeleeColumn > -1)
+                Add("Melee", $"{row[columnPositions.MeleeColumn]}");
+
+            if (columnPositions.WeightColumn > -1)
+                Add("Weight", $"{row[columnPositions.WeightColumn]}");
+
+            if (columnPositions.SpeedColumn > -1)
+                Add("Speed", $"{row[columnPositions.SpeedColumn]}");
+
+            if (columnPositions.FoodColumn > -1)
+                Add("Food", $"{row[columnPositions.FoodColumn]}");
+
+            if (columnPositions.OxyColumn > -1)
+                Add("Oxygen", $"{row[columnPositions.OxyColumn]}");
+
+            if (columnPositions.CraftColumn > -1)
+                Add("Crafting", $"{row[columnPositions.CraftColumn]}");
+
+            if (columnPositions.StamColumn > -1)
+                Add("Stamina", $"{row[columnPositions.StamColumn]}");
+
+            if (columnPositions.TribeColumn > -1)
             {
-                string tribe = $"{row[TamerColumn] as string}";
-                Add("Tamer (Tribe)", tribe);
+                string tribe = $"{row[columnPositions.TribeColumn] as string}";
+                Add("Tribe", tribe);
                 Tribe = tribe;
             }
-            if (ImprinterColumn > -1)
-                Add("Imprinter", $"{row[ImprinterColumn] as string}");
-            if (ImprintColumn > -1)
-                Add("Imprint", $"{row[ImprintColumn]}");
 
-            if (MutFColumn > -1)
-                Add("Mutations F", $"{row[MutFColumn]}");
-            if (MutMColumn > -1)
-                Add("Mutations M", $"{row[MutMColumn]}");
-
-            if (CCCColumn > -1)
-                Add("3D Coordinates", $"{row[CCCColumn] as string}");
-
-            if (CryoColumn > -1)
+            if (columnPositions.TamerColumn > -1)
             {
-                if (row[CryoColumn] != System.DBNull.Value)
+                string tamer = $"{row[columnPositions.TamerColumn] as string}";
+                Add("Tamer", tamer);
+                Tamer = tamer;
+            }
+
+            if (columnPositions.ImprinterColumn > -1)
+            {
+                string imprinter = $"{row[columnPositions.ImprinterColumn] as string}";
+                Add("Imprinter", imprinter);
+                Imprinter = imprinter;
+            }
+
+            if (columnPositions.ImprintColumn > -1)
+                Add("Imprint", $"{row[columnPositions.ImprintColumn]}");
+
+            if (columnPositions.MutFColumn > -1)
+                Add("Mutations F", $"{row[columnPositions.MutFColumn]}");
+
+            if (columnPositions.MutMColumn > -1)
+                Add("Mutations M", $"{row[columnPositions.MutMColumn]}");
+
+            if (columnPositions.CCCColumn > -1)
+                Add("3D Coordinates", $"{row[columnPositions.CCCColumn] as string}");
+
+            if (columnPositions.CryoColumn > -1)
+            {
+                if (row[columnPositions.CryoColumn] != System.DBNull.Value)
                 {
-                    AddIcon((BitmapImage)row[CryoColumn]);
+                    AddIcon((BitmapImage)row[columnPositions.CryoColumn]);
                     Cryoed = true;
                 }
             }
 
-            if (C0Column > -1)
-                C0 = row[C0Column] as ArkColor;
-            if (C1Column > -1)
-                C1 = row[C1Column] as ArkColor;
-            if (C2Column > -1)
-                C2 = row[C2Column] as ArkColor;
-            if (C3Column > -1)
-                C3 = row[C3Column] as ArkColor;
-            if (C4Column > -1)
-                C4 = row[C4Column] as ArkColor;
-            if (C5Column > -1)
-                C5 = row[C5Column] as ArkColor;
+            if (columnPositions.C0Column > -1)
+                C0 = row[columnPositions.C0Column] as ArkColor;
+            if (columnPositions.C1Column > -1)
+                C1 = row[columnPositions.C1Column] as ArkColor;
+            if (columnPositions.C2Column > -1)
+                C2 = row[columnPositions.C2Column] as ArkColor;
+            if (columnPositions.C3Column > -1)
+                C3 = row[columnPositions.C3Column] as ArkColor;
+            if (columnPositions.C4Column > -1)
+                C4 = row[columnPositions.C4Column] as ArkColor;
+            if (columnPositions.C5Column > -1)
+                C5 = row[columnPositions.C5Column] as ArkColor;
 
             //return (info);
         }
 
 
-        //public static int GlobalIndexColumn { get; set; }
-        //public static int MapColumn { get; set; }
-        public static int LatColumn { get; set; }
-        public static int LonColumn { get; set; }
-        private static int CreatureIdColumn { get; set; }
-        public static int LvlColumn { get; set; }
-        public static int BaseColumn { get; set; }
-        public static int CreatureColumn { get; set; }
-        public static int NameColumn { get; set; }
-        public static int SexColumn { get; set; }
-        public static int CryoColumn { get; set; }
-        public static int C0Column { get; set; }
-        public static int C1Column { get; set; }
-        public static int C2Column { get; set; }
-        public static int C3Column { get; set; }
-        public static int C4Column { get; set; }
-        public static int C5Column { get; set; }
-        public static int CCCColumn { get; set; }
-        public static int HpColumn { get; set; }
-        public static int StamColumn { get; set; }
-        public static int MeleeColumn { get; set; }
-        public static int WeightColumn { get; set; }
-        public static int SpeedColumn { get; set; }
-        public static int FoodColumn { get; set; }
-        public static int OxyColumn { get; set; }
-        public static int CraftColumn { get; set; }
-        public static int TamerColumn { get; set; }
-        public static int ImprinterColumn { get; set; }
-        public static int ImprintColumn { get; set; }
-        public static int MutFColumn { get; set; }
-        public static int MutMColumn { get; set; }
+        ////public static int GlobalIndexColumn { get; set; }
+        ////public static int MapColumn { get; set; }
+        //public static int LatColumn { get; set; }
+        //public static int LonColumn { get; set; }
+        //private static int CreatureIdColumn { get; set; }
+        //public static int LvlColumn { get; set; }
+        //public static int BaseColumn { get; set; }
+        //public static int CreatureColumn { get; set; }
+        //public static int NameColumn { get; set; }
+        //public static int SexColumn { get; set; }
+        //public static int CryoColumn { get; set; }
+        //public static int C0Column { get; set; }
+        //public static int C1Column { get; set; }
+        //public static int C2Column { get; set; }
+        //public static int C3Column { get; set; }
+        //public static int C4Column { get; set; }
+        //public static int C5Column { get; set; }
+        //public static int CCCColumn { get; set; }
+        //public static int HpColumn { get; set; }
+        //public static int StamColumn { get; set; }
+        //public static int MeleeColumn { get; set; }
+        //public static int WeightColumn { get; set; }
+        //public static int SpeedColumn { get; set; }
+        //public static int FoodColumn { get; set; }
+        //public static int OxyColumn { get; set; }
+        //public static int CraftColumn { get; set; }
+        //public static int TribeColumn { get; set; }
+        //public static int TamerColumn { get; set; }
+        //public static int ImprinterColumn { get; set; }
+        //public static int ImprintColumn { get; set; }
+        //public static int MutFColumn { get; set; }
+        //public static int MutMColumn { get; set; }
 
-        /// <summary>
-        /// Column positions are all assumed to be dynamic (even if they are actually pretty static)
-        /// This is to account for future expansion, new datasets, columns, definitions, changes etc.
-        /// so we don't need to hardcode/recode values. Not quite as performant as hardcoding but does
-        /// the job nicely.
-        /// </summary>
-        /// <param name="data"></param>
-        public static void InitColumnIndexPositions(DataTable data)
-        {
-            //GlobalIndexColumn = data.Columns["GlobalIndex"]?.Ordinal ?? -1;
-            // ...Always 0, set in Globals
-            //MapColumn = data.Columns["Map"]?.Ordinal ?? -1;
-            // ...Always 1, set in Globals
-            LatColumn = data.Columns["Lat"]?.Ordinal ?? -1;
-            LonColumn = data.Columns["Lon"]?.Ordinal ?? -1;
-            CreatureIdColumn = data.Columns["CreatureId"]?.Ordinal ?? -1;
-            LvlColumn = data.Columns["Lvl"]?.Ordinal ?? -1;
-            BaseColumn = data.Columns["Base"]?.Ordinal ?? -1;
-            CreatureColumn = data.Columns["Creature"]?.Ordinal ?? -1;
-            NameColumn = data.Columns["Name"]?.Ordinal ?? -1;
-            SexColumn = data.Columns["Sex"]?.Ordinal ?? -1;
-            CryoColumn = data.Columns["Cryo"]?.Ordinal ?? -1;
-            C0Column = data.Columns["C0"]?.Ordinal ?? -1;
-            C1Column = data.Columns["C1"]?.Ordinal ?? -1;
-            C2Column = data.Columns["C2"]?.Ordinal ?? -1;
-            C3Column = data.Columns["C3"]?.Ordinal ?? -1;
-            C4Column = data.Columns["C4"]?.Ordinal ?? -1;
-            C5Column = data.Columns["C5"]?.Ordinal ?? -1;
-            // Ark has some W variants of columns in wild vs tame. We just re-use below for either as we dont care
-            HpColumn = data.Columns["Hp"]?.Ordinal ?? data.Columns["HpW"]?.Ordinal ?? -1;
-            StamColumn = data.Columns["Stam"]?.Ordinal ?? data.Columns["StamW"]?.Ordinal ?? -1;
-            MeleeColumn = data.Columns["Melee"]?.Ordinal ?? data.Columns["MeleeW"]?.Ordinal ?? -1;
-            WeightColumn = data.Columns["Weight"]?.Ordinal ?? data.Columns["WeightW"]?.Ordinal ?? -1;
-            SpeedColumn = data.Columns["Speed"]?.Ordinal ?? data.Columns["SpeedW"]?.Ordinal ?? -1;
-            FoodColumn = data.Columns["Food"]?.Ordinal ?? data.Columns["FoodW"]?.Ordinal ?? -1;
-            OxyColumn = data.Columns["Oxy"]?.Ordinal ?? data.Columns["OxyW"]?.Ordinal ?? -1;
-            CraftColumn = data.Columns["Craft"]?.Ordinal ?? data.Columns["CraftT"]?.Ordinal ?? -1;
-            TamerColumn = data.Columns["Tamer"]?.Ordinal ?? -1;
-            ImprinterColumn = data.Columns["Imprinter"]?.Ordinal ?? -1;
-            ImprintColumn = data.Columns["Imprint"]?.Ordinal ?? -1;
-            MutFColumn = data.Columns["MutF"]?.Ordinal ?? -1;
-            MutMColumn = data.Columns["MutM"]?.Ordinal ?? -1;
-            CCCColumn = data.Columns["CCC"]?.Ordinal ?? -1;
-        }
+        ///// <summary>
+        ///// Column positions are all assumed to be dynamic (even if they are actually pretty static)
+        ///// This is to account for future expansion, new datasets, columns, definitions, changes etc.
+        ///// so we don't need to hardcode/recode values. Not quite as performant as hardcoding but does
+        ///// the job nicely.
+        ///// </summary>
+        ///// <param name="data"></param>
+        //public static void InitColumnIndexPositions(DataTable data)
+        //{
+        //    //GlobalIndexColumn = data.Columns["GlobalIndex"]?.Ordinal ?? -1;
+        //    // ...Always 0, set in Globals
+        //    //MapColumn = data.Columns["Map"]?.Ordinal ?? -1;
+        //    // ...Always 1, set in Globals
+        //    LatColumn = data.Columns["Lat"]?.Ordinal ?? -1;
+        //    LonColumn = data.Columns["Lon"]?.Ordinal ?? -1;
+        //    CreatureIdColumn = data.Columns["CreatureId"]?.Ordinal ?? -1;
+        //    LvlColumn = data.Columns["Lvl"]?.Ordinal ?? -1;
+        //    BaseColumn = data.Columns["Base"]?.Ordinal ?? -1;
+        //    CreatureColumn = data.Columns["Creature"]?.Ordinal ?? -1;
+        //    NameColumn = data.Columns["Name"]?.Ordinal ?? -1;
+        //    SexColumn = data.Columns["Sex"]?.Ordinal ?? -1;
+        //    CryoColumn = data.Columns["Cryo"]?.Ordinal ?? -1;
+        //    C0Column = data.Columns["C0"]?.Ordinal ?? -1;
+        //    C1Column = data.Columns["C1"]?.Ordinal ?? -1;
+        //    C2Column = data.Columns["C2"]?.Ordinal ?? -1;
+        //    C3Column = data.Columns["C3"]?.Ordinal ?? -1;
+        //    C4Column = data.Columns["C4"]?.Ordinal ?? -1;
+        //    C5Column = data.Columns["C5"]?.Ordinal ?? -1;
+        //    // Ark has some W variants of columns in wild vs tame. We just re-use below for either as we dont care
+        //    HpColumn = data.Columns["Hp"]?.Ordinal ?? data.Columns["HpW"]?.Ordinal ?? -1;
+        //    StamColumn = data.Columns["Stam"]?.Ordinal ?? data.Columns["StamW"]?.Ordinal ?? -1;
+        //    MeleeColumn = data.Columns["Melee"]?.Ordinal ?? data.Columns["MeleeW"]?.Ordinal ?? -1;
+        //    WeightColumn = data.Columns["Weight"]?.Ordinal ?? data.Columns["WeightW"]?.Ordinal ?? -1;
+        //    SpeedColumn = data.Columns["Speed"]?.Ordinal ?? data.Columns["SpeedW"]?.Ordinal ?? -1;
+        //    FoodColumn = data.Columns["Food"]?.Ordinal ?? data.Columns["FoodW"]?.Ordinal ?? -1;
+        //    OxyColumn = data.Columns["Oxy"]?.Ordinal ?? data.Columns["OxyW"]?.Ordinal ?? -1;
+        //    CraftColumn = data.Columns["Craft"]?.Ordinal ?? data.Columns["CraftT"]?.Ordinal ?? -1;
+        //    TribeColumn = data.Columns["Tribe"]?.Ordinal ?? -1;
+        //    TamerColumn = data.Columns["Tamer"]?.Ordinal ?? -1;
+        //    ImprinterColumn = data.Columns["Imprinter"]?.Ordinal ?? -1;
+        //    ImprintColumn = data.Columns["Imprint"]?.Ordinal ?? -1;
+        //    MutFColumn = data.Columns["MutF"]?.Ordinal ?? -1;
+        //    MutMColumn = data.Columns["MutM"]?.Ordinal ?? -1;
+        //    CCCColumn = data.Columns["CCC"]?.Ordinal ?? -1;
+        //}
 
         // ToDo: Regeneration of extra info all the time is a needless overhead. Cache once generated and reuse
         public static void ShowMassMarkers(string creatureId, string mapName, DataTable data, Grid massMarkerHolder, MassMarkerType colourType)
@@ -235,7 +264,13 @@ namespace Arksplorer
             if (data == null)
                 return;
 
-            if (LatColumn == -1 || LonColumn == -1 || CreatureIdColumn == -1)
+            if (data.Rows.Count == 0)
+                return;
+
+            // We can get columnPositions from first record
+            ColumnPositions columnPositions = ((DataTablePlus)data.Rows[0].ItemArray[Globals.DataColumn]).ColumnPositions;
+
+            if (columnPositions.LatColumn == -1 || columnPositions.LonColumn == -1 || columnPositions.CreatureIdColumn == -1)
                 return;
 
             double lat, lon;
@@ -248,10 +283,10 @@ namespace Arksplorer
             {
                 if ((string)row[Globals.MapColumn] == mapName)
                 {
-                    if ((string)row[CreatureIdColumn] == creatureId)
+                    if ((string)row[columnPositions.CreatureIdColumn] == creatureId)
                     {
-                        lat = (float)row[LatColumn];
-                        lon = (float)row[LonColumn];
+                        lat = (float)row[columnPositions.LatColumn];
+                        lon = (float)row[columnPositions.LonColumn];
 
                         if (lat > -1 && lon > -1)
                         {

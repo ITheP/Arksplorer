@@ -191,6 +191,8 @@ namespace Arksplorer
             OverviewInfo.Visibility = Visibility.Collapsed;
             FilterMap.Visibility = Visibility.Collapsed;
             FilterTribe.Visibility = Visibility.Collapsed;
+            FilterTamer.Visibility = Visibility.Collapsed;
+            FilterImprinter.Visibility = Visibility.Collapsed;
             FilterCreature.Visibility = Visibility.Collapsed;
             SecondDataVisualHolder.Visibility = Visibility.Collapsed;
             SecondDataVisual.Visibility = Visibility.Collapsed;
@@ -214,8 +216,6 @@ namespace Arksplorer
         {
             // Any non-specifically saved UserSettings, update here incase they have changed
             UserSettings.Zoom = Zoom.Value;
-            UserSettings.ShowPopups = ShowPopups.IsChecked ?? false;
-            UserSettings.IncludeDetailsInPopUps = IncludeDetailsInPopUps.IsChecked ?? false;
 
             Settings.Default.Window_Left = this.Left;
             Settings.Default.Window_Top = this.Top;
@@ -717,12 +717,17 @@ namespace Arksplorer
 
             try
             {
-                DataRow[] filteredRows = CurrentDataPackage.Data.Select(finalFilter);
+                DataRow[] filteredRows = CurrentDataPackage.DataTable.Select(finalFilter);
 
                 if (filteredRows.Length == 0)
                     SetDataVisualData(null);
                 else
-                    SetDataVisualData(filteredRows.CopyToDataTable());
+                {
+                    DataTable dataTable = filteredRows.CopyToDataTable();
+                    SetDataVisualData(dataTable);
+                }
+
+                UpdateDataVisualType(dataPackage);
             }
             catch (Exception ex)
             {
@@ -734,9 +739,9 @@ namespace Arksplorer
 
         private void ClearFilter()
         {
-            if (CurrentDataPackage?.Data != null)
+            if (CurrentDataPackage?.DataTable != null)
             {
-                DataVisual.DataContext = CurrentDataPackage.Data;
+                DataVisual.DataContext = CurrentDataPackage.DataTable;
                 HideFlashMessage();
             }
         }
@@ -999,6 +1004,11 @@ namespace Arksplorer
 
         private string LastCreatureId { get; set; } = string.Empty;
 
+        private void UpdateDataVisualType(DataPackage dataPackage)
+        {
+            DataVisualType.Text = $"Showing {dataPackage.Metadata.Description}s";
+        }
+
         public void ShowData(string type, bool updateVisualDataGrid)
         {
             if (DataPackages.ContainsKey(type))
@@ -1010,13 +1020,14 @@ namespace Arksplorer
 
                 if (updateVisualDataGrid)
                 {
-                    SetDataVisualData(CurrentDataPackage.Data);
+                    UpdateDataVisualType(CurrentDataPackage);
+                    SetDataVisualData(CurrentDataPackage.DataTable);
                     SecondDataVisualHolder.Visibility = Visibility.Visible;
                     DataVisual.Visibility = Visibility.Visible;
                 }
 
                 MapDataTitle.Text = CurrentDataPackage.MapsDescription;
-                MapDataTotal.Text = $"Total loaded: {CurrentDataPackage.Data?.Rows.Count ?? 0}";
+                MapDataTotal.Text = $"Total loaded: {CurrentDataPackage.DataTable?.Rows.Count ?? 0}";
                 MapData.ItemsSource = CurrentDataPackage.IndividualMaps.ToList();  // Don't belive it should require a Tolist() but have seen the display not update without it
                 //ExtraInfoMapData.Items.Refresh();
                 //ShowExtraInfo(ExtraInfoHolder, MapDataHolder);
@@ -1025,7 +1036,7 @@ namespace Arksplorer
                 MapDataTab.Focus();
                 //About.Content = "About";    // Just incase this button gets out of sync.
 
-                if (CurrentDataPackage.Data == null)
+                if (CurrentDataPackage.DataTable == null)
                 {
                     Status.Text = $"No data found!";
 
@@ -1034,7 +1045,7 @@ namespace Arksplorer
                 }
                 else
                 {
-                    if (CurrentDataPackage.Data.Rows.Count == 0)
+                    if (CurrentDataPackage.DataTable.Rows.Count == 0)
                     {
                         Status.Text = $"No data loaded yet";
 
@@ -1045,7 +1056,7 @@ namespace Arksplorer
                     {
                         MetaData metadata = CurrentDataPackage.Metadata;
 
-                        Status.Text = $"Loaded {CurrentDataPackage.Data.Rows.Count} {metadata.Description}s!";
+                        Status.Text = $"Loaded {CurrentDataPackage.DataTable.Rows.Count} {metadata.Description}s!";
 
                         SetFilterLevelEnabled(metadata.IncludesLevel);
                         SetFilterColorEnabled(metadata.IncludesColors);
@@ -1058,9 +1069,9 @@ namespace Arksplorer
             }
         }
 
-        private void SetDataVisualData(DataTable data)
+        private void SetDataVisualData(DataTable dataTable)
         {
-            if (data == null || data.Rows.Count == 0)
+            if (dataTable == null || dataTable.Rows.Count == 0)
             {
                 DataVisual.DataContext = null;
                 DataVisualCount.Text = "No entries found";
@@ -1069,9 +1080,10 @@ namespace Arksplorer
                 return;
             }
 
-            DataVisual.DataContext = data;
-            Info.InitColumnIndexPositions(data);
-            DataVisualCount.Text = $"{data.Rows.Count} entries";
+            DataVisual.DataContext = dataTable;
+            //Info.InitColumnIndexPositions(data);
+
+            DataVisualCount.Text = $"{dataTable.Rows.Count} entries";
             HideFlashMessage();
         }
 
@@ -1138,7 +1150,7 @@ namespace Arksplorer
                 {
                     e.Column.Visibility = Visibility.Collapsed;
                 }
-                else if ((string)column.Header == "GlobalIndex")   // Hide GlobalIndex
+                else if ((string)column.Header == "GlobalIndex" || (string)column.Header == "DataDefinition")   // Hide GlobalIndex and DataDefinition columns, internal references only
                     column.Visibility = Visibility.Collapsed;
             }
         }
@@ -1156,7 +1168,7 @@ namespace Arksplorer
                 return;
             }
 
-            Info info = new(entity.Row);
+            Info info = new((DataRow)entity.Row);
 
             // Marker offset
             // translate 0->100 to -50->50
@@ -1225,7 +1237,7 @@ namespace Arksplorer
                 }
 
                 //ShowMassMarkers(info.CreatureId, mapName);
-                HandleMassMarkerType(type);
+                HandleMassMarkerType(type, (DataTable)DataVisual.DataContext);
 
             }
 
@@ -1251,6 +1263,28 @@ namespace Arksplorer
                 FilterTribe.Content = info.Tribe;
                 FilterTribe.Tag = info.Tribe;
                 FilterTribe.Visibility = Visibility.Visible;
+            }
+
+            if (string.IsNullOrWhiteSpace(info.Tamer))
+            {
+                FilterTamer.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                FilterTamer.Content = info.Tamer;
+                FilterTamer.Tag = info.Tamer;
+                FilterTamer.Visibility = Visibility.Visible;
+            }
+
+            if (string.IsNullOrWhiteSpace(info.Imprinter))
+            {
+                FilterImprinter.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                FilterImprinter.Content = info.Imprinter;
+                FilterImprinter.Tag = info.Imprinter;
+                FilterImprinter.Visibility = Visibility.Visible;
             }
 
             if (string.IsNullOrWhiteSpace(mapName))
@@ -1282,7 +1316,7 @@ namespace Arksplorer
                 return;
             }
 
-            Info info = new(entity.Row);
+            Info info = new((DataRow)entity.Row);
 
             // Marker offset
             // translate 0->100 to -50->50
@@ -1597,7 +1631,8 @@ namespace Arksplorer
                                 LastDataGridRow = gridRow;
 
                                 DataRowView dataRowView = (System.Data.DataRowView)gridRow.Item;
-                                PopUpInfoVisual.ShowInfo(new Info(dataRowView.Row), false, UserSettings.IncludeDetailsInPopUps);
+
+                                PopUpInfoVisual.ShowInfo(new Info((DataRow)dataRowView.Row), false, UserSettings.IncludeDetailsInPopUps);
                             }
 
                             // Even if we don't change how this looks, we want to make sure its position is updated
@@ -1841,7 +1876,6 @@ namespace Arksplorer
         private void CopyToSecondDataVisual_Click(object sender, RoutedEventArgs e)
         {
             SecondDataVisual.DataContext = DataVisual.DataContext;
-
             SecondDataVisual.Visibility = Visibility.Visible;
             ShowSecondDataVisual.Content = "\xE70D";
         }
@@ -1855,18 +1889,29 @@ namespace Arksplorer
 
             UserSettings.ShowMatchesType = (int)type;
 
-            HandleMassMarkerType(type);
+            // ToDo: Mass Markers from Secondary DataVisual? Hmmmm
+            HandleMassMarkerType(type, (DataTable)DataVisual.DataContext);
         }
 
-        private void HandleMassMarkerType(MassMarkerType selectedMatchesType)
+        private void HandleMassMarkerType(MassMarkerType selectedMatchesType, DataTable dataTable)
         {
             if (selectedMatchesType == MassMarkerType.None)
                 RemoveMassMarkers();
             else
             {
-                Info.ShowMassMarkers(LastSelected_CreatureId,LastSelected_Map, (DataTable)DataVisual.DataContext, MassMarkerHolder, selectedMatchesType);
+                Info.ShowMassMarkers(LastSelected_CreatureId,LastSelected_Map, dataTable, MassMarkerHolder, selectedMatchesType);
             }
 
+        }
+
+        private void IncludeDetailsInPopUps_Click(object sender, RoutedEventArgs e)
+        {
+            UserSettings.IncludeDetailsInPopUps = IncludeDetailsInPopUps.IsChecked ?? false;
+        }
+
+        private void ShowPopups_Click(object sender, RoutedEventArgs e)
+        {
+            UserSettings.ShowPopups = ShowPopups.IsChecked ?? false;
         }
 
         #endregion Misc

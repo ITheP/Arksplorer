@@ -14,6 +14,9 @@ namespace Arksplorer.Controls
 
         private Info CurrentDino { get; set; }
 
+        private static Thickness ImageMargin_Details { get; } = new Thickness(20, 20, 0, 20);
+        private static Thickness ImageMargin_NoDetails { get; } = new Thickness(5, 10, 5, 0);
+
         public InfoVisual()
         {
             InitializeComponent();
@@ -72,11 +75,13 @@ namespace Arksplorer.Controls
             {
                 InfoList.Visibility = Visibility.Visible;
                 InfoList.ItemsSource = info.Items;
+                CreatureImage.Margin = ImageMargin_Details;
             }
             else
             {
                 InfoList.Visibility = Visibility.Collapsed;
                 InfoList.ItemsSource = null;
+                CreatureImage.Margin = ImageMargin_NoDetails;
             }
 
             IconList.ItemsSource = info.Icons;

@@ -164,8 +164,18 @@ v1.6.1 - The Fluffy Feather
 - Show image of selected dino in pop up (from Dododex) - first version, some what fragile!
 ... Searches will ignore unticked maps
 - Selection of Mass Marker mode colouration - sex/level or creature colours
+- Added extra filter quick buttons amd changed their order
+- Creature type dataset labeling for results view
+- Popups display from different creature types in main/secondary results areas
 
 ToDo:
 - Loading status not using WPF bound updates, cheaty refresh method used. Nice to do this properly.
 - if (CurrentRectanglePopUpInfo != null) <-- need a different way of checking this, so we can still click on mass markers when popups are hidden
 - Nursing Effectiveness
+- Holder needed while downloading cached images from servers, and better handling if it fails
+- Stop showing data/searching in maps that are de-selected
+- Make a demo video and link through to home page(s)
+- Contact other ark server admin and see if we can get them to join in!
+- Include OR conditions in filter
+- Include exclusions in filter
+- Replace data storage internally with little db engine, speed up searching/better queries etc.

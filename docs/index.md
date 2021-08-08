@@ -13,7 +13,7 @@ It can see data about Wild Dinos, Tame Dinos and Suvivors. It will show you on a
 check out all the dino's stats, including HP, Melee, Stamina etc. - and even colours! So yes, you can search for your perfect green and red T-Rex and Arksplorer will show you
 exactly where to find it! Loose a dino somewhere? Maybe you can find it now :)
 
-Arksplorer also embeds/links through to Ark Gamepedia, Dododex, Arkbuddy, so you can quickly find more information about the dino's you are looking at, or look up other Ark
+Arksplorer also embeds/links through to [Ark Wiki](https://ark.fandom.com) on Fandom, [Dododex](https://www.dododex.com/) and [Arkbuddy](https://www.tristan.games/apps/arkbuddy/) web sites, so you can quickly find more information about the dino's you are looking at, or look up other Ark
 related information without having to open other web browsers.
 
 There is even an alarm system in there! Imprinting on dinos and need to go feed them every 12 minutes? Not a problem - it can remind you! Gatchas popping out crystals and
@@ -21,8 +21,9 @@ you need to go check every 14 minutes before they dissapear? Not a problem!
 
 ## Sounds great, what are the limitations?
 
-Unfortunatly the data in Arksplorer is only as up to date as the server it gets its data from. For the server this was developed against, it updated the data every 45 minutes.
-This is usually good enough for what we are using it for.
+Unfortunatly the data in Arksplorer is only as up to date as the server it gets its data from. For the server this was developed against, it updates the data every 50ish minutes.
+This is usually good enough for our purposes. How often it updates for you will be up to your server's admin. It does take server resource to do so don't expect them to
+be updating their data every 10 seconds :)
 
 ## Any other links?
 
@@ -36,6 +37,8 @@ If you want to find out more, want to know how to configure a server to set it u
 
 ## Support or Contact
 
-Best way to shout if you have any problems is to go to our facebook page above and ask there. If you want to use this, but it isn't set up on your server, then talk to your server administrator, and get them to sort things out first.
+If you want to use Arksplorer, but it isn't set up on your server, then talk to your server administrator, and get them to sort things out first.
 
-Please remember this is a free/spare time project, so any requests/etc. we will do when we get the chance :)
+Best way to shout us if you have any problems is to go to our [facebook page](https://facebook.com/arksplorer)ve and ask there.
+
+Please remember this is a free/spare time project, so any requests/etc. we are able to do will get done when we get the chance :)

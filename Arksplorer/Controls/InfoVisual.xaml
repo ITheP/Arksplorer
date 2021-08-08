@@ -37,7 +37,7 @@
                         <TextBlock x:Name="Lon" FontStyle="Italic" FontSize="14" VerticalAlignment="Center"  Margin="4,0,0,0"/>
                     </StackPanel>
                     <Grid>
-                        <Image x:Name="CreatureImage" Width="90" Height="120" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20,20,0,0"/>
+                        <Image x:Name="CreatureImage" Width="90" MaxHeight="120" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,5"/>
                         <ListView x:Name="InfoList" BorderThickness="0" Background="Transparent">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem">

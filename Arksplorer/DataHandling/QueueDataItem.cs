@@ -38,8 +38,9 @@ namespace Arksplorer
         /// <returns></returns>
         public async Task<int> GetDataAsync(string rawServerTimestamp, DateTime serverTimestamp, Dictionary<string, DataPackage> dataPackages, ServerConfig serverConfig, MainWindow mainWindow, bool forceLocalLoad)
         {
-            // Note we DON'T do any parallel loading of data from the server to help cut down on parallel server traffic. Lovely that we might
-            // download data for all maps at once - unless its eaten all the servers bandwidth and players are affected!
+            // Note we DON'T currently do any parallel loading of data from the server to help cut down on server traffic. Lovely that we might
+            // download data for all maps at once - but we don't want to eat into all the servers bandwidth and players are potentially affected! (E.g. web server is running on same pc as Ark Server)
+            // ToDo: Make this a config option to enable/disable parallel download
 
             try
             {
@@ -95,9 +96,11 @@ namespace Arksplorer
                 UIMapSelection.DisplayState = "...Decoding";
                 mainWindow.Dispatcher.Invoke(() => Globals.MainWindow.MapsToInclude.Items.Refresh());
 
-                DataTable newData = DataTableExtensions.AddToDataTable(result, MetaData.JsonClassType, mapName, MetaData, null);
-                MapPackage newMapPackage = new();
-                newMapPackage.Data = newData;
+                DataTablePlus newData = new(result, MetaData.JsonClassType, mapName, MetaData);
+                MapPackage newMapPackage = new()
+                {
+                    Data = newData
+                };
 
                 UIMapSelection.DisplayState = "Loaded";
                 mainWindow.Dispatcher.Invoke(() => Globals.MainWindow.MapsToInclude.Items.Refresh());
@@ -135,7 +138,7 @@ namespace Arksplorer
 
                 Debug.Print($"GetDataAsync CurrentDataPackage == dataPackage {mainWindow.CurrentDataPackage == dataPackage} to trigger visual refresh");
 
-                mainWindow.Dispatcher.Invoke(() => { mainWindow.MapData.ItemsSource = mainWindow.CurrentDataPackage?.IndividualMaps.ToList(); }); //THIS should work but doesnt visually --> if (CurrentDataPackage == dataPackage) ExtraInfoMapData.Items.Refresh(); });
+                mainWindow.Dispatcher.Invoke(() => { mainWindow.MapData.ItemsSource = mainWindow.CurrentDataPackage?.IndividualMaps.ToList(); }); //This SHOULD work but doesn't visually --> if (CurrentDataPackage == dataPackage) ExtraInfoMapData.Items.Refresh(); });
 
                 dataPackage.DataIsStale = true;
 

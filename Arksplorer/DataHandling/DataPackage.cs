@@ -9,7 +9,7 @@ namespace Arksplorer
 {
     public class DataPackage
     {
-        public DataTable Data { get; set; }
+        public DataTablePlus DataTable { get; set; }
         public MetaData Metadata { get; set; }
         public Dictionary<string, MapPackage> IndividualMaps { get; set; }
         public string MapsDescription { get; set; }
@@ -36,10 +36,12 @@ namespace Arksplorer
                 // which will throw an exception here. So we catch and handle this by trying again.
                 try
                 {
-                    Data = new DataTable();
+                    DataTable = new DataTablePlus();
 
                     // Set up copy of datatable structure only (no data)
-                    Data = IndividualMaps.First().Value.Data.Clone();
+                    var firstMap = IndividualMaps.First().Value;
+                    //dataTable = firstMap.Data.Clone();  // Also make sure ColumnPositions is populated
+                    DataTable = firstMap.Data.DeepCopy();
 
                     MapsDescription = $"Showing data for {Metadata.Description}s";
                     Debug.Print($"Map data for {Metadata.Description}s is made up of...");
@@ -48,7 +50,9 @@ namespace Arksplorer
                     {
                         MapPackage mapPackage = map.Value;
                         Debug.Print($"   {Metadata.ArkEntityType}.{map.Key} - {mapPackage.Data.Rows.Count}");
-                        Data.Merge(mapPackage.Data);
+
+                        // ToDo: Check this isnt remerging the now cloned dataset into itself!
+                        this.DataTable.Merge(mapPackage.Data);
                     }
 
                     success = true;
@@ -69,7 +73,7 @@ namespace Arksplorer
                 }
             }
 
-            Debug.Print($"...{Data.Rows.Count} total (took {attempts} attempts)");
+            Debug.Print($"...{this.DataTable.Rows.Count} total (took {attempts} attempts)");
 
             DataIsStale = false;
         }

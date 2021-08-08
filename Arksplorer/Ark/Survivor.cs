@@ -10,6 +10,9 @@ namespace Arksplorer
         public int GlobalIndex { get; set; }    // Make sure first property so indexed at [0]
         [JsonIgnore]
         public string Map { get; set; }         // Make sure second property so indexed at [1]
+        [JsonIgnore]
+        public DataTablePlus DataParent { get; set; }  // Make sure 3rd property so indexed at [2]
+
         public long PlayerId { get; set; }
         public string Steam { get; set; }
         public string Name { get; set; }

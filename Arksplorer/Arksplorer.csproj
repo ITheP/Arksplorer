@@ -58,6 +58,7 @@
     <None Remove="Servers.json" />
     <None Remove="Servers\Test.json" />
     <None Remove="temp.json" />
+    <None Remove="TEMP.txt" />
     <None Remove="temp.xlsx" />
   </ItemGroup>
 

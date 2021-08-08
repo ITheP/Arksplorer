@@ -28,6 +28,10 @@ namespace Arksplorer
         /// Common across all datasets
         /// </summary>
         public static int MapColumn { get; set; } = 1;
+        /// <summary>
+        /// Common across all datasets
+        /// </summary>
+        public static int DataColumn { get; set; } = 2;
 
         /// <summary>
         /// Global Index is a never repeating id for data, used for cross looking up rows across datasets.

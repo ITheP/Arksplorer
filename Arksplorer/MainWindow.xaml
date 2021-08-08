@@ -331,8 +331,8 @@
                                         <TextBox x:Name="FilterLevelNumber" Text="150" HorizontalAlignment="Stretch" Width="30" Margin="2,0,0,0" PreviewTextInput="FilterLevelNumber_PreviewTextInput" DataObject.Pasting="FilterLevelNumber_Pasting" />
                                         <StackPanel Orientation="Horizontal">
                                             <!--<CheckBox x:Name="ShowSameType" Content="Show matching" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" Click="ShowSameType_Click" ToolTip="Shows markers for all dinos/creatures etc. matching the type you select" />-->
-                                            <CheckBox x:Name="ShowPopups" Content="Popups" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" ToolTip="Show popup information under pointer"/>
-                                            <CheckBox x:Name="IncludeDetailsInPopUps" Content="Details" Margin="8,2,0,2" VerticalAlignment="Center" ToolTip="Shows extra details in popup information" />
+                                            <CheckBox x:Name="ShowPopups" Content="Popups" Margin="8,2,0,2" VerticalAlignment="Center" IsChecked="True" ToolTip="Show popup information under pointer" Click="ShowPopups_Click"/>
+                                            <CheckBox x:Name="IncludeDetailsInPopUps" Content="Details" Margin="8,2,0,2" VerticalAlignment="Center" ToolTip="Shows extra details in popup information" Click="IncludeDetailsInPopUps_Click" />
                                         </StackPanel>
                                         <ComboBox x:Name="ShowMatchesType" Width="130" Margin="8,0,0,0" SelectedValuePath="Tag" SelectionChanged="ShowMatchesType_SelectionChanged" ToolTip="Show other creatures on map matching selected">
                                             <ComboBoxItem Content="No matches" Tag="0"/>
@@ -374,8 +374,10 @@
                                     </StackPanel>
                                     <StackPanel Margin="35,4,4,0" Orientation="Horizontal">
                                         <Button x:Name="FilterMap" Content="Map" Padding="8,0" Click="ButtonFilter_Click" MouseRightButtonUp="ButtonFilter_MouseRightButtonUp" ToolTip="Apply this map to the filter. Right click to add to current."/>
-                                        <Button x:Name="FilterTribe" Content="Tribe" Padding="8,0" Margin="8,0,0,0" Click="ButtonFilter_Click" MouseRightButtonUp="ButtonFilter_MouseRightButtonUp" ToolTip="Apply this tribe to the filter. Right click to add to current."/>
                                         <Button x:Name="FilterCreature" Content="Creature" Margin="8,0,0,0" Padding="8,0" Click="ButtonFilter_Click" MouseRightButtonUp="ButtonFilter_MouseRightButtonUp" ToolTip="Apply this creature to the filter. Right click to add to current."/>
+                                        <Button x:Name="FilterTribe" Content="Tribe" Padding="8,0" Margin="8,0,0,0" Click="ButtonFilter_Click" MouseRightButtonUp="ButtonFilter_MouseRightButtonUp" ToolTip="Apply this tribe to the filter. Right click to add to current."/>
+                                        <Button x:Name="FilterTamer" Content="Tamer" Padding="8,0" Margin="8,0,0,0" Click="ButtonFilter_Click" MouseRightButtonUp="ButtonFilter_MouseRightButtonUp" ToolTip="Apply this tamer to the filter. Right click to add to current."/>
+                                        <Button x:Name="FilterImprinter" Content="Imprinter" Padding="8,0" Margin="8,0,0,0" Click="ButtonFilter_Click" MouseRightButtonUp="ButtonFilter_MouseRightButtonUp" ToolTip="Apply this imprinter to the filter. Right click to add to current."/>
                                     </StackPanel>
                                 </StackPanel>
 
@@ -385,6 +387,7 @@
                                             <Button x:Name="ShowSecondDataVisual" Content="&#xE70E;" Height="20" Margin="0" Style="{StaticResource IconButton}" Click="ShowSecondDataVisual_Click" />
                                             <Button x:Name="CopyToSecondDataVisual" Margin="8,0,0,0" Width="75" Content="Copy Data" Click="CopyToSecondDataVisual_Click" />
                                         </StackPanel>
+                                        <TextBlock x:Name="DataVisualType" FontWeight="Bold" HorizontalAlignment="Center"/>
                                         <TextBlock x:Name="DataVisualCount" HorizontalAlignment="Right"/>
                                     </Grid>
 
