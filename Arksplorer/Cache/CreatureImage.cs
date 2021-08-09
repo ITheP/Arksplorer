@@ -40,7 +40,9 @@ namespace Arksplorer.Caches
         public static BitmapImage RequestImage(string creatureName)
         {
             // File/internet need to load async, and populate at a later point when loading is complete.
-            // NOTE: Setting image source to a URL should auto-load the file form the internet
+            // NOTE: Setting image source to a URL should auto-load the file from the internet
+
+            // Right now we are only using this with Dododex, so is slightly specific to this at this time.
 
             // dododex wants lower case creature names + no spaces
             creatureName = creatureName.Replace(" ", "").ToLower();

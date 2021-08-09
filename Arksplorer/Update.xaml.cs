@@ -36,7 +36,7 @@ namespace Arksplorer
 
             e.Handled = true;
 
-            // We quick out of things if we are downloading the update itself
+            // We quit out of things if we are downloading the update itself
             if (url.EndsWith(".zip"))
                 Application.Current.Shutdown();
         }

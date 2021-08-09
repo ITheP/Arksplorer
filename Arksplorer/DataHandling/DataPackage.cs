@@ -40,7 +40,7 @@ namespace Arksplorer
 
                     // Set up copy of datatable structure only (no data)
                     var firstMap = IndividualMaps.First().Value;
-                    //dataTable = firstMap.Data.Clone();  // Also make sure ColumnPositions is populated
+                    // Following only copies structure + ColumnPositions etc. - doesn't copy rows of data. This will be handled in the foreach below, which also adds this maps data.
                     DataTable = firstMap.Data.DeepCopy();
 
                     MapsDescription = $"Showing data for {Metadata.Description}s";

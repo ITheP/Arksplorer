@@ -11,6 +11,7 @@ namespace Arksplorer
         public string Map { get; set; }         // Make sure second property so indexed at [1]
         [JsonIgnore]
         public DataTablePlus DataParent { get; set; }  // Make sure 3rd property so indexed at [2]
+
         [JsonIgnore]
         public string Creature { get; set; }
         [JsonPropertyName("creature")]

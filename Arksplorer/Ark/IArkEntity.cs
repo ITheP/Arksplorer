@@ -9,13 +9,14 @@ namespace Arksplorer
         /// </summary>
         public int GlobalIndex { get; set; }
         /// <summary>
-        /// Map this instance appears on. ALWAYS SET AS FIRST VALUE IN CLASS DEFINITION SO WILL BE INDEXED AS [1]
+        /// Map this instance appears on. ALWAYS SET AS SECOND VALUE IN CLASS DEFINITION SO WILL BE INDEXED AS [1]
         /// </summary>
         public string Map { get; set; }
         /// <summary>
-        /// Reference back to complete source data this row comes from (to get column Positioning references etc. later)
+        /// Reference back to complete source data this row comes from (to get column Positioning references etc. later). ALWAYS SET AS THIRD VALUE IN CLASS DEFINITION SO WILL BE INDEXED AS [2]
         /// </summary>
         public DataTablePlus DataParent { get; set; }
+
         public float Lat { get; set; }
         public float Lon { get; set; }
     }

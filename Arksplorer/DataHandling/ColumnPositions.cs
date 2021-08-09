@@ -53,6 +53,9 @@ namespace Arksplorer
             // ...Always 0, set in Globals
             //MapColumn = data.Columns["Map"]?.Ordinal ?? -1;
             // ...Always 1, set in Globals
+            //DataSourceColumn = data.Columns["DataSource"]?.Ordinal ?? -1;
+            // ...Always 2, set in Globals
+
             LatColumn = data.Columns["Lat"]?.Ordinal ?? -1;
             LonColumn = data.Columns["Lon"]?.Ordinal ?? -1;
             CreatureIdColumn = data.Columns["CreatureId"]?.Ordinal ?? -1;
@@ -68,7 +71,7 @@ namespace Arksplorer
             C3Column = data.Columns["C3"]?.Ordinal ?? -1;
             C4Column = data.Columns["C4"]?.Ordinal ?? -1;
             C5Column = data.Columns["C5"]?.Ordinal ?? -1;
-            // Ark has some W variants of columns in wild vs tame. We just re-use below for either as we dont care
+            // Ark has some W variants of columns in wild vs tame. We just re-use below for either as we dont care about the name, equivalents
             HpColumn = data.Columns["Hp"]?.Ordinal ?? data.Columns["HpW"]?.Ordinal ?? -1;
             StamColumn = data.Columns["Stam"]?.Ordinal ?? data.Columns["StamW"]?.Ordinal ?? -1;
             MeleeColumn = data.Columns["Melee"]?.Ordinal ?? data.Columns["MeleeW"]?.Ordinal ?? -1;

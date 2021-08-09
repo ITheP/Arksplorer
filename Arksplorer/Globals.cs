@@ -23,15 +23,15 @@ namespace Arksplorer
         /// <summary>
         /// Common across all datasets
         /// </summary>
-        public static int GlobalIndexColumn { get; set; } = 0;
+        public static int StaticColumnIndex_GlobalIndex { get; set; } = 0;
         /// <summary>
         /// Common across all datasets
         /// </summary>
-        public static int MapColumn { get; set; } = 1;
+        public static int StaticColumnIndex_Map { get; set; } = 1;
         /// <summary>
         /// Common across all datasets
         /// </summary>
-        public static int DataColumn { get; set; } = 2;
+        public static int StaticColumnIndex_DataSource { get; set; } = 2;
 
         /// <summary>
         /// Global Index is a never repeating id for data, used for cross looking up rows across datasets.

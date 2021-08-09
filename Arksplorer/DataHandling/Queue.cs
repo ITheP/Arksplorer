@@ -131,6 +131,7 @@ namespace Arksplorer
 
                     // Even if nothing was loaded, if it's a different type of dino, we still want to `show things` - so always update here
                     mainWindow.ShowData(type, autoUpdateVisualDataGrid);
+
                     //   Mouse.OverrideCursor = PrevCursor;
                 });
 

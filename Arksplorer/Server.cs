@@ -71,7 +71,7 @@ namespace Arksplorer
 
             foreach (RawServerMaps map in serverData.Maps)
             {
-                // e.g. <http://wiredcat.hopto.org/WiredcatRagnarok/><timestamp.json>
+                // e.g. http://wiredcat.hopto.org/WiredcatRagnarok/timestamp.json
                 //string url = Path.Combine(map.BaseUrl, serverData.TimestampFilename);
                 //Uris.Add($"{map.Name}.timestamp", new Uri(url));
 
@@ -80,7 +80,7 @@ namespace Arksplorer
                     // e.g. <Ragnarok>.<WildDinos>
                     string key = $"{map.Name}.{type.Name}".ToLower();
 
-                    // e.g.<http://wiredcat.hopto.org/WiredcatRagnarok/><Wild.json>
+                    // e.g. http://wiredcat.hopto.org/WiredcatRagnarok/Wild.json
                     string url = Path.Combine(map.BaseUrl, type.Filename);
                     Uris.Add(key, new Uri(url));
                 }

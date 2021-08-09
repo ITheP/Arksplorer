@@ -6,26 +6,16 @@ using System.Windows.Shell;
 
 namespace Arksplorer
 {
-    //public class DataRow : DataRow
-    //{
-    //    new DataTablePlus Table { get; set; }
-
-    //    public DataRow(DataRowBuilder builder) : base(builder)
-    //    {
-
-    //    }
-    //}
 
     // Note: Did try extending DataTable + DataRows so ColumnPositions could be stored directly on a row.DataTable.ColumnPositions basis, save a lot of faffing around. However
     // there were problems, especially when it came to DataRowViews and casting back to get at ColumnPositions. After not working, research seems to show
-    // that it can't work that way (due to protection levels of system classes). So to get a reference from a row back to what the column definitions are,
-    // we just set another system value on each row that points back to a DataTablePlus, which includes ColumnPositions.
-    // Reminder that when doing things like spawning Popups from mouseover of row data, we don't know what type of row this is to get relevant ColumnPositions, without storing a reference somewhere to it via the row.
-    // This is what this faffing around is for.
+    // that it can't work the way we hoped (due to protection levels of system classes etc.). So to get a reference from a row back to what the column definitions are,
+    // we just set another value on each row that points back to a DataTablePlus, which includes ColumnPositions.
+    // Reminder that when doing things like spawning Popups from mouseover of row data, we don't know what type of row this is to get relevant ColumnPositions, without storing a reference somewhere to it directly on the row.
+    // This is what this faffing around is for. (We could also keep track of selected dataset types and monitor where mouseovers are coming from, do it that way, but less flexible and still a faff).
     // Might try again another day!
 
-
-    public class DataTablePlus : DataTable //Extensions
+    public class DataTablePlus : DataTable
     {
         /// <summary>
         /// Direct mappings for specific column indexes to certain types of Ark Data (quicker to use these than re-looking up column indexes all the time)
@@ -87,16 +77,11 @@ namespace Arksplorer
                 }
             }
 
-            // Note references to DataDefinition won't be populated yet, comes later after this data table is populated
-
             // Add columns to DataTable, using our types properties for each column
             foreach (PropertyDescriptor property in properties)
                 this.Columns.Add(property.Name, property.PropertyType);
 
             this.ColumnPositions = new ColumnPositions(this);
-
-            //foreach (var item in arkData)
-            //    ((IArkEntity)item).Data = data;
 
             int numColumns = properties.Count;
             object[] columns = new object[numColumns];

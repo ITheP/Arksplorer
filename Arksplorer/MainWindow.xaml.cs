@@ -1210,7 +1210,7 @@ namespace Arksplorer
                 SplashImage.Source = null;
             }
 
-            string mapName = (string)entity[Globals.MapColumn];
+            string mapName = (string)entity[Globals.StaticColumnIndex_Map];
             if (mapName != CurrentMapImage)
             {
                 MapImage.Source = LoadMapImage(mapName);
@@ -1337,7 +1337,7 @@ namespace Arksplorer
 
             // BUT we only show if we are looking at the correct map!
             // We still set up the second marker, in case the map changes and we can show it
-            SecondMarkerMap = (string)entity[Globals.MapColumn];
+            SecondMarkerMap = (string)entity[Globals.StaticColumnIndex_Map];
             TryShowSecondMarker();
 
         }
@@ -1735,7 +1735,7 @@ namespace Arksplorer
                     for (int i = 0; i < count; i++)
                     {
                         destRow = ((DataRowView)DataVisual.Items[i]).Row;
-                        if (srcGlobalIndex == (int)destRow.ItemArray[Globals.GlobalIndexColumn])
+                        if (srcGlobalIndex == (int)destRow.ItemArray[Globals.StaticColumnIndex_GlobalIndex])
                         {
                             DataVisual.SelectedIndex = i;
                             DataVisual.ScrollIntoView(DataVisual.SelectedItem);

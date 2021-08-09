@@ -5,7 +5,6 @@ using System.Windows.Media;
 
 namespace Arksplorer
 {
-
     public static class Lookup
     {
         public static void LoadDataFromLookupFiles()

@@ -5,8 +5,9 @@ namespace Arksplorer
 {
     public static class Audio
     {
-        //Problems with MediaPlayer not playing. Not sure why! To retry with a different mp3?
-        //private MediaPlayer Player { get; set; } = new();
+        // Using SoundPlayer due to problems with MediaPlayer not playing. Not sure why! To retry with a different mp3?
+        // private MediaPlayer Player { get; set; } = new();
+
         private static SoundPlayer Player { get; set; } = new();
         private const string Extention = ".wav";
 
