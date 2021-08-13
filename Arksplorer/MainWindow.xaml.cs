@@ -586,118 +586,144 @@ namespace Arksplorer
 
                 if (!string.IsNullOrWhiteSpace(trimmed))
                 {
-                    if (trimmed.Contains("="))
+                    // Parts may include
+                    // |/+/OR OR clauses
+                    // -/! NOT clauses
+
+                    //   if (trimmed.Contains('+'))
+
+                    string[] subParts = trimmed.Split("|");
+                    string result = null;
+
+                    foreach (var subPart in subParts)
                     {
-                        if (dataPackage.Metadata.IncludesColors)
+                        trimmed = subPart.Trim();
+
+                        if (!string.IsNullOrWhiteSpace(trimmed))
                         {
-                            // Check for special case colour filters
-                            // C0=, C1=, C2=, C3=, C4=, C5=, CAll=
-
-                            // Find requested color id -> get ArkColor -> get sort index -> search for colours +/- how close we want a match
-
-                            string[] subParts = trimmed.Split("=");
-                            if (subParts.Length == 2)
+                            if (trimmed.Contains("="))
                             {
-                                string instruction = subParts[0];
-                                string colorId = subParts[1];
-
-                                if (int.TryParse(colorId, out int colorIndex))
+                                if (dataPackage.Metadata.IncludesColors)
                                 {
-                                    ArkColor color = Lookup.FindColor(colorIndex);
-                                    if (color != null)
+                                    // Check for special case colour filters
+                                    // C0=, C1=, C2=, C3=, C4=, C5=, CAll=
+
+                                    // Find requested color id -> get ArkColor -> get sort index -> search for colours +/- how close we want a match
+
+                                    string[] colorParts = trimmed.Split("=");
+                                    if (colorParts.Length == 2)
                                     {
-                                        int sortIndex = color.SortOrder;
-                                        int closeness = int.Parse((string)FilterColorCloseness.SelectedValue);
+                                        string instruction = colorParts[0];
+                                        string colorId = colorParts[1];
 
-                                        string colorFilter = string.Empty;
-
-
-                                        if (instruction == "CAll")
+                                        if (int.TryParse(colorId, out int colorIndex))
                                         {
-                                            if (closeness == 0)
+                                            ArkColor color = Lookup.FindColor(colorIndex);
+                                            if (color != null)
                                             {
-                                                // Exact matches only
-                                                colorFilter = $"(" +
-                                                    $"(C0_Sort = {sortIndex}) OR " +
-                                                    $"(C1_Sort = {sortIndex}) OR " +
-                                                    $"(C2_Sort = {sortIndex}) OR " +
-                                                    $"(C3_Sort = {sortIndex}) OR " +
-                                                    $"(C4_Sort = {sortIndex}) OR " +
-                                                    $"(C5_Sort = {sortIndex})" +
-                                                    ")";
+                                                int sortIndex = color.SortOrder;
+                                                int closeness = int.Parse((string)FilterColorCloseness.SelectedValue);
+
+                                                string colorFilter = string.Empty;
+
+
+                                                if (instruction == "CAll")
+                                                {
+                                                    if (closeness == 0)
+                                                    {
+                                                        // Exact matches only
+                                                        colorFilter = $"(" +
+                                                            $"(C0_Sort = {sortIndex}) OR " +
+                                                            $"(C1_Sort = {sortIndex}) OR " +
+                                                            $"(C2_Sort = {sortIndex}) OR " +
+                                                            $"(C3_Sort = {sortIndex}) OR " +
+                                                            $"(C4_Sort = {sortIndex}) OR " +
+                                                            $"(C5_Sort = {sortIndex})" +
+                                                            ")";
+                                                    }
+                                                    else
+                                                    {
+                                                        colorFilter = $"(" +
+                                                            $"(C0_Sort >= {sortIndex - closeness} AND C0_Sort <= {sortIndex + closeness}) OR " +
+                                                            $"(C1_Sort >= {sortIndex - closeness} AND C1_Sort <= {sortIndex + closeness}) OR " +
+                                                            $"(C2_Sort >= {sortIndex - closeness} AND C2_Sort <= {sortIndex + closeness}) OR " +
+                                                            $"(C3_Sort >= {sortIndex - closeness} AND C3_Sort <= {sortIndex + closeness}) OR " +
+                                                            $"(C4_Sort >= {sortIndex - closeness} AND C4_Sort <= {sortIndex + closeness}) OR " +
+                                                            $"(C5_Sort >= {sortIndex - closeness} AND C5_Sort <= {sortIndex + closeness})" +
+                                                            ")";
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (closeness == 0)
+                                                    {
+                                                        // Exact matches only
+                                                        switch (instruction)
+                                                        {
+                                                            case "C0":
+                                                            case "C1":
+                                                            case "C2":
+                                                            case "C3":
+                                                            case "C4":
+                                                            case "C5":
+                                                                colorFilter = $"({instruction}_Sort = {sortIndex})";
+                                                                break;
+                                                            default:
+                                                                MessageBox.Show($"Unknown colour component '{instruction}' to search in", "Unknown colour component", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                                                break;
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        // Exact matches only
+                                                        switch (instruction)
+                                                        {
+                                                            case "C0":
+                                                            case "C1":
+                                                            case "C2":
+                                                            case "C3":
+                                                            case "C4":
+                                                            case "C5":
+                                                                colorFilter = $"({instruction}_Sort >= {sortIndex - closeness} AND {instruction}_Sort <= {sortIndex + closeness})";
+                                                                break;
+                                                            default:
+                                                                MessageBox.Show($"Unknown colour component '{instruction}' to search in", "Unknown colour component", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                                                break;
+                                                        }
+                                                    }
+                                                }
+
+                                                if (!string.IsNullOrWhiteSpace(colorFilter))
+                                                {
+                                              //      result = $"({(result == null ? string.Empty : " OR ")}{colorFilter})";
+                                                    result = $"{(result == null ? string.Empty : $"{result} OR ")}{colorFilter}";
+                                                    //result += $"{separator}({colorFilter})";
+                                                    //separator = " AND ";
+                                                }
                                             }
                                             else
                                             {
-                                                colorFilter = $"(" +
-                                                    $"(C0_Sort >= {sortIndex - closeness} AND C0_Sort <= {sortIndex + closeness}) OR " +
-                                                    $"(C1_Sort >= {sortIndex - closeness} AND C1_Sort <= {sortIndex + closeness}) OR " +
-                                                    $"(C2_Sort >= {sortIndex - closeness} AND C2_Sort <= {sortIndex + closeness}) OR " +
-                                                    $"(C3_Sort >= {sortIndex - closeness} AND C3_Sort <= {sortIndex + closeness}) OR " +
-                                                    $"(C4_Sort >= {sortIndex - closeness} AND C4_Sort <= {sortIndex + closeness}) OR " +
-                                                    $"(C5_Sort >= {sortIndex - closeness} AND C5_Sort <= {sortIndex + closeness})" +
-                                                    ")";
+                                                MessageBox.Show($"Unknown Ark colour Id '{colorId}' to search for", "Unknown colour Id", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                                             }
                                         }
-                                        else
-                                        {
-                                            if (closeness == 0)
-                                            {
-                                                // Exact matches only
-                                                switch (instruction)
-                                                {
-                                                    case "C0":
-                                                    case "C1":
-                                                    case "C2":
-                                                    case "C3":
-                                                    case "C4":
-                                                    case "C5":
-                                                        colorFilter = $"({instruction}_Sort = {sortIndex})";
-                                                        break;
-                                                    default:
-                                                        MessageBox.Show($"Unknown colour component '{instruction}' to search in", "Unknown colour component", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                                                        break;
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                // Exact matches only
-                                                switch (instruction)
-                                                {
-                                                    case "C0":
-                                                    case "C1":
-                                                    case "C2":
-                                                    case "C3":
-                                                    case "C4":
-                                                    case "C5":
-                                                        colorFilter = $"({instruction}_Sort >= {sortIndex - closeness} AND {instruction}_Sort <= {sortIndex + closeness})";
-                                                        break;
-                                                    default:
-                                                        MessageBox.Show($"Unknown colour component '{instruction}' to search in", "Unknown colour component", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                                                        break;
-                                                }
-                                            }
-                                        }
-
-                                        if (!string.IsNullOrWhiteSpace(colorFilter))
-                                        {
-                                            finalFilter += $"{separator}({colorFilter})";
-                                            separator = " AND ";
-                                        }
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show($"Unknown Ark colour Id '{colorId}' to search for", "Unknown colour Id", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                                     }
                                 }
+                                // Ignore if entity doesn't include colours
+                            }
+                            else
+                            {
+                                result = $"{(result == null ? string.Empty : $"{result} OR ")}({filter.Replace("#", trimmed)})";
+
+                                //finalFilter += $"{separator}({filter.Replace("#", trimmed)})";
+                                //separator = " AND ";
                             }
                         }
-                        // Ignore if entity doesn't include colours
                     }
-                    else
-                    {
 
-                        finalFilter += $"{separator}({filter.Replace("#", trimmed)})";
+                    if (!string.IsNullOrWhiteSpace(result))
+                    {
+                        finalFilter += $"{separator}{result}";
                         separator = " AND ";
                     }
                 }
@@ -810,7 +836,13 @@ namespace Arksplorer
             string currentText = FilterCriteria.Text;
 
             if (append && !string.IsNullOrWhiteSpace(currentText))
-                FilterCriteria.Text = $"{currentText}, {text}";
+            {
+                // If we already have a , at the end, don't add another one
+                if (currentText.TrimEnd().EndsWith(","))
+                    FilterCriteria.Text = $"{currentText.TrimEnd()} {text}";
+                else
+                    FilterCriteria.Text = $"{currentText}, {text}";
+            }
             else
                 FilterCriteria.Text = text;
         }
@@ -1862,13 +1894,13 @@ namespace Arksplorer
             if (SecondDataVisual.Visibility == Visibility.Collapsed)
             {
                 SecondDataVisual.Visibility = Visibility.Visible;
-                ShowSecondDataVisual.Content = "\xE70D";
+                ShowSecondDataVisual.Content = "\xE70E";
                 TryShowSecondMarker();
             }
             else
             {
                 SecondDataVisual.Visibility = Visibility.Collapsed;
-                ShowSecondDataVisual.Content = "\xE70E";
+                ShowSecondDataVisual.Content = "\xE70D";
                 SecondMarker.Visibility = Visibility.Collapsed;
             }
         }
@@ -1877,7 +1909,7 @@ namespace Arksplorer
         {
             SecondDataVisual.DataContext = DataVisual.DataContext;
             SecondDataVisual.Visibility = Visibility.Visible;
-            ShowSecondDataVisual.Content = "\xE70D";
+            ShowSecondDataVisual.Content = "\xE70E";
         }
 
         private void ShowMatchesType_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1899,7 +1931,7 @@ namespace Arksplorer
                 RemoveMassMarkers();
             else
             {
-                Info.ShowMassMarkers(LastSelected_CreatureId,LastSelected_Map, dataTable, MassMarkerHolder, selectedMatchesType);
+                Info.ShowMassMarkers(LastSelected_CreatureId, LastSelected_Map, dataTable, MassMarkerHolder, selectedMatchesType);
             }
 
         }

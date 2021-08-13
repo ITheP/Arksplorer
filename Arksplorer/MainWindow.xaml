@@ -319,7 +319,7 @@
 
                                         <DockPanel>
                                             <ComboBox x:Name="FilterCriteriaHistory" IsEditable="False" HorizontalAlignment="Stretch" DockPanel.Dock="Right" Margin="-1,0,0,0" Width="20" SelectionChanged="FilterCriteria_SelectionChanged" ToolTip="Filter criteria history"/>
-                                            <TextBox x:Name="FilterCriteria" HorizontalAlignment="Stretch" KeyDown="FilterCriteria_KeyDown" ToolTip="Filter criteria. Multiple criteria possible, just use , separation!"/>
+                                            <TextBox x:Name="FilterCriteria" HorizontalAlignment="Stretch" KeyDown="FilterCriteria_KeyDown" ToolTip="Filter criteria. Multiple criteria possible, just use , separation. Can include `OR` clauses using | between filter terms. E.g. Rag | Ext, Argent | Dodo ... Will look for Argentavis or Dodo matches on Ragnarock or Extinction"/>
                                         </DockPanel>
                                     </DockPanel>
                                     <WrapPanel Margin="35,4,4,0" Orientation="Horizontal">
@@ -384,7 +384,7 @@
                                 <StackPanel x:Name="SecondDataVisualHolder" DockPanel.Dock="Bottom" Margin="0,4,0,0">
                                     <Grid>
                                         <StackPanel Orientation="Horizontal">
-                                            <Button x:Name="ShowSecondDataVisual" Content="&#xE70E;" Height="20" Margin="0" Style="{StaticResource IconButton}" Click="ShowSecondDataVisual_Click" />
+                                            <Button x:Name="ShowSecondDataVisual" Content="&#xE70D;" Height="20" Margin="0" Style="{StaticResource IconButton}" Click="ShowSecondDataVisual_Click" />
                                             <Button x:Name="CopyToSecondDataVisual" Margin="8,0,0,0" Width="75" Content="Copy Data" Click="CopyToSecondDataVisual_Click" />
                                         </StackPanel>
                                         <TextBlock x:Name="DataVisualType" FontWeight="Bold" HorizontalAlignment="Center"/>

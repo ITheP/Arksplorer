@@ -167,6 +167,7 @@ v1.6.1 - The Fluffy Feather
 - Added extra filter quick buttons amd changed their order
 - Creature type dataset labeling for results view
 - Popups display from different creature types in main/secondary results areas
+- Filter allows for OR statements using | separator, e.g. Rag | Ext, Argent | Dodo ...Argentavis or Dodo's on Ragnarock or Extinction. Works wit
 
 ToDo:
 - Loading status not using WPF bound updates, cheaty refresh method used. Nice to do this properly.
