@@ -1931,7 +1931,13 @@ namespace Arksplorer
                 RemoveMassMarkers();
             else
             {
-                Info.ShowMassMarkers(LastSelected_CreatureId, LastSelected_Map, dataTable, MassMarkerHolder, selectedMatchesType);
+                Info.ShowMassMarkers
+                    (LastSelected_CreatureId,
+                    LastSelected_Map,
+                    dataTable,
+                    MassMarkerHolder,
+                    (MassMarkerColouring)(((int)selectedMatchesType) % 10),
+                    (selectedMatchesType >= MassMarkerType.AllColours ? true : false));
             }
 
         }

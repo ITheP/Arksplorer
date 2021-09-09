@@ -338,6 +338,8 @@
                                             <ComboBoxItem Content="No matches" Tag="0"/>
                                             <ComboBoxItem Content="Similar + Colours" Tag="1"/>
                                             <ComboBoxItem Content="Similar + Sex/Level" IsSelected="True" Tag="2"/>
+                                            <ComboBoxItem Content="All + Colours" Tag="11"/>
+                                            <ComboBoxItem Content="All + Sex/Level" Tag="12"/>
                                         </ComboBox>
                                     </WrapPanel>
                                     <StackPanel Margin="35,4,4,0" Orientation="Horizontal">
@@ -448,6 +450,8 @@
                                             <LineBreak/>
                                             produces the data we feed on
                                             <LineBreak/>
+                                            <Run FontWeight="Bold">Dododex</Run> for the use of dino images
+                                            <LineBreak/>
                                             <LineBreak/>
                                             <Run FontWeight="Bold">Scully</Run>, <Run FontWeight="Bold">Ward</Run> and <Run FontWeight="Bold">Rrran</Run> who first tried this out
                                             <LineBreak/>
@@ -459,9 +463,6 @@
                                             <Run FontWeight="Bold">Kokow</Run>, <Run FontWeight="Bold">Ray</Run>, <Run FontWeight="Bold">EcStAsY</Run>,
                                             <LineBreak/>
                                             and the rest of you!
-                                            <LineBreak/>
-                                            <LineBreak/>
-                                            Also <Run FontWeight="Bold">danlev</Run> for help linking to his awesome Dododex :)
                                         </TextBlock>
                                     </Viewbox>
                                 </Grid>

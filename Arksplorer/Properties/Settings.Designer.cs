@@ -190,5 +190,14 @@ namespace Arksplorer.Properties {
                 this["ShowMatchesType"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("512")]
+        public int MassMarkerMaxNonSelectedCreatureCount {
+            get {
+                return ((int)(this["MassMarkerMaxNonSelectedCreatureCount"]));
+            }
+        }
     }
 }

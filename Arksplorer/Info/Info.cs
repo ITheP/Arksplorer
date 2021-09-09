@@ -1,5 +1,7 @@
 ﻿using Arksplorer;
+using Arksplorer.Properties;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Reflection.Emit;
 using System.Windows.Controls;
@@ -172,11 +174,24 @@ namespace Arksplorer
         }
 
         // ToDo: Regeneration of extra info all the time is a needless overhead. Cache once generated and reuse?
-        public static void ShowMassMarkers(string creatureId, string mapName, DataTable data, Grid massMarkerHolder, MassMarkerType colourType)
+
+        /// <summary>
+        /// Handling mass markers does allow for all creatures on a map to be displayed, but so croweded you cant really see anything. Will only show first e.g. 512 dinos of non selected type.
+        /// </summary>
+        /// <param name="creatureId"></param>
+        /// <param name="mapName"></param>
+        /// <param name="data"></param>
+        /// <param name="massMarkerHolder"></param>
+        /// <param name="colourType"></param>
+        /// <param name="showAll"></param>
+        public static void ShowMassMarkers(string creatureId, string mapName, DataTable data, Grid massMarkerHolder, MassMarkerColouring colourType, bool showAll)
         {
             RemoveMassMarkers(massMarkerHolder);    // Make sure any previous markers are no longer there
 
-            if (string.IsNullOrWhiteSpace(creatureId) || string.IsNullOrWhiteSpace(mapName))
+            if (!showAll && string.IsNullOrWhiteSpace(creatureId))
+                return;
+
+            if (string.IsNullOrWhiteSpace(mapName))
                 return;
 
             if (data == null)
@@ -192,12 +207,14 @@ namespace Arksplorer
                 return;
 
             double lat, lon;
+            int nonSelectedCount = 0;
+            int MaxNonSelectedCount = Settings.Default.MassMarkerMaxNonSelectedCreatureCount;
 
             foreach (DataRow row in data.Rows)
             {
                 if ((string)row[Globals.StaticColumnIndex_Map] == mapName)
                 {
-                    if ((string)row[columnPositions.CreatureIdColumn] == creatureId)
+                    if ((string)row[columnPositions.CreatureIdColumn] == creatureId || (showAll && nonSelectedCount++ < MaxNonSelectedCount))   // nonSelectedCount will only increase if creature id doesnt match (only evaluates if creatureId doesn't match)
                     {
                         lat = (float)row[columnPositions.LatColumn];
                         lon = (float)row[columnPositions.LonColumn];
@@ -205,6 +222,8 @@ namespace Arksplorer
                         if (lat > -1 && lon > -1)
                         {
                             Info info = new(row);
+
+                            // ToDo: Cache info on extra field in row so only generated once when required
 
                             double yPos = lat - 50.0f;
                             double xPos = lon - 50.0f;
@@ -230,11 +249,11 @@ namespace Arksplorer
         private static System.Windows.Point GradientStartPoint = new System.Windows.Point(0.5, 0);
         private static System.Windows.Point GradientEndPoint = new System.Windows.Point(0.5, 1);
 
-        public static void SetMassMarkerColour(Rectangle rectangle, Info info, MassMarkerType colourType)
+        public static void SetMassMarkerColour(Rectangle rectangle, Info info, MassMarkerColouring colourType)
         {
             switch (colourType)
             {
-                case MassMarkerType.Sex:
+                case MassMarkerColouring.Sex:
                     double levelPerc = info.Level / 150.0d; // e.g. 120 out of max 150 = 80% <-- this will need to become dynamic e.g. if its a Tek dino and max wild level is 180
                     if (levelPerc > 1.0)
                         levelPerc = 1.0;
@@ -247,7 +266,7 @@ namespace Arksplorer
                     rectangle.StrokeThickness = 0.2;
 
                     break;
-                case MassMarkerType.Colours:
+                case MassMarkerColouring.Colours:
                     GradientStopCollection gradientStops = new();
 
                     if (info.C0 != null)
