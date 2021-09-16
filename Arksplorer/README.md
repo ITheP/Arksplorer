@@ -171,6 +171,9 @@ v1.6.1 - The Fluffy Feather
 - Popups display from different creature types in main/secondary results areas
 - Filter allows for OR statements using | separator, e.g. Rag | Ext, Argent | Dodo ...Argentavis or Dodo's on Ragnarock or Extinction
 
+v1.6.2 - The Fallen Feather
+- Updated some of the Help information
+
 ToDo:
 - Loading status not using WPF bound updates, cheaty refresh method used. Nice to do this properly.
 - if (CurrentRectanglePopUpInfo != null) <-- need a different way of checking this, so we can still click on mass markers when popups are hidden

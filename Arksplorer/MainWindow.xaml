@@ -573,6 +573,12 @@
                                     Other Artwork (c) respective artists - used in good faith under Creative Commons CC BY-NC-SA 3.0 License.
                                     Please check <Hyperlink NavigateUri="https://ark.gamepedia.com/" RequestNavigate="HandleLinkClick">ark.gamepedia.com</Hyperlink> for extra details.
                                     If you believe any content infringes on anything, or would like a credit adding, please contact and we will happily update accordingly!
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    A huge thanks goes out to Dododex who gave us permission to use their Dino images. We don't actually copy the images, they are loaded in when required, and cached locally to reduce bandwidth usage.
+                                    <LineBreak/>
+                                    <LineBreak/>
+                                    Arksplorer is given away free of charge. You should not be paying anything for it!
                                 </TextBlock>
                             </StackPanel>
                         </ScrollViewer>
