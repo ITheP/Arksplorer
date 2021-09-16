@@ -7,6 +7,8 @@ Arksplorer is an Ark: Survival Evolved Dino finding utility, that also throws a 
 It only works with online servers, and the administrator of a server must set the server up to work with Arksplorer. This is because Arksplorer needs to be fed data
 from the server that tells it where all those lovely dinos etc. are!
 
+NOTE: Arksplorer is given away free of charge. You should not be paying anything for it!
+
 ## What can it see?
 
 It can see data about Wild Dinos, Tame Dinos and Suvivors. It will show you on a map where certain dinos are, and let you search for other dinos of the same type. You can also
@@ -34,6 +36,8 @@ Note that Arksplorer itself checks for new versions on start up, so should also 
 ## Anything else?
 
 If you want to find out more, want to know how to configure a server to set it up for your users, or check out the source code, you can visit the main [github page](https://github.com/ITheP/Arksplorer).
+
+You can also find licensing details, further credits etc. on the github page.
 
 ## Support or Contact
 

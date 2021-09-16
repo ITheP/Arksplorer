@@ -11,6 +11,8 @@ See https://creativecommons.org/licenses/by-nc-sa/4.0/ for more details.
 
 Artwork (c) respective artists - supplied and used in good faith, various published under Creative Commons CC BY-NC-SA 3.0 License - see ark.gamepedia.com for further details.
 
+Dino images are loaded from Dododex - many thanks to Danlev and Dodoex for giving permission to use their images.
+
 If you believe any content infringes on anything, or would like a credit adding, please contact and we will happily update accordingly!
 
 This version is considered a preview version. Information, supporting files, etc. may currently be incomplete.
@@ -164,10 +166,10 @@ v1.6.1 - The Fluffy Feather
 - Show image of selected dino in pop up (from Dododex) - first version, some what fragile!
 ... Searches will ignore unticked maps
 - Selection of Mass Marker mode colouration - sex/level or creature colours
-- Added extra filter quick buttons amd changed their order
+- Added extra filter quick buttons and changed their order
 - Creature type dataset labeling for results view
 - Popups display from different creature types in main/secondary results areas
-- Filter allows for OR statements using | separator, e.g. Rag | Ext, Argent | Dodo ...Argentavis or Dodo's on Ragnarock or Extinction. Works wit
+- Filter allows for OR statements using | separator, e.g. Rag | Ext, Argent | Dodo ...Argentavis or Dodo's on Ragnarock or Extinction
 
 ToDo:
 - Loading status not using WPF bound updates, cheaty refresh method used. Nice to do this properly.
@@ -177,6 +179,6 @@ ToDo:
 - Stop showing data/searching in maps that are de-selected
 - Make a demo video and link through to home page(s)
 - Contact other ark server admin and see if we can get them to join in!
-- Include OR conditions in filter
 - Include exclusions in filter
 - Replace data storage internally with little db engine, speed up searching/better queries etc.
+- Extra audio warnings (e.g. breeding timer)
