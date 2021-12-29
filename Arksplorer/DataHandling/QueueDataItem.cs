@@ -42,6 +42,8 @@ namespace Arksplorer
             // download data for all maps at once - but we don't want to eat into all the servers bandwidth and players are potentially affected! (E.g. web server is running on same pc as Ark Server)
             // ToDo: Make this a config option to enable/disable parallel download
 
+            string mapName = MapName;
+
             try
             {
                 string metaDataType = MetaData.ArkEntityType;
@@ -64,7 +66,6 @@ namespace Arksplorer
                     UIMapSelection.CacheState = "New data package";
                 }
 
-                string mapName = MapName;
                 UIMapSelection.DisplayState = "...Downloading";
                 mainWindow.Dispatcher.Invoke(() => Globals.MainWindow.MapsToInclude.Items.Refresh());
 
@@ -146,20 +147,26 @@ namespace Arksplorer
             }
             catch (HttpRequestException ex)
             {
-                Errors.ReportProblem(ex, $"Error retrieving JSON data for { MetaData.Description}: {ex.StatusCode}");
+                Errors.ReportProblem(ex, $"Error retrieving JSON data for { MetaData.Description} on {mapName}: {ex.StatusCode}");
+                UIMapSelection.CacheState = "Retrieval error";
             }
             catch (NotSupportedException ex)
             {
-                Errors.ReportProblem(ex, $"Invalid content type in JSON data for { MetaData.Description}");
+                Errors.ReportProblem(ex, $"Invalid content type in JSON data for { MetaData.Description} on {mapName}");
+                UIMapSelection.CacheState = "Content error";
             }
             catch (JsonException ex)
             {
-                Errors.ReportProblem(ex, $"Invalid JSON retrieving JSON data for { MetaData.Description}");
+                Errors.ReportProblem(ex, $"Invalid JSON retrieving JSON data for { MetaData.Description} on {mapName}");
+                UIMapSelection.CacheState = "JSON error";
             }
             catch (Exception ex)
             {
-                Errors.ReportProblem(ex, $"Problem loading JSON data for { MetaData.Description}");
+                Errors.ReportProblem(ex, $"Problem loading JSON data for { MetaData.Description} on {mapName}");
+                UIMapSelection.CacheState = "Loading error";
             }
+
+            UIMapSelection.DisplayState = "Error";
 
             return -1;
         }
