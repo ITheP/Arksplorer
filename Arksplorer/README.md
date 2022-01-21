@@ -1,6 +1,15 @@
 ﻿Arksplorer - The Ark Explorer App!
 © 2021 MisterB@ITheP
 
+==============================================================================================================
+Arksplorer uses .net 6 framework. If you don't have this installed and aren't running an all in one version of
+Arksplorer, please install this first!
+
+https://dotnet.microsoft.com/en-us/download/dotnet/6.0/runtime
+
+Recommend you install the x64 version under `Run desktop apps`
+==============================================================================================================
+
 Simple front end that takes bits of Ark data including data exposed by an ark server to help you find things in Ark.
 
 Loads data - as required - we don't load all data available as often as we can to make sure server load is minimised.
@@ -173,6 +182,10 @@ v1.6.1 - The Fluffy Feather
 
 v1.6.2 - The Fallen Feather
 - Updated some of the Help information
+
+v1.7.0 - The Pointy Talon
+- Updated framework to use .net 6.0
+- Inclusion of Lost Island map
 
 ToDo:
 - Loading status not using WPF bound updates, cheaty refresh method used. Nice to do this properly.
