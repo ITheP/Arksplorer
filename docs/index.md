@@ -33,6 +33,10 @@ Visit our facebook page on [facebook.com/arksplorer](https://facebook.com/arkspl
 
 Note that Arksplorer itself checks for new versions on start up, so should also notify you if there is a new version available.
 
+## What do I need to run it?
+
+Arksplorer uses .net 6.0 in its latest version. Windows often has .net already installed for various versions. If you don't have this installed, you can grab it from [Microsoft](https://dotnet.microsoft.com/en-us/download/dotnet/6.0/runtime) (recommend the `Download x64` option under 'Run desktop apps')
+
 ## Anything else?
 
 If you want to find out more, want to know how to configure a server to set it up for your users, or check out the source code, you can visit the main [github page](https://github.com/ITheP/Arksplorer).
