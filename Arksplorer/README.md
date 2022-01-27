@@ -186,6 +186,7 @@ v1.6.2 - The Fallen Feather
 v1.7.0 - The Pointy Talon
 - Updated framework to use .net 6.0
 - Inclusion of Lost Island map
+- Few other minor adjustments/tweaks
 
 ToDo:
 - Loading status not using WPF bound updates, cheaty refresh method used. Nice to do this properly.
@@ -198,3 +199,7 @@ ToDo:
 - Include exclusions in filter
 - Replace data storage internally with little db engine, speed up searching/better queries etc.
 - Extra audio warnings (e.g. breeding timer)
+- Rather than shipping maps with Arksplorer, can we download (on first run) from Wiki?
+- Not entirly sure everything updating in a timely manner, to check
+- Improve UI to make it clearer you are looking at wild/tame/etc.
+- Suvivors often have a coordinate of 0,0 (old accounts no longer used?) - be good to have some UIX around that
