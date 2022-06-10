@@ -2,6 +2,7 @@
 using Arksplorer.Controls;
 using Arksplorer.Properties;
 using Arksplorer.Util;
+using Audinator;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -100,6 +101,7 @@ namespace Arksplorer
             LoadingSpinner = GeneralLoadingSpinner.Child;
 
             UserSettings = Settings.Default;
+            TalkieToaster.Init(UserSettings);
 
             // ShowSameType.IsChecked = UserSettings.ShowSameType;
             ShowPopups.IsChecked = UserSettings.ShowPopups;

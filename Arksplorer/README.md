@@ -188,6 +188,10 @@ v1.7.0 - The Pointy Talon
 - Inclusion of Lost Island map
 - Few other minor adjustments/tweaks
 
+v1.7.1 - The Blunted Talon
+- Adding back in ability to generate text to speech
+- Type text into Alarm for speech instead of pre-defined audio sample
+
 ToDo:
 - Loading status not using WPF bound updates, cheaty refresh method used. Nice to do this properly.
 - if (CurrentRectanglePopUpInfo != null) <-- need a different way of checking this, so we can still click on mass markers when popups are hidden
@@ -203,3 +207,11 @@ ToDo:
 - Not entirly sure everything updating in a timely manner, to check
 - Improve UI to make it clearer you are looking at wild/tame/etc.
 - Suvivors often have a coordinate of 0,0 (old accounts no longer used?) - be good to have some UIX around that
+- Need to add in new Lost Island dinos!
+- Settings tab
+- Set marker transparency
+
+Known fixes needed:
+- Details button should toggle details in selected dino
+- Show all not always working (possibly data not being requiried at all)
+- Click to center map without orange marker

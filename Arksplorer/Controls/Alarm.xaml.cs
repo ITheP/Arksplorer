@@ -1,4 +1,5 @@
 ﻿using Arksplorer.Properties;
+using Audinator;
 using System;
 using System.Collections.ObjectModel;
 using System.Configuration.Internal;
@@ -46,16 +47,30 @@ namespace Arksplorer.Controls
                 config = config.Remove(config.Length - 7);
             }
 
-            var item = (ComboBoxItem)AudioType.FindName(config);
-            if (item == null)
+            if (string.IsNullOrWhiteSpace(config))
                 AudioType.SelectedIndex = 0;
             else
-                AudioType.SelectedItem = item;
+            {
+                var item = (ComboBoxItem)AudioType.FindName(config);
+                if (item == null)
+                    AudioType.Text = config;
+                else
+                    AudioType.SelectedItem = item;
+            }
         }
 
         public string GetConfig()
         {
-            return $"{(string)AudioType.SelectedValue},{(AutoRepeat.IsChecked ?? false ? ",Repeat" : "")};";
+            string value;
+
+            if (AudioType.SelectedItem == null)
+                value = AudioType.Text;
+            else
+                value = ((ListInfoItem)AudioType.SelectedItem).Description;
+
+            string config = $"{value}{(AutoRepeat.IsChecked ?? false ? ",Repeat" : "")};";
+
+            return config;
         }
 
         public static void InitAudioFiles(string folder)
@@ -160,8 +175,16 @@ namespace Arksplorer.Controls
             Globals.MainWindow.TriggerAlarmVisualisation();
 
             string filename = (string)AudioType.SelectedValue;
-            if (filename != null)
+            if (filename == null)
+            {
+                string text = AudioType.Text;
+                if (text != "None" && !string.IsNullOrWhiteSpace(text))
+                    TalkieToaster.Say(text);
+            }
+            else
+            {
                 Audio.PlaySample(filename);
+            }
         }
 
         private void RemoveAlarm()
