@@ -42,6 +42,7 @@
     <None Remove="Images\Dododex.png" />
     <None Remove="Images\Extinction.jpg" />
     <None Remove="Images\Female.png" />
+    <None Remove="Images\Fjordur.png" />
     <None Remove="Images\Genesis 2.jpg" />
     <None Remove="Images\Genesis.jpg" />
     <None Remove="Images\Lost Island.jpg" />
@@ -99,6 +100,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Female.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Fjordur.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Genesis 2.jpg">

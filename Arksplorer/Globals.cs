@@ -1,4 +1,5 @@
 ﻿using Arksplorer.Controls;
+using System.Collections.Generic;
 
 namespace Arksplorer
 {
@@ -40,5 +41,15 @@ namespace Arksplorer
         /// </summary>
         public static int GlobalIndex { get; set; }
 
+        public static List<string> Warnings { get; set; } = new();
+
+        public static bool HaveDoneWarning(string description)
+        {
+            if (Warnings.Contains(description))
+                return true;
+
+            Warnings.Add(description);
+            return false;
+        }
     }
 }

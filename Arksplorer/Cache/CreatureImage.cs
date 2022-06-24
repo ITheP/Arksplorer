@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
@@ -94,17 +95,28 @@ namespace Arksplorer.Caches
 
         public static bool SnagImageFromUrl(string url, string destinationFile)
         {
+            Uri uri = new Uri(url);
+
             try
             {
-                WebClient client = new();
-                client.DownloadFile(url, destinationFile);
+                using (WebClient client = new())
+                {
+                    client.Headers["User-Agent"] = "Arksplorer";
+                    client.DownloadFile(url, destinationFile);
+                }
             }
             catch (Exception ex)
             {
-                Errors.ReportProblem(ex, $"There was a problem trying to download the image '{url}' to '{destinationFile}'");
+                if (!Globals.HaveDoneWarning($"Image.{uri.Host}"))
+                {
+
+                    Errors.ReportProblem(ex, $"There was a problem trying to download the image '{url}' to '{destinationFile}'. Further download warnings for this site will not be shown during this session.");
+                }
+
                 Debug.Print(ex.Message);
                 if (ex.InnerException != null)
                     Debug.Print(ex.InnerException.Message);
+
                 return false;
             }
 

@@ -191,6 +191,9 @@ v1.7.0 - The Pointy Talon
 v1.7.1 - The Blunted Talon
 - Adding back in ability to generate text to speech
 - Type text into Alarm for speech instead of pre-defined audio sample
+- Added new Fjordur map
+- UserAgent on web requests set to `Arksplorer` to help with dododex and cloudflare protection mechanisms
+- Added a Warning check so certain warnings will only show once (e.g. image scraping problem from a site - tells you about the first one that fails, but doesn't bug you with subsequent repeated warnings in same session)
 
 ToDo:
 - Loading status not using WPF bound updates, cheaty refresh method used. Nice to do this properly.
