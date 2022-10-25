@@ -33,6 +33,7 @@
     <None Remove="Data\Shortcuts-Arkbuddy.json" />
     <None Remove="Data\Shortcuts-ArkWikipedia.json" />
     <None Remove="Data\Shortcuts-Dododex.json" />
+    <None Remove="Data\Shortcuts-OldArkWikipedia.json" />
     <None Remove="Images\Aberration.jpg" />
     <None Remove="Images\ark.png" />
     <None Remove="Images\Arkpedia.png" />
@@ -75,10 +76,13 @@
     <Content Include="Data\Shortcuts-Arkbuddy.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data\Shortcuts-ArkWikipedia.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\Shortcuts-Dododex.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Shortcuts-ArkWikipedia.json">
+    <Content Include="Data\Shortcuts-OldArkWikipedia.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Lookup-Colors.json">

@@ -474,7 +474,10 @@
                         <GridSplitter Grid.Row="0" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" ShowsPreview="False" Background="Black" />
                     </Grid>
                 </TabItem>
-                <TabItem Header="Ark Wikipedia" x:Name="ArkpediaTab">
+                <TabItem Header="Ark Wikipedia" x:Name="ArkWikiGGTab">
+                    <controls:WebBrowser x:Name="ArkWikiGGBrowser"/>
+                </TabItem>
+                <TabItem Header="Old Ark Wikipedia" x:Name="ArkpediaTab">
                     <controls:WebBrowser x:Name="ArkpediaBrowser"/>
                 </TabItem>
                 <TabItem Header="Dododex" x:Name="DododexTab">

@@ -33,6 +33,8 @@ namespace Arksplorer
         public int Oxy { get; set; }
         public int Craft { get; set; }
         public int Fort { get; set; }
+        // TEMPORARY WORKAROUND
+        [JsonIgnore]
         public DateTime Active { get; set; }
         public string Ccc { get; set; }
     }

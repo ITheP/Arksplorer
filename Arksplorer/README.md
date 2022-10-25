@@ -195,6 +195,10 @@ v1.7.1 - The Blunted Talon
 - UserAgent on web requests set to `Arksplorer` to help with dododex and cloudflare protection mechanisms
 - Added a Warning check so certain warnings will only show once (e.g. image scraping problem from a site - tells you about the first one that fails, but doesn't bug you with subsequent repeated warnings in same session)
 
+v1.7.2 - The Scritchy Talon
+- JSON problem with source data (source data software update)
+- Added new Ark Wiki web browser
+
 ToDo:
 - Loading status not using WPF bound updates, cheaty refresh method used. Nice to do this properly.
 - if (CurrentRectanglePopUpInfo != null) <-- need a different way of checking this, so we can still click on mass markers when popups are hidden

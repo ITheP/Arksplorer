@@ -339,8 +339,13 @@ namespace Arksplorer
         private void InitWebTabs()
         {
             // Could make browser controls publically accessible elsewhere using x:FieldModifier="public" in xml, but we are making them accessible via Global class instead
+
+           Globals.ArkWikiGGBrowser = ArkWikiGGBrowser;
+            ArkWikiGGBrowser.Init("Ark Wikipedia", "https://ark.wiki.gg/wiki/ARK_Survival_Evolved_Wiki");
+            ArkpediaBrowser.InitRotatingShortcuts(3);
+
             Globals.ArkpediaBrowser = ArkpediaBrowser;
-            ArkpediaBrowser.Init("Ark Wikipedia", "https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki");
+            ArkpediaBrowser.Init("Old Ark Wikipedia", "https://ark.gamepedia.com/ARK_Survival_Evolved_Wiki");
             ArkpediaBrowser.InitRotatingShortcuts(3);
 
             Globals.DododexBrowser = DododexBrowser;

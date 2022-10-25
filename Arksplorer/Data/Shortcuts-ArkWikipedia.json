@@ -1,12 +1,12 @@
 [
-    {
-        "Description": "Maps",
-        "Details": "Maps",
-        "Value": "https://ark.gamepedia.com/ARKs"
-    },
-    {
-        "Description": "Loot",
-        "Details": "Loot tables. Yarrrrrr.",
-        "Value": "https://ark.gamepedia.com/Loot_Tables"
-    }
+  {
+    "Description": "Maps",
+    "Details": "Maps",
+    "Value": "https://ark.wiki.gg/wiki/ARKs"
+  },
+  {
+    "Description": "Loot",
+    "Details": "Loot tables. Yarrrrrr.",
+    "Value": "https://ark.wiki.gg/wiki/Loot_Tables"
+  }
 ]
